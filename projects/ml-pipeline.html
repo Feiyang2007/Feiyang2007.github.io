@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>端到端机器学习 Pipeline — 陈斐阳</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:720px){.nav-links{display:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+.proj-head{padding:32px 0 56px}
+.proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
+.proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.proj-meta .dot{color:var(--accent)}
+.proj-lede{font-size:18px;line-height:1.6;max-width:680px;color:var(--ink-soft);font-weight:300}
+.proj-lede strong{font-weight:600;color:var(--ink)}
+.demo-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:28px}
+#canvas{display:block;width:100%;height:auto;background:#FAF8F2;border:1px solid var(--line);cursor:crosshair}
+.demo-controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.03em;padding:9px 20px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--accent-deep)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-soft)}
+.slider-row{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.slider-row input{width:120px}
+.demo-status{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto}
+.demo-status b{color:var(--accent)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
+h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
+.info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
+.info-block p strong{color:var(--ink);font-weight:600}
+.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border-radius:2px}
+.code-block .c{color:#8A8678}.code-block .k{color:#7FB5B0}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
+  <div class="nav-links">
+    <a href="../index.html#about">About</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#now">Now</a>
+    <a href="../index.html#contact">Contact</a>
+  </div>
+</div></nav>
+
+<div class="wrap"><div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>ML Pipeline</div></div>
+
+<section><div class="wrap">
+  <div class="proj-head">
+    <div class="proj-label">PROJECT 02 · LEARNING</div>
+    <h1>端到端机器学习 Pipeline</h1>
+    <div class="proj-meta"><span>2026.09 — 进行中</span><span class="dot">●</span><span>Sklearn 完整流程 + Streamlit</span></div>
+    <p class="proj-lede">
+      从数据清洗、特征工程、模型训练到评估与可视化的完整流程。
+      下面是 <strong>k-NN 分类器</strong>的交互式演示——调 k 值，看决策边界怎么变；
+      在画布上点一个新点，看模型把它分到哪一类。这是理解"偏差-方差权衡"最直观的方式。
+    </p>
+  </div>
+
+  <div class="demo-wrap">
+    <canvas id="canvas" width="900" height="480"></canvas>
+    <div class="demo-controls">
+      <div class="slider-row">k = <input type="range" id="k" min="1" max="15" value="3"><span id="kval">3</span></div>
+      <button class="btn" id="btn-classify">分类新点</button>
+      <button class="btn ghost" id="btn-new">换数据</button>
+      <span class="demo-status" id="status">点击画布任意位置分类 · 蓝=A类 · 橙=B类</span>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-block">
+      <h3>为什么做这个</h3>
+      <p>Sklearn 课程里 24/129 讲的练习都是零散的——每节课跑一个模型，不知道全貌。
+      我要把它收拢成一个<strong>能跑通的完整 pipeline</strong>：
+      拿到一份数据 → 清洗 → 切分 → 训练 → 评估 → 部署成 Streamlit 应用。</p>
+      <p>这个 demo 用 k-NN 演示最核心的直觉：<strong>k 小了过拟合，k 大了欠拟合</strong>。
+      调一调滑块，边界从锯齿变得平滑——这比看十张图都有用。</p>
+    </div>
+    <div class="info-block">
+      <h3>技术栈</h3>
+      <div class="tech-list"><span>Python</span><span>Scikit-learn</span><span>Pandas</span><span>NumPy</span><span>Streamlit</span><span>Matplotlib</span></div>
+      <h3 style="margin-top:32px">代码结构</h3>
+      <div class="code-block">
+<span class="c"># ml-pipeline/</span>
+data_loader.py    <span class="c"># 数据加载与清洗</span>
+features.py       <span class="c"># 特征工程</span>
+train.py          <span class="c"># 模型训练与交叉验证</span>
+evaluate.py       <span class="c"># 指标评估 + 可视化</span>
+app.py            <span class="c"># Streamlit 交互界面</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
+
+<script>
+(function(){
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+  var ptsA = [], ptsB = [];
+  var k = 3;
+  var newPoint = null;
+
+  function genData(){
+    ptsA = []; ptsB = [];
+    for(var i=0;i<30;i++){
+      ptsA.push({x: 100+Math.random()*300, y: 80+Math.random()*200});
+      ptsB.push({x: 450+Math.random()*320, y: 180+Math.random()*220});
+    }
+    newPoint = null;
+    draw();
+  }
+  function dist(a,b){return Math.hypot(a.x-b.x, a.y-b.y);}
+  function knnClassify(p){
+    var all = ptsA.map(function(x){return {p:x,c:0};}).concat(ptsB.map(function(x){return {p:x,c:1};}));
+    all.sort(function(a,b){return dist(a.p,p)-dist(b.p,p);});
+    var votes = 0;
+    for(var i=0;i<k;i++) votes += all[i].c;
+    return votes > k/2 ? 1 : 0;
+  }
+  function draw(){
+    ctx.fillStyle = '#FAF8F2';
+    ctx.fillRect(0,0,W,H);
+    // decision boundary (grid sample)
+    ctx.fillStyle = 'rgba(46,125,50,.06)';
+    for(var gx=0;gx<W;gx+=12){
+      for(var gy=0;gy<H;gy+=12){
+        if(knnClassify({x:gx,y:gy})===1){ctx.fillRect(gx,gy,12,12);}
+      }
+    }
+    // points
+    ptsA.forEach(function(p){ctx.fillStyle='#1F5F5B';ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();});
+    ptsB.forEach(function(p){ctx.fillStyle='#C66B3D';ctx.beginPath();ctx.arc(p.x,p.y,5,0,Math.PI*2);ctx.fill();});
+    if(newPoint){
+      var c = knnClassify(newPoint);
+      ctx.fillStyle = c===0 ? '#2E7D32' : '#C62828';
+      ctx.strokeStyle = c===0 ? '#2E7D32' : '#C62828';
+      ctx.lineWidth = 2;
+      ctx.beginPath();ctx.arc(newPoint.x,newPoint.y,9,0,Math.PI*2);ctx.stroke();
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(newPoint.x,newPoint.y,5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle = c===0 ? '#2E7D32' : '#C62828';
+      ctx.font='12px monospace';
+      document.getElementById('status').innerHTML = '新点分类结果：<b>'+(c===0?'A 类（青）':'B 类（橙）')+'</b>';
+    }
+  }
+  canvas.onclick = function(e){
+    var r = canvas.getBoundingClientRect();
+    newPoint = {x:(e.clientX-r.left)*W/r.width, y:(e.clientY-r.top)*H/r.height};
+    draw();
+  };
+  document.getElementById('k').oninput = function(){
+    k = parseInt(this.value);
+    document.getElementById('kval').textContent = k;
+    draw();
+  };
+  document.getElementById('btn-classify').onclick = function(){
+    newPoint = {x:150+Math.random()*600, y:80+Math.random()*300};
+    draw();
+  };
+  document.getElementById('btn-new').onclick = genData;
+  genData();
+})();
+</script>
+</body></html>

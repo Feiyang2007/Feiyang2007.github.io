@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeRobot 行为克隆 — 陈斐阳</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:720px){.nav-links{display:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+.proj-head{padding:32px 0 56px}
+.proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
+.proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.proj-meta .dot{color:var(--accent)}
+.proj-lede{font-size:18px;line-height:1.6;max-width:680px;color:var(--ink-soft);font-weight:300}
+.proj-lede strong{font-weight:600;color:var(--ink)}
+.pipeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:8px}
+.stage{background:var(--paper-warm);padding:24px}
+.stage .num{font-family:var(--mono);font-size:11px;color:var(--accent);display:block;margin-bottom:8px}
+.stage h4{font-family:var(--serif);font-size:17px;font-weight:600;margin-bottom:8px}
+.stage p{font-size:13.5px;color:var(--muted);line-height:1.6}
+@media(max-width:760px){.pipeline{grid-template-columns:1fr}}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
+h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
+.info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
+.info-block p strong{color:var(--ink);font-weight:600}
+.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border-radius:2px}
+.code-block .c{color:#8A8678}.code-block .k{color:#7FB5B0}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
+  <div class="nav-links">
+    <a href="../index.html#about">About</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#now">Now</a>
+    <a href="../index.html#contact">Contact</a>
+  </div>
+</div></nav>
+
+<div class="wrap"><div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>LeRobot BC</div></div>
+
+<section><div class="wrap">
+  <div class="proj-head">
+    <div class="proj-label">PROJECT 04 · LEARNING</div>
+    <h1>LeRobot 行为克隆复现</h1>
+    <div class="proj-meta"><span>2026.09 — 学习中</span><span class="dot">●</span><span>示教数据 → 策略网络</span></div>
+    <p class="proj-lede">
+      在仿真环境中录制操作轨迹，用<strong>行为克隆（Behavior Cloning）</strong>
+      让神经网络从示教数据中学习"看到什么状态 → 做什么动作"。
+      这是从 RL 到真实机器人的桥梁——不需要奖励函数，只要人演示够多。
+    </p>
+  </div>
+
+  <div class="pipeline">
+    <div class="stage">
+      <span class="num">STAGE 1</span>
+      <h4>示教采集</h4>
+      <p>在 MuJoCo / Isaac 仿真中用键盘或遥操作录制轨迹（状态, 动作）对。</p>
+    </div>
+    <div class="stage">
+      <span class="num">STAGE 2</span>
+      <h4>数据处理</h4>
+      <p>轨迹清洗、归一化、切分训练/验证集。LeRobot 提供标准数据格式。</p>
+    </div>
+    <div class="stage">
+      <span class="num">STAGE 3</span>
+      <h4>策略训练</h4>
+      <p>用 MLP / Transformer 拟合动作分布，最小化交叉熵 / MSE。</p>
+    </div>
+    <div class="stage">
+      <span class="num">STAGE 4</span>
+      <h4>部署评估</h4>
+      <p>加载策略在新轨迹上 rollout，看成功率与误差累积，分析分布漂移。</p>
+    </div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-block">
+      <h3>为什么学这个</h3>
+      <p>行为克隆是<strong>机器人学习最朴素也最实用的范式</strong>——
+      OpenVLA、RT-2 这些大模型策略本质上都是大规模 BC。
+      我要理解它的局限：<strong>分布漂移</strong>（covariate shift）
+      ——模型在训练分布外会越走越偏。</p>
+      <p>跟随 LeRobot 官方课程推进，先在仿真里复现一个简单任务（推方块），
+      再理解为什么需要 DAgger 这类改进。</p>
+    </div>
+    <div class="info-block">
+      <h3>技术栈</h3>
+      <div class="tech-list"><span>PyTorch</span><span>LeRobot</span><span>Behavior Cloning</span><span>MuJoCo</span><span>DAgger</span></div>
+      <h3 style="margin-top:32px">代码结构</h3>
+      <div class="code-block">
+<span class="c"># lerobot-bc/</span>
+collect.py       <span class="c"># 示教数据采集</span>
+dataset.py       <span class="c"># 数据加载与归一化</span>
+policy.py        <span class="c"># BC 策略网络</span>
+train.py         <span class="c"># 训练循环</span>
+eval.py          <span class="c"># rollout 评估</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
+</body></html>

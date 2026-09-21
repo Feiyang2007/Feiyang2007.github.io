@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陈斐阳 Feiyang Chen — 具身智能方向本科生</title>
+<meta name="description" content="陈斐阳，湖南大学大数据管理与应用专业2025级本科生，方向：具身智能（Embodied AI），主攻大脑侧（学习算法与数据）。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#EFEBE1;
+  --paper-warm:#F5F2EA;
+  --ink:#1A1B18;
+  --ink-soft:#3A3B36;
+  --muted:#6E6A60;
+  --line:#D6D1C3;
+  --accent:#1F5F5B;
+  --accent-deep:#16443F;
+  --accent-soft:rgba(31,95,91,.08);
+  --serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;
+  --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --max:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16.5px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  font-weight:400;
+}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+
+/* ===== 顶部导航 ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(239,235,225,.88);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:var(--max);margin:0 auto;padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:720px){.nav-links{display:none}}
+
+/* ===== 布局容器 ===== */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:96px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+
+/* ===== Hero ===== */
+.hero{padding:160px 0 88px;border-bottom:1px solid var(--line)}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:13px;letter-spacing:.08em;
+  color:var(--accent);margin-bottom:28px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+h1.hero-name{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:clamp(52px,8.5vw,96px);
+  line-height:1.02;
+  letter-spacing:-.01em;
+  margin-bottom:8px;
+}
+.hero-en{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(20px,2.6vw,30px);
+  color:var(--muted);font-weight:400;margin-bottom:40px;
+}
+.hero-lede{
+  font-size:clamp(18px,2vw,22px);
+  line-height:1.6;
+  max-width:680px;
+  color:var(--ink-soft);
+  font-weight:300;
+}
+.hero-lede strong{font-weight:600;color:var(--ink)}
+.hero-meta{
+  margin-top:56px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);
+}
+.hero-stat{background:var(--paper-warm);padding:22px 24px}
+.hero-stat .num{
+  font-family:var(--serif);font-size:34px;font-weight:600;line-height:1;
+  color:var(--accent-deep);display:block;margin-bottom:8px;
+}
+.hero-stat .lbl{font-size:12.5px;color:var(--muted);line-height:1.4;font-family:var(--mono)}
+@media(max-width:720px){
+  .hero{padding:120px 0 64px}
+  .hero-meta{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== 区块通用 ===== */
+.section-label{
+  font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;
+  color:var(--accent);margin-bottom:14px;
+}
+h2{
+  font-family:var(--serif);font-weight:600;
+  font-size:clamp(28px,3.4vw,40px);line-height:1.15;
+  letter-spacing:-.005em;margin-bottom:36px;
+}
+.prose{max-width:720px}
+.prose p{margin-bottom:18px;color:var(--ink-soft)}
+.prose p strong{color:var(--ink);font-weight:600}
+
+/* ===== About ===== */
+.about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:64px;align-items:start}
+@media(max-width:860px){.about-grid{grid-template-columns:1fr;gap:40px}}
+.fact-list{border-top:1px solid var(--line)}
+.fact-row{
+  display:grid;grid-template-columns:140px 1fr;gap:20px;
+  padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;
+}
+.fact-row .k{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding-top:3px}
+.fact-row .v{color:var(--ink-soft)}
+
+/* ===== Direction ===== */
+.dir-thesis{
+  font-family:var(--serif);font-size:clamp(22px,2.6vw,30px);
+  line-height:1.4;font-weight:500;color:var(--ink);
+  border-left:3px solid var(--accent);padding-left:28px;margin:8px 0 40px;
+  max-width:760px;
+}
+.dir-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:8px}
+.pillar{background:var(--paper-warm);padding:28px}
+.pillar h4{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:10px}
+.pillar p{font-size:14.5px;color:var(--muted);line-height:1.65}
+.pillar .tag{font-family:var(--mono);font-size:11.5px;color:var(--accent);display:block;margin-bottom:10px;letter-spacing:.05em}
+@media(max-width:760px){.dir-pillars{grid-template-columns:1fr}}
+
+/* ===== Journey 时间轴（每行三列 grid，像素对齐） ===== */
+.timeline{display:block;position:relative}
+.t-node{display:grid;grid-template-columns:110px 28px 1fr;padding:0}
+.t-time{
+  font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  padding-top:5px;text-align:right;padding-right:0;
+}
+.t-axis{position:relative;display:flex;justify-content:center}
+.t-axis::before{content:"";position:absolute;top:14px;bottom:0;width:1px;background:var(--line)}
+.t-dot{
+  width:11px;height:11px;border-radius:50%;flex-shrink:0;
+  background:var(--paper);border:2px solid var(--accent);
+  position:relative;z-index:1;margin-top:7px;
+}
+.t-dot.now{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.t-body{padding:0 0 48px 28px}
+.t-node:last-child .t-body{padding-bottom:8px}
+.t-body h4{font-family:var(--serif);font-size:19px;font-weight:600;margin-bottom:6px}
+.t-body p{font-size:14.5px;color:var(--muted);line-height:1.65;max-width:620px}
+.t-body .chip{
+  display:inline-block;font-family:var(--mono);font-size:11.5px;
+  padding:2px 9px;border:1px solid var(--line);border-radius:3px;
+  color:var(--accent);margin-right:6px;margin-top:8px;
+}
+.t-node:last-child .t-axis::before{display:none}
+@media(max-width:640px){
+  .t-node{grid-template-columns:78px 22px 1fr}
+  .t-body{padding-left:18px}
+}
+
+/* ===== Projects 项目列表 ===== */
+.proj-list{border-top:1px solid var(--line)}
+.proj-item{
+  display:grid;grid-template-columns:290px 1fr;gap:48px;
+  padding:36px 0;border-bottom:1px solid var(--line);
+}
+.proj-item .p-left h4{font-family:var(--serif);font-size:21px;font-weight:600;margin-bottom:10px;line-height:1.3}
+.proj-item .p-status{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  color:var(--accent);
+}
+.proj-item .p-status::before{content:"●";margin-right:7px;font-size:9px}
+.proj-item .p-status.plan{color:var(--muted)}
+.proj-item .p-desc{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:16px;max-width:660px}
+.proj-item .p-tech{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+.proj-item a.p-link{color:inherit;border:none;display:block}
+.proj-item a.p-link h4{transition:color .15s}
+.proj-item a.p-link:hover h4{color:var(--accent)}
+.proj-item .p-cta{
+  display:inline-block;margin-top:14px;
+  font-family:var(--mono);font-size:11.5px;color:var(--accent);
+  border-bottom:1px solid rgba(31,95,91,.3);
+}
+.proj-item .p-cta:hover{border-bottom-color:var(--accent)}
+@media(max-width:760px){.proj-item{grid-template-columns:1fr;gap:10px}}
+
+/* ===== Skills 能力雷达 + 列表 ===== */
+.skills-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:center}
+@media(max-width:860px){.skills-grid{grid-template-columns:1fr;gap:32px}}
+#radar{width:100%;height:420px}
+.skill-cat{margin-bottom:22px}
+.skill-cat h5{
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+  color:var(--muted);margin-bottom:8px;
+}
+.skill-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:7px 0;border-bottom:1px dotted var(--line);font-size:14.5px;
+}
+.skill-row .name{color:var(--ink-soft)}
+.skill-row .lvl{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.skill-row .lvl.on{color:var(--accent)}
+
+/* ===== Education / 成绩 ===== */
+.edu-block{margin-bottom:40px}
+.edu-block:last-child{margin-bottom:0}
+.edu-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.edu-head h4{font-family:var(--serif);font-size:20px;font-weight:600}
+.edu-head .when{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.edu-sub{font-size:14px;color:var(--muted);margin-bottom:12px}
+.grades{width:100%;border-collapse:collapse;font-size:14px}
+.grades col.c1{width:38%}
+.grades col.c2{width:22%}
+.grades col.c3{width:20%}
+.grades col.c4{width:20%}
+.grades th{
+  text-align:left;font-family:var(--mono);font-size:11.5px;font-weight:500;
+  color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line);
+}
+.grades td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft)}
+.grades td.num{font-family:var(--mono)}
+.grades tr.core td{color:var(--ink);font-weight:500}
+.grades tr.core td.num{color:var(--accent-deep)}
+
+/* ===== Now ===== */
+.now-list{border-top:1px solid var(--line)}
+.now-item{
+  display:grid;grid-template-columns:110px 1fr;gap:24px;
+  padding:20px 0;border-bottom:1px solid var(--line);
+}
+.now-item .when{font-family:var(--mono);font-size:12.5px;color:var(--accent);padding-top:3px}
+.now-item .what h4{font-size:16px;font-weight:600;margin-bottom:4px}
+.now-item .what p{font-size:14px;color:var(--muted)}
+@media(max-width:640px){.now-item{grid-template-columns:1fr;gap:6px}}
+
+/* ===== Contact ===== */
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.c-cell{background:var(--paper-warm);padding:28px}
+.c-cell .k{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.08em;margin-bottom:8px}
+.c-cell .v{font-family:var(--serif);font-size:19px;font-weight:500;color:var(--ink);word-break:break-all}
+.c-cell .v a{color:var(--ink);border-bottom:1px solid rgba(0,0,0,.2)}
+.c-cell .v a:hover{color:var(--accent);border-color:var(--accent)}
+@media(max-width:640px){.contact-grid{grid-template-columns:1fr}}
+
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+@media print{.nav{display:none}section{padding:40px 0}}
+</style>
+</head>
+<body>
+<!-- ===== 导航 ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-name" href="#top">陈斐阳 · Feiyang Chen</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#direction">Direction</a>
+      <a href="#journey">Journey</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#education">Education</a>
+      <a href="#now">Now</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-eyebrow">HUNAN UNIVERSITY · EMBODIED AI</div>
+    <h1 class="hero-name">陈斐阳</h1>
+    <div class="hero-en">Feiyang Chen — Undergraduate, Embodied AI</div>
+    <p class="hero-lede">
+      湖南大学工商管理学院 <strong>大数据管理与应用</strong> 专业2025级本科生。
+      大一读土木，大二转入大数据，正在用数学、编程与数据的方法走向
+      <strong>具身智能</strong>——我相信智能的本体在算法与数据，而非机械结构。
+    </p>
+    <div class="hero-meta">
+      <div class="hero-stat"><span class="num">48h</span><span class="lbl">每周自学投入</span></div>
+      <div class="hero-stat"><span class="num">311<span style="font-size:18px;color:var(--muted)">/1281</span></span><span class="lbl">课程讲次进度</span></div>
+      <div class="hero-stat"><span class="num">127</span><span class="lbl">代码文件产出</span></div>
+      <div class="hero-stat"><span class="num">25/74</span><span class="lbl">核心课加权排名</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== About ===== -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-label">01 — ABOUT</div>
+    <h2>一个从纸面走向代码的人。</h2>
+    <div class="about-grid">
+      <div class="prose">
+        <p>我是四川遂宁人，2007年生，2025年考入湖南大学。大一在土木工程学院系统学习了
+        <strong>理论力学、工程制图、大学物理</strong>与工程软件（AutoCAD / Revit）；
+        大二为了走向算法与数据，转入工商管理学院大数据管理与应用专业，<strong>未留级</strong>，
+        因而保留了参与推免竞争的资格。</p>
+        <p>我的学习方式偏"从数学物理理解、再落代码"。本科至今每周保持约48小时自学，
+        用一套自己维护的 Obsidian 知识库（同步到 GitHub）记录每一门课、每一段代码、
+        每一次决策。我习惯<strong>诚实地标注自己在每一件事上的真实位置</strong>——
+        是自己做的、跑通的，还是仅仅 clone 观摩的。</p>
+        <p>目前我的重心是两件事：把核心课成绩推到推免安全线以前，
+        同时在课外系统补齐具身智能"大脑侧"所需的机器学习、深度学习与强化学习基础。</p>
+      </div>
+      <div>
+        <div class="fact-list">
+          <div class="fact-row"><span class="k">本科</span><span class="v">湖南大学 · 工商管理学院 · 大数据管理与应用（商务大数据）2502</span></div>
+          <div class="fact-row"><span class="k">原专业</span><span class="v">土木工程（2025—2026）</span></div>
+          <div class="fact-row"><span class="k">授位</span><span class="v">管理学学士（2029预期）</span></div>
+          <div class="fact-row"><span class="k">方向</span><span class="v">具身智能 / Embodied AI（学习算法侧）</span></div>
+          <div class="fact-row"><span class="k">高考</span><span class="v">四川 627 分 · 省排名 10101（2025）</span></div>
+          <div class="fact-row"><span class="k">语言</span><span class="v">中文母语；英语 【已移除】 备考中（2026.12）</span></div>
+          <div class="fact-row"><span class="k">GitHub</span><span class="v"><a href="https://github.com/Feiyang2007" target="_blank" rel="noopener">github.com/Feiyang2007</a></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Direction ===== -->
+<section id="direction">
+  <div class="wrap">
+    <div class="section-label">02 — DIRECTION</div>
+    <h2>为什么是具身智能。</h2>
+    <p class="dir-thesis">"硬件已经是相当成熟的商品。<br>真正还在拉开差距的，是大脑——让机器在物理世界里学习、决策、泛化的算法与数据。"</p>
+    <div class="prose">
+      <p>我把方向收敛到<strong>大脑侧</strong>：深度学习、强化学习、数据与仿真。
+      身体侧（机械结构、电路、驱动）我只做到功能理解，不打算自己造硬件——
+      这既是资源约束下的理性选择，也是我对这个领域价值分布的判断。</p>
+    </div>
+    <div class="dir-pillars">
+      <div class="pillar">
+        <span class="tag">MY EDGE</span>
+        <h4>跨学科的底子</h4>
+        <p>土木阶段的<strong>理论力学</strong>通向机器人动力学；
+        管理学的<strong>运筹学与最优化</strong>通向运动规划与轨迹优化（MPC）。
+        这是我相对纯计科学生的差异化资产。</p>
+      </div>
+      <div class="pillar">
+        <span class="tag">CURRENT GAP</span>
+        <h4>身体侧几乎空白</h4>
+        <p>自评八轴中，机器人学与控制 8/100、强化学习 3/100。
+        这是具身方向真正的门槛，也是我接下来两年要重点补的——
+        先用 MuJoCo / Isaac 在仿真里把它跑通。</p>
+      </div>
+      <div class="pillar">
+        <span class="tag">PATH</span>
+        <h4>先仿真，后实物</h4>
+        <p>一个带磁编码器的舵机要一百多、一套机械臂 3D 打印要两百多。
+        在没有进组、没有报销渠道之前，仿真控制是成本最低、
+        也最能暴露算法问题的路线。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Journey ===== -->
+<section id="journey">
+  <div class="wrap">
+    <div class="section-label">03 — JOURNEY</div>
+    <h2>走过的路，和正在走的路。</h2>
+    <div class="timeline">
+      <div class="t-node">
+        <div class="t-time">2025.09</div>
+        <div class="t-axis"><div class="t-dot"></div></div>
+        <div class="t-body">
+          <h4>进入湖南大学 · 土木工程</h4>
+          <p>系统学习高等数学、线性代数、大学物理、理论力学、工程制图；自学微积分、理论物理；熟练使用 AutoCAD 与 Revit，完成建模作业。担任土木2502班长、土木院25届年级会学习股股长。</p>
+          <span class="chip">高数AⅠ 86</span><span class="chip">线代A 83</span>
+        </div>
+      </div>
+      <div class="t-node">
+        <div class="t-time">2026.02</div>
+        <div class="t-axis"><div class="t-dot"></div></div>
+        <div class="t-body">
+          <h4>第一次接触编程与 AI</h4>
+          <p>开始系统学 Python（NumPy / Pandas / Matplotlib / Streamlit），跟进 C 语言课程至动态内存分配（150/165）。明确兴趣从土木转向算法与数据。</p>
+          <span class="chip">Python 主力</span><span class="chip">C 91%</span>
+        </div>
+      </div>
+      <div class="t-node">
+        <div class="t-time">2026.07</div>
+        <div class="t-axis"><div class="t-dot"></div></div>
+        <div class="t-body">
+          <h4>锁定方向：具身智能</h4>
+          <p>开始 T800 具身智能开发课程、MuJoCo hello world、机械臂 URDF 与 LeRobot 行为克隆课程；观摩开源 T800 项目代码（明确标注：仅 clone 观摩，非复现）。同步学习 RAG / LangChain / Agent，跑通 OpenAI 接口调用与流式输出入门案例。</p>
+          <span class="chip">MuJoCo</span><span class="chip">URDF</span><span class="chip">RAG</span>
+        </div>
+      </div>
+      <div class="t-node">
+        <div class="t-time">2026.09</div>
+        <div class="t-axis"><div class="t-dot now"></div></div>
+        <div class="t-body">
+          <h4>转入大数据管理与应用 · 冲推免</h4>
+          <p>未留级转入工管院，保留参与推免竞争资格。当前核心课加权排名 25/74（前34%），目标进入前20%；本学期重点补概率论、数据库、机器学习与深度学习；已【已移除】【已移除】助理教授，准备进组。</p>
+          <span class="chip">Sklearn</span><span class="chip">PyTorch</span><span class="chip">概率论</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Projects ===== -->
+<section id="projects">
+  <div class="wrap">
+    <div class="section-label">04 — PROJECTS</div>
+    <h2>正在做的事。</h2>
+    <p class="prose" style="margin-bottom:40px">
+      按"先收拢已有、再攻方向核心"的顺序推进。状态诚实标注——在做的就是在做，规划的就是规划。
+    </p>
+    <div class="proj-list">
+      <div class="proj-item">
+        <div class="p-left">
+          <a class="p-link" href="projects/knowledge-rag.html"><h4>个人知识 RAG 助手</h4></a>
+          <span class="p-status">IN PROGRESS</span>
+        </div>
+        <div>
+          <p class="p-desc">把自己两年的 Obsidian 学习笔记作为语料，构建一个能问答个人知识的助手。已跑通 OpenAI 接口调用与流式输出，正在接入文档切分、向量检索与问答闭环。数据是自己的，故事也是自己的。</p>
+          <span class="p-tech">Python · LangChain · OpenAI API · Streamlit</span>
+          <a class="p-cta" href="projects/knowledge-rag.html">查看项目 →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <div class="p-left">
+          <a class="p-link" href="projects/ml-pipeline.html"><h4>端到端机器学习 Pipeline</h4></a>
+          <span class="p-status">LEARNING</span>
+        </div>
+        <div>
+          <p class="p-desc">从数据清洗、特征工程、模型训练到评估与可视化的完整流程，用 Streamlit 做交互 demo。把 Sklearn 课程里零散的练习收拢成一个可跑通的项目。</p>
+          <span class="p-tech">Python · Scikit-learn · Pandas · Streamlit</span>
+          <a class="p-cta" href="projects/ml-pipeline.html">查看项目 →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <div class="p-left">
+          <a class="p-link" href="projects/mujoco-rl.html"><h4>MuJoCo 强化学习（从零实现）</h4></a>
+          <span class="p-status">PLANNED</span>
+        </div>
+        <div>
+          <p class="p-desc">不依赖现成 RL 库，纯 PyTorch 实现 DQN / PPO，在 MuJoCo 仿真环境中训练连续控制策略。这是具身智能"大脑侧"的核心练习——从 hello world 到真能训出一个策略。</p>
+          <span class="p-tech">PyTorch · MuJoCo · Reinforcement Learning</span>
+          <a class="p-cta" href="projects/mujoco-rl.html">查看项目 →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <div class="p-left">
+          <a class="p-link" href="projects/lerobot-bc.html"><h4>LeRobot 行为克隆复现</h4></a>
+          <span class="p-status">LEARNING</span>
+        </div>
+        <div>
+          <p class="p-desc">在仿真环境中录制操作轨迹，用行为克隆（BC）让模型复现机器人动作。跟随 LeRobot 课程推进，理解从示教到策略的完整路径。</p>
+          <span class="p-tech">PyTorch · LeRobot · Behavior Cloning</span>
+          <a class="p-cta" href="projects/lerobot-bc.html">查看项目 →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <div class="p-left">
+          <a class="p-link" href="projects/arm-planning.html"><h4>机械臂运动规划</h4></a>
+          <span class="p-status plan">PLANNED</span>
+        </div>
+        <div>
+          <p class="p-desc">结合土木理论力学与运筹学最优化背景，用 RRT* / MPC 在仿真中实现机械臂无碰撞轨迹规划。这是我相对纯计科学生的差异化方向。</p>
+          <span class="p-tech">Python · NumPy · Robotics · Optimization</span>
+          <a class="p-cta" href="projects/arm-planning.html">在线体验 RRT* →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Skills ===== -->
+<section id="skills">
+  <div class="wrap">
+    <div class="section-label">05 — SKILLS</div>
+    <h2>现在站在哪里。</h2>
+    <div class="skills-grid">
+      <div>
+        <div id="radar"></div>
+        <p style="font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:8px">
+          具身智能适配度八轴自评（满分100）· 更新于 2026.09
+        </p>
+      </div>
+      <div>
+        <div class="skill-cat">
+          <h5>编程与工程</h5>
+          <div class="skill-row"><span class="name">Python（NumPy / Pandas / Streamlit）</span><span class="lvl on">熟练</span></div>
+          <div class="skill-row"><span class="name">C 语言</span><span class="lvl">入门 · 150/165</span></div>
+          <div class="skill-row"><span class="name">C++ / Java</span><span class="lvl">了解基础</span></div>
+          <div class="skill-row"><span class="name">SQL / Git / Linux</span><span class="lvl">基础</span></div>
+        </div>
+        <div class="skill-cat">
+          <h5>机器学习 / 深度学习</h5>
+          <div class="skill-row"><span class="name">Scikit-learn 建模流程</span><span class="lvl">学习中 · 24/129</span></div>
+          <div class="skill-row"><span class="name">PyTorch 神经网络</span><span class="lvl">学习中 · 21/108</span></div>
+          <div class="skill-row"><span class="name">RAG / LangChain / Agent</span><span class="lvl">入门案例已跑通</span></div>
+          <div class="skill-row"><span class="name">强化学习</span><span class="lvl">未开始</span></div>
+        </div>
+        <div class="skill-cat">
+          <h5>机器人 / 仿真</h5>
+          <div class="skill-row"><span class="name">MuJoCo / URDF / LeRobot</span><span class="lvl">学习中</span></div>
+          <div class="skill-row"><span class="name">T800 开发课程</span><span class="lvl">2/21（观摩）</span></div>
+        </div>
+        <div class="skill-cat">
+          <h5>数理与工程</h5>
+          <div class="skill-row"><span class="name">微积分 / 线性代数 / 理论物理</span><span class="lvl on">已掌握</span></div>
+          <div class="skill-row"><span class="name">概率论与数理统计</span><span class="lvl">进行中</span></div>
+          <div class="skill-row"><span class="name">AutoCAD / Revit / 工程制图</span><span class="lvl on">熟练</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Education ===== -->
+<section id="education">
+  <div class="wrap">
+    <div class="section-label">06 — EDUCATION</div>
+    <h2>学业记录。</h2>
+
+    <div class="edu-block">
+      <div class="edu-head">
+        <h4>湖南大学 · 大数据管理与应用（商务大数据）</h4>
+        <span class="when">2026.09 — 至今</span>
+      </div>
+      <div class="edu-sub">工商管理学院 · 管理科学与商业智能系 · 授管理学学士 · 同专业 74 人</div>
+      <table class="grades">
+        <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup>
+        <thead><tr><th>指标</th><th>数值</th><th>排名</th><th>百分位</th></tr></thead>
+        <tbody>
+          <tr><td>学分加权平均分（全部必修课）</td><td class="num">82.71</td><td class="num">34/74</td><td class="num">前 46%</td></tr>
+          <tr class="core"><td>核心课加权平均成绩（推免排序口径）</td><td class="num">—</td><td class="num">25/74</td><td class="num">前 34%</td></tr>
+          <tr><td>平均学分绩点 GPA</td><td class="num">3.36</td><td class="num">35/74</td><td class="num">前 47%</td></tr>
+          <tr><td>算术平均分</td><td class="num">83.04</td><td class="num">46/74</td><td class="num">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="edu-block">
+      <div class="edu-head">
+        <h4>湖南大学 · 土木工程</h4>
+        <span class="when">2025.09 — 2026.06</span>
+      </div>
+      <div class="edu-sub">土木工程学院 · 大一完成后转入大数据（未留级）</div>
+      <table class="grades">
+        <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup>
+        <thead><tr><th>已锁定核心课</th><th>学分</th><th>成绩</th><th>备注</th></tr></thead>
+        <tbody>
+          <tr class="core"><td>高等数学 AⅠ</td><td class="num">5</td><td class="num">86</td><td>初修</td></tr>
+          <tr class="core"><td>高等数学 AⅡ</td><td class="num">5</td><td class="num">80</td><td>初修</td></tr>
+          <tr class="core"><td>线性代数 A</td><td class="num">3</td><td class="num">83</td><td>初修</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--muted);margin-top:14px;max-width:680px">
+        推免只取<strong>初修成绩</strong>，无刷分空间。上述 13 学分（占推免核心课 64 学分的 20.3%）已锁定；
+        未来 51 学分需把加权推到 ≈88 分，才有进入前 20% 推免线的把握。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Now ===== -->
+<section id="now">
+  <div class="wrap">
+    <div class="section-label">07 — NOW</div>
+    <h2>这学期在做什么。</h2>
+    <div class="now-list">
+      <div class="now-item">
+        <span class="when">2026.09</span>
+        <div class="what">
+          <h4>【已移除】课题组</h4>
+          <p>已当面认识【已移除】助理教授（机器人工程系），【已移除】；目标是在本科阶段进入具身智能课题组，从仿真与学习算法侧做起。</p>
+        </div>
+      </div>
+      <div class="now-item">
+        <span class="when">2026.09 — 11</span>
+        <div class="what">
+          <h4>创新创业人才试点班（机器人方向）</h4>
+          <p>报名材料已提交；11月初综合面试。在不影响核心课成绩的前提下参与，作为跨进机器人方向的入口。</p>
+        </div>
+      </div>
+      <div class="now-item">
+        <span class="when">2026.12</span>
+        <div class="what">
+          <h4>大学英语【已移除】</h4>
+          <p>推免硬门槛（≥425）。本学期最高优先级之一，与核心课并行准备。</p>
+        </div>
+      </div>
+      <div class="now-item">
+        <span class="when">进行中</span>
+        <div class="what">
+          <h4>系统补机器学习与强化学习</h4>
+          <p>按 Sklearn → PyTorch → 强化学习 → MuJoCo/Isaac 的顺序推进；用 Obsidian 知识库把学习过程沉淀成可公开的轨迹。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Contact ===== -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-label">08 — CONTACT</div>
+    <h2>联系我。</h2>
+    <p class="prose" style="margin-bottom:32px">
+      对具身智能、机器人学习、跨专业推免有兴趣的老师或同学，欢迎通过邮箱联系。
+      我目前正在寻找本科阶段的科研/实习/进组机会，尤其是仿真与学习算法方向。
+    </p>
+    <div class="contact-grid">
+      <div class="c-cell">
+        <div class="k">EMAIL</div>
+        <div class="v"><a href="mailto:chenfeiyang20071228@gmail.com">chenfeiyang20071228@gmail.com</a></div>
+      </div>
+      <div class="c-cell">
+        <div class="k">GITHUB</div>
+        <div class="v"><a href="https://github.com/Feiyang2007" target="_blank" rel="noopener">github.com/Feiyang2007</a></div>
+      </div>
+      <div class="c-cell">
+        <div class="k">PHONE</div>
+        <div class="v">+86 178 0825 8608</div>
+      </div>
+      <div class="c-cell">
+        <div class="k">LOCATION</div>
+        <div class="v">湖南 · 长沙 · 岳麓山</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Feiyang Chen · Hunan University · Last updated September 2026
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script>
+(function(){
+  var el = document.getElementById('radar');
+  if(!el || typeof echarts === 'undefined'){ if(el){el.style.display='none';} return; }
+  var chart = echarts.init(el);
+  chart.setOption({
+    radar:{
+      indicator:[
+        {name:'编程语言',max:100},
+        {name:'数据结构算法',max:100},
+        {name:'数学基础',max:100},
+        {name:'ML / DL',max:100},
+        {name:'机器人与控制',max:100},
+        {name:'强化学习',max:100},
+        {name:'仿真部署',max:100},
+        {name:'大模型 / Agent',max:100}
+      ],
+      radius:'68%',
+      center:['50%','52%'],
+      splitNumber:4,
+      axisName:{color:'#3A3B36',fontSize:12,fontFamily:'Noto Sans SC'},
+      splitLine:{lineStyle:{color:'#D6D1C3'}},
+      splitArea:{areaStyle:{color:['rgba(0,0,0,0)','rgba(31,95,91,0.03)']}},
+      axisLine:{lineStyle:{color:'#D6D1C3'}}
+    },
+    series:[{
+      type:'radar',
+      data:[{
+        value:[72,15,62,22,8,3,18,45],
+        name:'当前能力',
+        areaStyle:{color:'rgba(31,95,91,0.22)'},
+        lineStyle:{color:'#1F5F5B',width:2},
+        itemStyle:{color:'#1F5F5B'}
+      }]
+    }]
+  });
+  window.addEventListener('resize', function(){chart.resize();});
+})();
+</script>
+</body>
+</html>

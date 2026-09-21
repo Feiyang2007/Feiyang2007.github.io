@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>机械臂运动规划 · RRT* 交互演示 — 陈斐阳</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;
+  --muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;
+  --accent-soft:rgba(31,95,91,.08);
+  --serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;
+  --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --max:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:720px){.nav-links{display:none}}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}
+.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+
+.proj-head{padding:32px 0 56px}
+.proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
+.proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.proj-meta .dot{color:var(--accent)}
+.proj-lede{font-size:18px;line-height:1.6;max-width:680px;color:var(--ink-soft);font-weight:300}
+.proj-lede strong{font-weight:600;color:var(--ink)}
+
+/* demo 区 */
+.demo-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:28px}
+#canvas{display:block;width:100%;height:auto;background:#FAF8F2;border:1px solid var(--line);cursor:crosshair}
+.demo-controls{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.btn{
+  font-family:var(--mono);font-size:13px;letter-spacing:.03em;
+  padding:9px 20px;border:1px solid var(--accent);background:var(--accent);
+  color:var(--paper);cursor:pointer;transition:background .15s;
+}
+.btn:hover{background:var(--accent-deep)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-soft)}
+.demo-status{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto}
+.demo-status b{color:var(--accent)}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
+h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
+.info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
+.info-block p strong{color:var(--ink);font-weight:600}
+.code-block{
+  background:#2A2B27;color:#D6D1C3;padding:20px 24px;
+  font-family:var(--mono);font-size:13px;line-height:1.7;
+  overflow-x:auto;border-radius:2px;
+}
+.code-block .c{color:#8A8678}
+.code-block .k{color:#7FB5B0}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tech-list span{
+  font-family:var(--mono);font-size:11.5px;padding:3px 10px;
+  border:1px solid var(--line);color:var(--accent);border-radius:3px;
+}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
+    <div class="nav-links">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#projects">Projects</a>
+      <a href="../index.html#now">Now</a>
+      <a href="../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>Arm Motion Planning</div>
+</div>
+
+<section style="border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <div class="proj-head">
+      <div class="proj-label">PROJECT 05 · PLANNED</div>
+      <h1>机械臂运动规划 — RRT* 无碰撞路径</h1>
+      <div class="proj-meta">
+        <span>2026.10 — 进行中</span>
+        <span class="dot">●</span>
+        <span>纯前端演示 · 后端 Python 实现开发中</span>
+      </div>
+      <p class="proj-lede">
+        在二维工作空间中用 <strong>RRT*</strong> 算法为机械臂规划一条绕开障碍的无碰撞路径。
+        下面是可交互的演示——点"开始规划"，看一棵随机树从起点生长、rewire、最终收敛到最优路径。
+        这是我结合土木<strong>理论力学</strong>与运筹学<strong>最优化</strong>背景的差异化方向。
+      </p>
+    </div>
+
+    <div class="demo-wrap">
+      <canvas id="canvas" width="900" height="520"></canvas>
+      <div class="demo-controls">
+        <button class="btn" id="btn-start">开始规划</button>
+        <button class="btn ghost" id="btn-random">随机障碍</button>
+        <button class="btn ghost" id="btn-reset">重置</button>
+        <span class="demo-status" id="status">就绪 · 迭代 <b id="iter">0</b> · 节点 <b id="nodes">0</b></span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-block">
+        <h3>为什么做这个</h3>
+        <p>具身智能的"大脑侧"不只是学习算法，也包括<strong>规划</strong>——在给定的障碍空间里，
+        机器人要决定"怎么从 A 到 B"。RRT* 是采样式规划的经典算法，
+        相比 RRT 它通过 <strong>rewire（重连）</strong>保证路径代价单调递减，最终收敛到最优。</p>
+        <p>我在土木阶段学过<strong>理论力学</strong>（运动学、雅可比、奇异位形），
+        在大数据专业学<strong>运筹学与最优化</strong>（梯度下降、约束优化）。
+        运动规划正好是这两块的交叉点——这是我相对纯计科学生的位置。</p>
+      </div>
+      <div class="info-block">
+        <h3>技术栈</h3>
+        <div class="tech-list">
+          <span>Python</span><span>NumPy</span><span>RRT*</span><span>MPC</span>
+          <span>Collision Detection</span><span>JS Canvas</span>
+        </div>
+        <h3 style="margin-top:32px">代码结构</h3>
+        <div class="code-block">
+<span class="c"># arm-planning/</span>
+rrt_star.py        <span class="c"># RRT* 核心算法</span>
+collision.py       <span class="c"># 碰撞检测</span>
+kinematics.py      <span class="c"># 机械臂正/逆运动学</span>
+visualize.py       <span class="c"># 轨迹可视化</span>
+demo.ipynb         <span class="c"># 交互 notebook</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Feiyang Chen · Hunan University · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
+
+<script>
+(function(){
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+  var W = canvas.width, H = canvas.height;
+
+  var start = {x: 80, y: H/2};
+  var goal  = {x: W-80, y: H/2};
+  var obstacles = [];
+  var tree = [];
+  var path = null;
+  var running = false;
+  var rafId = null;
+
+  var STEP = 18;
+  var GOAL_TH = 22;
+  var NEAR_R = 55;
+  var MAX_ITER = 1200;
+
+  function randObstacles(){
+    obstacles = [];
+    var n = 4 + Math.floor(Math.random()*3);
+    for(var i=0;i<n;i++){
+      var w = 60 + Math.random()*100;
+      var h = 60 + Math.random()*120;
+      var x = 150 + Math.random()*(W-300-w);
+      var y = 40 + Math.random()*(H-80-h);
+      obstacles.push({x:x,y:y,w:w,h:h});
+    }
+  }
+
+  function collides(x,y){
+    for(var i=0;i<obstacles.length;i++){
+      var o = obstacles[i];
+      if(x>o.x && x<o.x+o.w && y>o.y && y<o.y+o.h) return true;
+    }
+    return false;
+  }
+  function segmentFree(a,b){
+    var steps = Math.ceil(Math.hypot(b.x-a.x,b.y-a.y)/6);
+    for(var i=0;i<=steps;i++){
+      var t = i/steps;
+      var x = a.x+(b.x-a.x)*t;
+      var y = a.y+(b.y-a.y)*t;
+      if(collides(x,y)) return false;
+    }
+    return true;
+  }
+
+  function dist(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
+
+  function nearest(nodes, p){
+    var best = nodes[0], bd = Infinity;
+    for(var i=0;i<nodes.length;i++){
+      var d = dist(nodes[i], p);
+      if(d<bd){bd=d;best=nodes[i];}
+    }
+    return best;
+  }
+
+  function steer(from, to){
+    var d = dist(from,to);
+    if(d<=STEP) return {x:to.x,y:to.y};
+    var t = STEP/d;
+    return {x: from.x+(to.x-from.x)*t, y: from.y+(to.y-from.y)*t};
+  }
+
+  function near(nodes, p, r){
+    var res = [];
+    for(var i=0;i<nodes.length;i++){
+      if(dist(nodes[i],p)<r) res.push(nodes[i]);
+    }
+    return res;
+  }
+
+  function reset(){
+    tree = [{x:start.x,y:start.y,parent:null,cost:0}];
+    path = null;
+    running = false;
+    if(rafId) cancelAnimationFrame(rafId);
+    document.getElementById('iter').textContent = '0';
+    document.getElementById('nodes').textContent = '1';
+    draw();
+  }
+
+  function draw(){
+    ctx.fillStyle = '#FAF8F2';
+    ctx.fillRect(0,0,W,H);
+
+    // obstacles
+    ctx.fillStyle = '#D6D1C3';
+    for(var i=0;i<obstacles.length;i++){
+      var o = obstacles[i];
+      ctx.fillRect(o.x,o.y,o.w,o.h);
+    }
+
+    // tree edges
+    ctx.strokeStyle = 'rgba(31,95,91,.25)';
+    ctx.lineWidth = 1;
+    for(var i=1;i<tree.length;i++){
+      var n = tree[i];
+      if(n.parent){
+        ctx.beginPath();
+        ctx.moveTo(n.parent.x,n.parent.y);
+        ctx.lineTo(n.x,n.y);
+        ctx.stroke();
+      }
+    }
+
+    // path
+    if(path){
+      ctx.strokeStyle = '#1F5F5B';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(path[0].x,path[0].y);
+      for(var i=1;i<path.length;i++) ctx.lineTo(path[i].x,path[i].y);
+      ctx.stroke();
+    }
+
+    // start
+    ctx.fillStyle = '#2E7D32';
+    ctx.beginPath();ctx.arc(start.x,start.y,8,0,Math.PI*2);ctx.fill();
+    // goal
+    ctx.fillStyle = '#C62828';
+    ctx.beginPath();ctx.arc(goal.x,goal.y,8,0,Math.PI*2);ctx.fill();
+  }
+
+  var iter = 0;
+  function step(){
+    if(!running) return;
+    if(iter >= MAX_ITER || path){
+      running = false;
+      document.getElementById('status').innerHTML = path ? '找到路径 ✓ · 迭代 <b>'+iter+'</b>' : '迭代上限 · 未找到路径';
+      return;
+    }
+    iter++;
+    var rand = Math.random()<0.08 ? goal : {x:Math.random()*W, y:Math.random()*H};
+    var nearN = nearest(tree, rand);
+    var newN = steer(nearN, rand);
+    if(collides(newN.x,newN.y) || !segmentFree(nearN, newN)){
+      rafId = requestAnimationFrame(step);
+      return;
+    }
+    var nearList = near(tree, newN, NEAR_R);
+    var bestParent = nearN;
+    var bestCost = nearN.cost + dist(nearN, newN);
+    for(var i=0;i<nearList.length;i++){
+      var cand = nearList[i];
+      if(segmentFree(cand, newN)){
+        var c = cand.cost + dist(cand, newN);
+        if(c < bestCost){bestCost=c;bestParent=cand;}
+      }
+    }
+    var node = {x:newN.x,y:newN.y,parent:bestParent,cost:bestCost};
+    tree.push(node);
+    // rewire
+    for(var j=0;j<nearList.length;j++){
+      var nb = nearList[j];
+      var newCost = node.cost + dist(node, nb);
+      if(newCost < nb.cost && segmentFree(node, nb)){
+        nb.parent = node;
+        nb.cost = newCost;
+      }
+    }
+    // check goal
+    if(dist(node, goal) < GOAL_TH){
+      path = [];
+      var cur = node;
+      while(cur){path.unshift(cur); cur = cur.parent;}
+    }
+    document.getElementById('iter').textContent = iter;
+    document.getElementById('nodes').textContent = tree.length;
+    draw();
+    rafId = requestAnimationFrame(step);
+  }
+
+  document.getElementById('btn-start').onclick = function(){
+    if(running) return;
+    running = true;
+    iter = 0;
+    step();
+  };
+  document.getElementById('btn-random').onclick = function(){
+    randObstacles(); reset();
+  };
+  document.getElementById('btn-reset').onclick = function(){
+    reset();
+  };
+
+  randObstacles();
+  reset();
+})();
+</script>
+</body>
+</html>

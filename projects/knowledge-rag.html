@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人知识 RAG 助手 — 陈斐阳</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:720px){.nav-links{display:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+.proj-head{padding:32px 0 56px}
+.proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
+.proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.proj-meta .dot{color:var(--accent)}
+.proj-lede{font-size:18px;line-height:1.6;max-width:680px;color:var(--ink-soft);font-weight:300}
+.proj-lede strong{font-weight:600;color:var(--ink)}
+.demo-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:28px}
+.chat-box{background:#FAF8F2;border:1px solid var(--line);padding:24px;min-height:200px}
+.chat-q{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:6px}
+.chat-a{font-size:15px;color:var(--ink);line-height:1.7;margin-bottom:18px;padding-left:16px;border-left:2px solid var(--accent)}
+.chunks{margin-top:12px}
+.chunk{font-size:13px;color:var(--muted);padding:8px 12px;background:rgba(31,95,91,.05);border-left:2px solid var(--accent);margin-bottom:6px;font-family:var(--mono)}
+.demo-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.03em;padding:9px 18px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer;transition:background .15s}
+.btn:hover{background:var(--accent-deep)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.ghost:hover{background:var(--accent-soft)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
+h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
+.info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
+.info-block p strong{color:var(--ink);font-weight:600}
+.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border-radius:2px}
+.code-block .c{color:#8A8678}.code-block .k{color:#7FB5B0}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
+  <div class="nav-links">
+    <a href="../index.html#about">About</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#now">Now</a>
+    <a href="../index.html#contact">Contact</a>
+  </div>
+</div></nav>
+
+<div class="wrap"><div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>Personal Knowledge RAG</div></div>
+
+<section><div class="wrap">
+  <div class="proj-head">
+    <div class="proj-label">PROJECT 01 · IN PROGRESS</div>
+    <h1>个人知识 RAG 助手</h1>
+    <div class="proj-meta"><span>2026.09 — 进行中</span><span class="dot">●</span><span>用自己的 Obsidian 笔记做语料</span></div>
+    <p class="proj-lede">
+      把两年的 Obsidian 学习笔记作为语料，构建一个能问答个人知识的助手。
+      已跑通 OpenAI 接口调用与流式输出，正在接入文档切分、向量检索与问答闭环。
+      下面是一个<strong>流程演示</strong>——选一个问题，看 RAG 如何先检索相关笔记片段、再让模型基于这些片段回答。
+    </p>
+  </div>
+
+  <div class="demo-wrap">
+    <div class="chat-box" id="chat">
+      <div class="chat-q">示例问答（模拟 RAG 检索 + 生成）</div>
+      <div id="result">点击下方问题开始演示 →</div>
+    </div>
+    <div class="demo-controls" id="qa-list"></div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-block">
+      <h3>为什么做这个</h3>
+      <p>我两年积累了 <strong>59 篇笔记、127 个代码文件</strong>，散落在 Obsidian 目录里。
+      传统搜索只能关键词匹配，RAG 让我能用自然语言问"我之前对强化学习是怎么想的"、
+      "我转专业时的绩点情况"，模型直接从我的笔记里找答案。</p>
+      <p>这也是我理解 <strong>LangChain / 向量数据库 / Embedding</strong> 的最快路径——
+      用自己的数据，比用公开数据集有意义得多。</p>
+    </div>
+    <div class="info-block">
+      <h3>技术栈</h3>
+      <div class="tech-list"><span>Python</span><span>LangChain</span><span>OpenAI API</span><span>Embedding</span><span>Vector DB</span><span>Streamlit</span></div>
+      <h3 style="margin-top:32px">代码结构</h3>
+      <div class="code-block">
+<span class="c"># knowledge-rag/</span>
+ingest.py        <span class="c"># 读取 Obsidian 笔记、切分</span>
+embed.py         <span class="c"># 生成 Embedding、入库</span>
+retrieve.py      <span class="c"># 向量检索 + rerank</span>
+app.py           <span class="c"># Streamlit 问答界面</span>
+config.yaml      <span class="c"># API key 与路径配置</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
+
+<script>
+(function(){
+  var qa = [
+    {q:"我目前的核心课排名是多少？",
+     chunks:["推免核心课加权排名 25/74（前34%）","高数AⅠ 86 / 高数AⅡ 80 / 线代A 83"],
+     a:"目前核心课加权平均排名 25/74（前34%）。已锁定的核心课包括高数AⅠ（86）、高数AⅡ（80）、线代A（83）。目标是未来把加权推到约88分，进入前20%推免线。"},
+    {q:"你为什么选择具身智能？",
+     chunks:["硬件已经是相当成熟的商品","真正拉开差距的是大脑——算法与数据","我相信智能的本体在算法与数据"],
+     a:"我认为硬件已经是成熟商品，真正拉开差距的是大脑侧——让机器在物理世界学习、决策、泛化的算法与数据。作为大数据背景学生，这是我相对机械方向的位置。"},
+    {q:"你的学习节奏是怎样的？",
+     chunks:["本科至今每周保持约48小时自学投入","六点半起，午饭后一点睡两点起，晚上十二点睡"],
+     a:"本科至今每周保持约48小时自学投入。作息是早六点半起，午饭后一点睡两点起，晚上十二点睡。目前有一点点透支感，正在调整。"}
+  ];
+  var box = document.getElementById('result');
+  var list = document.getElementById('qa-list');
+  qa.forEach(function(item, idx){
+    var b = document.createElement('button');
+    b.className = 'btn ghost';
+    b.textContent = item.q;
+    b.onclick = function(){show(idx);};
+    list.appendChild(b);
+  });
+  function show(i){
+    var item = qa[i];
+    var html = '<div class="chat-q">Q: '+item.q+'</div>';
+    html += '<div class="chunks"><div class="chat-q" style="margin-top:8px">检索到的笔记片段：</div>';
+    item.chunks.forEach(function(c){html += '<div class="chunk">'+c+'</div>';});
+    html += '</div>';
+    html += '<div class="chat-q" style="margin-top:14px">基于检索片段生成：</div>';
+    html += '<div class="chat-a">'+item.a+'</div>';
+    box.innerHTML = html;
+  }
+})();
+</script>
+</body></html>
