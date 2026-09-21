@@ -35,16 +35,22 @@ h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-
 .proj-lede{font-size:18px;line-height:1.6;max-width:680px;color:var(--ink-soft);font-weight:300}
 .proj-lede strong{font-weight:600;color:var(--ink)}
 .demo-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:28px}
-.chat-box{background:#FAF8F2;border:1px solid var(--line);padding:24px;min-height:200px}
-.chat-q{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:6px}
-.chat-a{font-size:15px;color:var(--ink);line-height:1.7;margin-bottom:18px;padding-left:16px;border-left:2px solid var(--accent)}
-.chunks{margin-top:12px}
-.chunk{font-size:13px;color:var(--muted);padding:8px 12px;background:rgba(31,95,91,.05);border-left:2px solid var(--accent);margin-bottom:6px;font-family:var(--mono)}
-.demo-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
-.btn{font-family:var(--mono);font-size:13px;letter-spacing:.03em;padding:9px 18px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer;transition:background .15s}
+.chat-box{background:#FAF8F2;border:1px solid var(--line);padding:20px;height:420px;overflow-y:auto;margin-bottom:16px}
+.msg{margin-bottom:16px}
+.msg-q{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:4px;font-weight:600}
+.msg-a{font-size:15px;color:var(--ink);line-height:1.7;padding-left:16px;border-left:2px solid var(--accent)}
+.msg-a.loading{color:var(--muted);font-style:italic}
+.chunks{margin-top:8px;padding:8px 12px;background:rgba(31,95,91,.05);border-left:2px solid var(--accent);font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.input-row{display:flex;gap:10px}
+.input-row input{flex:1;padding:11px 14px;border:1px solid var(--line);background:#fff;font-family:var(--mono);font-size:14px;color:var(--ink)}
+.input-row input:focus{outline:none;border-color:var(--accent)}
+.btn{font-family:var(--mono);font-size:13px;letter-spacing:.03em;padding:10px 20px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer;transition:background .15s;white-space:nowrap}
 .btn:hover{background:var(--accent-deep)}
-.btn.ghost{background:transparent;color:var(--accent)}
-.btn.ghost:hover{background:var(--accent-soft)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.hint{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
+.examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.examples span{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s}
+.examples span:hover{border-color:var(--accent);color:var(--accent)}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
 @media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
 h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
@@ -72,22 +78,33 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
 <section><div class="wrap">
   <div class="proj-head">
-    <div class="proj-label">PROJECT 01 · IN PROGRESS</div>
+    <div class="proj-label">PROJECT 01 · LIVE DEMO</div>
     <h1>个人知识 RAG 助手</h1>
-    <div class="proj-meta"><span>2026.09 — 进行中</span><span class="dot">●</span><span>用自己的 Obsidian 笔记做语料</span></div>
+    <div class="proj-meta"><span>2026.09 — 进行中</span><span class="dot">●</span><span>真实在线对话</span></div>
     <p class="proj-lede">
-      把两年的 Obsidian 学习笔记作为语料，构建一个能问答个人知识的助手。
-      已跑通 OpenAI 接口调用与流式输出，正在接入文档切分、向量检索与问答闭环。
-      下面是一个<strong>流程演示</strong>——选一个问题，看 RAG 如何先检索相关笔记片段、再让模型基于这些片段回答。
+      基于个人公开资料的 RAG 问答。检索用关键词匹配，LLM 用 <strong>DeepSeek</strong>。
+      下面是<strong>真实可交互 demo</strong>——随便问，它会先检索相关资料片段，再基于片段生成回答。
     </p>
   </div>
 
   <div class="demo-wrap">
-    <div class="chat-box" id="chat">
-      <div class="chat-q">示例问答（模拟 RAG 检索 + 生成）</div>
-      <div id="result">点击下方问题开始演示 →</div>
+    <div class="chat-box" id="chatBox">
+      <div class="msg">
+        <div class="msg-q">助手</div>
+        <div class="msg-a">你好！我是陈斐阳的个人知识助手。关于他的背景、学业、项目、方向，随便问。</div>
+      </div>
     </div>
-    <div class="demo-controls" id="qa-list"></div>
+    <div class="input-row">
+      <input id="qInput" placeholder="例如：你是怎么选方向的？" autocomplete="off">
+      <button class="btn" id="sendBtn">发送</button>
+    </div>
+    <div class="examples">
+      <span>你是怎么选方向的？</span>
+      <span>你的成绩排名怎么样？</span>
+      <span>你在做哪些项目？</span>
+      <span>你的技术栈是什么？</span>
+    </div>
+    <p class="hint">每次回复约 3-5 秒 · 基于内置语料检索 + DeepSeek 生成</p>
   </div>
 
   <div class="info-grid">
@@ -101,15 +118,15 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </div>
     <div class="info-block">
       <h3>技术栈</h3>
-      <div class="tech-list"><span>Python</span><span>LangChain</span><span>OpenAI API</span><span>Embedding</span><span>Vector DB</span><span>Streamlit</span></div>
+      <div class="tech-list"><span>Python</span><span>LangChain</span><span>DeepSeek</span><span>BGE Embedding</span><span>Chroma</span><span>Gradio</span></div>
       <h3 style="margin-top:32px">代码结构</h3>
       <div class="code-block">
 <span class="c"># knowledge-rag/</span>
-ingest.py        <span class="c"># 读取 Obsidian 笔记、切分</span>
+ingest.py        <span class="c"># 读取笔记、切分</span>
 embed.py         <span class="c"># 生成 Embedding、入库</span>
-retrieve.py      <span class="c"># 向量检索 + rerank</span>
-app.py           <span class="c"># Streamlit 问答界面</span>
-config.yaml      <span class="c"># API key 与路径配置</span>
+retrieve.py      <span class="c"># 检索 + rerank</span>
+app.py           <span class="c"># 问答界面</span>
+config.yaml      <span class="c"># API key 配置</span>
       </div>
     </div>
   </div>
@@ -118,37 +135,83 @@ config.yaml      <span class="c"># API key 与路径配置</span>
 <footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
 
 <script>
-(function(){
-  var qa = [
-    {q:"我目前的核心课排名是多少？",
-     chunks:["推免核心课加权排名 25/74（前34%）","高数AⅠ 86 / 高数AⅡ 80 / 线代A 83"],
-     a:"目前核心课加权平均排名 25/74（前34%）。已锁定的核心课包括高数AⅠ（86）、高数AⅡ（80）、线代A（83）。目标是未来把加权推到约88分，进入前20%推免线。"},
-    {q:"你为什么选择具身智能？",
-     chunks:["硬件已经是相当成熟的商品","真正拉开差距的是大脑——算法与数据","我相信智能的本体在算法与数据"],
-     a:"我认为硬件已经是成熟商品，真正拉开差距的是大脑侧——让机器在物理世界学习、决策、泛化的算法与数据。作为大数据背景学生，这是我相对机械方向的位置。"},
-    {q:"你的学习节奏是怎样的？",
-     chunks:["本科至今每周保持约48小时自学投入","六点半起，午饭后一点睡两点起，晚上十二点睡"],
-     a:"本科至今每周保持约48小时自学投入。作息是早六点半起，午饭后一点睡两点起，晚上十二点睡。目前有一点点透支感，正在调整。"}
-  ];
-  var box = document.getElementById('result');
-  var list = document.getElementById('qa-list');
-  qa.forEach(function(item, idx){
-    var b = document.createElement('button');
-    b.className = 'btn ghost';
-    b.textContent = item.q;
-    b.onclick = function(){show(idx);};
-    list.appendChild(b);
-  });
-  function show(i){
-    var item = qa[i];
-    var html = '<div class="chat-q">Q: '+item.q+'</div>';
-    html += '<div class="chunks"><div class="chat-q" style="margin-top:8px">检索到的笔记片段：</div>';
-    item.chunks.forEach(function(c){html += '<div class="chunk">'+c+'</div>';});
-    html += '</div>';
-    html += '<div class="chat-q" style="margin-top:14px">基于检索片段生成：</div>';
-    html += '<div class="chat-a">'+item.a+'</div>';
-    box.innerHTML = html;
+const DOCS = [
+  ["个人简介","陈斐阳，湖南大学工商管理学院大数据管理与应用专业2025级本科生。大一读土木工程，大二未留级转入大数据管理与应用，保留参与推免竞争资格。四川遂宁人，2007年生。"],
+  ["学业记录","核心课加权平均成绩排名 25/74（前34%）。已锁定核心课：高等数学AⅠ 86分、高等数学AⅡ 80分、线性代数A 83分。推免目标：未来把加权推到约88分，进入前20%。"],
+  ["方向判断","方向选择：具身智能（Embodied AI），主攻大脑侧——深度学习、强化学习、数据与仿真。判断依据：硬件已经是相当成熟的商品，真正拉开差距的是让机器在物理世界学习、决策、泛化的算法与数据。身体侧只做到功能理解，不自己造硬件。"],
+  ["跨学科背景","跨学科优势：土木阶段的理论力学通向机器人动力学；管理学的运筹学与最优化通向运动规划与轨迹优化（MPC）。这是相对纯计科学生的差异化资产。"],
+  ["学习节奏","学习节奏：本科至今每周保持约48小时自学投入。作息早六点半起，午饭后一点睡两点起，晚上十二点睡。已完成 311/1281 讲课程，127 个代码文件，59 篇笔记。"],
+  ["项目列表","项目1：个人知识RAG助手。项目2：端到端ML Pipeline。项目3：MuJoCo强化学习（纯PyTorch手写DQN/PPO）。项目4：LeRobot行为克隆。项目5：机械臂运动规划（RRT*/MPC）。"],
+  ["近期计划","【已移除】【已移除】助理教授，【已移除】，准备进组。报名创新创业人才试点班（机器人方向），11月初面试。12月考大学英语【已移除】（推免硬门槛）。"],
+  ["技能栈","技能栈：Python熟练（NumPy/Pandas/Streamlit），C语言91%，Sklearn 24/129讲，PyTorch 21/108讲。AutoCAD熟练、Revit建模。RAG/LangChain跑通入门案例。MuJoCo hello world。"],
+];
+
+function retrieve(q, k) {
+  const qChars = new Set(q);
+  return DOCS.map(([tag, text]) => {
+    const overlap = [...qChars].filter(c => text.includes(c)).length;
+    return {overlap, tag, text};
+  }).sort((a,b) => b.overlap - a.overlap).slice(0, k || 3);
+}
+
+async function ask() {
+  const input = document.getElementById("qInput");
+  const btn = document.getElementById("sendBtn");
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = "";
+  btn.disabled = true;
+
+  const chatBox = document.getElementById("chatBox");
+  // 用户消息
+  chatBox.insertAdjacentHTML("beforeend",
+    '<div class="msg"><div class="msg-q">你</div><div class="msg-a">' + q.replace(/</g,"&lt;") + '</div></div>');
+  // 加载中
+  chatBox.insertAdjacentHTML("beforeend",
+    '<div class="msg" id="loadingMsg"><div class="msg-q">助手</div><div class="msg-a loading">正在检索并生成...</div></div>');
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  const hits = retrieve(q, 3);
+  const context = hits.map(h => "【" + h.tag + "】" + h.text).join("\n\n");
+  const prompt = "你是陈斐阳的个人知识助手。基于以下资料回答问题。如果资料里没有，就说不知道，不要编造。\n\n资料：\n" + context + "\n\n问题：" + q + "\n回答：";
+
+  try {
+    const resp = await fetch("https://api.deepseek.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer sk-17b9e35573b84345be5945236a0ad669"
+      },
+      body: JSON.stringify({
+        model: "deepseek-chat",
+        messages: [{role: "user", content: prompt}],
+        temperature: 0.3,
+        max_tokens: 500
+      })
+    });
+    const data = await resp.json();
+    const ans = data.choices[0].message.content;
+    const sources = hits.map(h => h.tag).join("、");
+    document.getElementById("loadingMsg").remove();
+    chatBox.insertAdjacentHTML("beforeend",
+      '<div class="msg"><div class="msg-q">助手</div><div class="msg-a">' + ans.replace(/</g,"&lt;") + '</div><div class="chunks">检索来源：' + sources + '</div></div>');
+  } catch (e) {
+    document.getElementById("loadingMsg").remove();
+    chatBox.insertAdjacentHTML("beforeend",
+      '<div class="msg"><div class="msg-q">助手</div><div class="msg-a">调用失败：' + e.message + '</div></div>');
   }
-})();
+  chatBox.scrollTop = chatBox.scrollHeight;
+  btn.disabled = false;
+  input.focus();
+}
+
+document.getElementById("sendBtn").addEventListener("click", ask);
+document.getElementById("qInput").addEventListener("keydown", e => { if (e.key === "Enter") ask(); });
+document.querySelectorAll(".examples span").forEach(el => {
+  el.addEventListener("click", () => {
+    document.getElementById("qInput").value = el.textContent;
+    ask();
+  });
+});
 </script>
 </body></html>
