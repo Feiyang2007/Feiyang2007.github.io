@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>个人知识 RAG 助手 — 陈斐阳</title>
+<meta name="description" content="把两年自学笔记做成了一个能问答的机器人：真实语料 + 向量检索 + DeepSeek 生成。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -27,39 +28,65 @@ section{padding:80px 0;border-bottom:1px solid var(--line)}
 .crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
 .crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
 .crumb .sep{margin:0 8px;color:var(--line)}
-.proj-head{padding:32px 0 56px}
+.proj-head{padding:32px 0 48px}
 .proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
 h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
 .proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
 .proj-meta .dot{color:var(--accent)}
-.proj-lede{font-size:18px;line-height:1.6;max-width:680px;color:var(--ink-soft);font-weight:300}
+.proj-lede{font-size:18px;line-height:1.6;max-width:700px;color:var(--ink-soft);font-weight:300}
 .proj-lede strong{font-weight:600;color:var(--ink)}
-.demo-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:28px}
-.chat-box{background:#FAF8F2;border:1px solid var(--line);padding:20px;height:420px;overflow-y:auto;margin-bottom:16px}
-.msg{margin-bottom:16px}
-.msg-q{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:4px;font-weight:600}
-.msg-a{font-size:15px;color:var(--ink);line-height:1.7;padding-left:16px;border-left:2px solid var(--accent)}
-.msg-a.loading{color:var(--muted);font-style:italic}
-.chunks{margin-top:8px;padding:8px 12px;background:rgba(31,95,91,.05);border-left:2px solid var(--accent);font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+/* status pill */
+.status-row{display:flex;align-items:center;gap:10px;margin:22px 0 6px;font-family:var(--mono);font-size:12px;color:var(--muted);flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 11px;border:1px solid var(--line);border-radius:20px;background:#fff}
+.pill .led{width:7px;height:7px;border-radius:50%;background:var(--muted)}
+.pill.ok .led{background:#2e8b57}
+.pill.vec .led{background:var(--accent)}
+.pill.warn .led{background:#c98a1a}
+/* demo */
+.demo-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:26px;border-radius:3px}
+.chat-box{background:#FAF8F2;border:1px solid var(--line);padding:18px;height:460px;overflow-y:auto;margin-bottom:14px;font-size:15px}
+.chat-box::-webkit-scrollbar{width:8px}.chat-box::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+.msg{margin-bottom:16px;display:flex;flex-direction:column}
+.msg.user{align-items:flex-end}
+.who{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:var(--muted);margin-bottom:4px;text-transform:uppercase}
+.bubble{max-width:78%;padding:10px 14px;border-radius:12px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.msg.user .bubble{background:var(--accent);color:var(--paper);border-bottom-right-radius:3px}
+.msg.bot .bubble{background:#fff;border:1px solid var(--line);border-bottom-left-radius:3px;color:var(--ink)}
+.bubble.err{border-color:#c98a1a;color:#8a5d0a;font-style:italic}
+.srcs{margin-top:7px;font-family:var(--mono);font-size:11px;color:var(--muted);max-width:78%}
+.srcs b{color:var(--accent);font-weight:500}
+.typing .bubble::after{content:"";display:inline-block;width:5px;height:12px;margin-left:2px;background:var(--accent);animation:blink 1s steps(2) infinite;vertical-align:-1px}
+@keyframes blink{50%{opacity:0}}
 .input-row{display:flex;gap:10px}
-.input-row input{flex:1;padding:11px 14px;border:1px solid var(--line);background:#fff;font-family:var(--mono);font-size:14px;color:var(--ink)}
+.input-row input{flex:1;padding:11px 14px;border:1px solid var(--line);background:#fff;font-family:var(--sans);font-size:14.5px;color:var(--ink)}
 .input-row input:focus{outline:none;border-color:var(--accent)}
 .btn{font-family:var(--mono);font-size:13px;letter-spacing:.03em;padding:10px 20px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer;transition:background .15s;white-space:nowrap}
 .btn:hover{background:var(--accent-deep)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.hint{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:10px}
 .examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.examples span{font-family:var(--mono);font-size:11.5px;padding:4px 10px;border:1px solid var(--line);color:var(--muted);cursor:pointer;transition:all .15s}
+.examples span{font-family:var(--sans);font-size:12px;padding:5px 11px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;transition:all .15s;border-radius:16px}
 .examples span:hover{border-color:var(--accent);color:var(--accent)}
+.hint{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.7}
+/* config note */
+.cfg{background:rgba(31,95,91,.05);border:1px solid var(--line);border-left:3px solid var(--accent);padding:18px 22px;margin-top:20px;font-size:14.5px;color:var(--ink-soft)}
+.cfg code{font-family:var(--mono);font-size:12.5px;background:#fff;border:1px solid var(--line);padding:1px 6px;border-radius:3px;color:var(--accent-deep)}
+.cfg h4{font-family:var(--serif);font-size:16px;color:var(--ink);margin-bottom:8px;font-weight:600}
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
 @media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
 h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
 .info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
 .info-block p strong{color:var(--ink);font-weight:600}
-.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border-radius:2px}
-.code-block .c{color:#8A8678}.code-block .k{color:#7FB5B0}
+.pipe{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin:18px 0}
+.pipe .step{flex:1;min-width:120px;background:#fff;border:1px solid var(--line);padding:12px 14px;position:relative}
+.pipe .step .n{font-family:var(--mono);font-size:10.5px;color:var(--accent);letter-spacing:.08em}
+.pipe .step .t{font-size:13.5px;color:var(--ink);margin-top:3px;font-weight:600}
+.pipe .step .d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.pipe .arw{display:flex;align-items:center;color:var(--line);font-family:var(--mono);padding:0 4px}
+@media(max-width:720px){.pipe .arw{display:none}.pipe .step{min-width:100%;margin-bottom:8px}}
+.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:12.5px;line-height:1.7;overflow-x:auto;border-radius:2px}
+.code-block .c{color:#8A8678}.code-block .k{color:#7FB5B0}.code-block .s{color:#C9A227}
 .tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
-.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px}
+.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px;background:#fff}
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
 </head>
@@ -80,53 +107,73 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="proj-head">
     <div class="proj-label">PROJECT 01 · LIVE DEMO</div>
     <h1>个人知识 RAG 助手</h1>
-    <div class="proj-meta"><span>2026.09 — 进行中</span><span class="dot">●</span><span>真实在线对话</span></div>
+    <div class="proj-meta"><span>2026.09</span><span class="dot">●</span><span>真实在线对话</span><span class="dot">●</span><span>语料 = 我的自学笔记</span></div>
     <p class="proj-lede">
-      基于个人公开资料的 RAG 问答。检索用关键词匹配，LLM 用 <strong>DeepSeek</strong>。
-      下面是<strong>真实可交互 demo</strong>——随便问，它会先检索相关资料片段，再基于片段生成回答。
+      我把两年自学攒下的笔记（<strong>197 篇 Markdown、127 个代码文件</strong>）整理成一份语料库，
+      做了一个能用自然语言问答的机器人。检索是<strong>真·向量语义匹配</strong>（硅基流动 bge-m3，
+      文档向量预生成、运行时只嵌入问题），生成用 <strong>DeepSeek</strong>。下面是可直接交互的 demo。
     </p>
+    <div class="status-row">
+      <span class="pill" id="modePill"><span class="led"></span><span id="modeText">初始化中…</span></span>
+      <span class="pill" id="docPill"><span class="led"></span><span id="docText">—</span></span>
+    </div>
   </div>
 
   <div class="demo-wrap">
-    <div class="chat-box" id="chatBox">
-      <div class="msg">
-        <div class="msg-q">助手</div>
-        <div class="msg-a">你好！我是陈斐阳的个人知识助手。关于他的背景、学业、项目、方向，随便问。</div>
-      </div>
-    </div>
+    <div class="chat-box" id="chatBox"></div>
     <div class="input-row">
-      <input id="qInput" placeholder="例如：你是怎么选方向的？" autocomplete="off">
+      <input id="qInput" placeholder="随便问，比如：你笔记里 RAG 是解决什么问题的？" autocomplete="off">
       <button class="btn" id="sendBtn">发送</button>
     </div>
-    <div class="examples">
+    <div class="examples" id="examples">
       <span>你是怎么选方向的？</span>
-      <span>你的成绩排名怎么样？</span>
-      <span>你在做哪些项目？</span>
-      <span>你的技术栈是什么？</span>
+      <span>为什么从土木转大数据？</span>
+      <span>你笔记里 RAG 是解决什么问题的？</span>
+      <span>KNN 的 K 值怎么选？</span>
+      <span>MuJoCo 里 qpos 和 qvel 是什么？</span>
+      <span>你做过哪些项目？</span>
+      <span>你现在最优先的事是什么？</span>
     </div>
-    <p class="hint">每次回复约 3-5 秒 · 基于内置语料检索 + DeepSeek 生成</p>
+    <p class="hint" id="hint">先向量语义检索相关资料（top-k），再交给 DeepSeek 生成 · 每小时限 20 次</p>
+  </div>
+
+  <div class="cfg" id="cfgBox">
+    <h4>关于运行模式与密钥（部署前请读）</h4>
+    <p style="margin-bottom:10px">为<strong>不在公开仓库泄露密钥</strong>，页面所有对外调用都走一个自建的 <b>Cloudflare Worker 代理</b>——密钥存在 Worker 的环境变量里，前端源码零密钥。</p>
+    <p style="margin-bottom:8px">① <b>向量检索</b>：文档向量已用 <b>bge-m3</b> 预生成在 <code>rag-vectors.js</code> 随站点发布；运行时只嵌入你输入的“问题”（经代理转发到硅基流动）。代理地址未配置时自动降级 <b>BM25 中文检索</b>，仍可按关键词命中，但无法调用大模型生成。</p>
+    <p style="margin-bottom:8px">② <b>启用方法</b>：部署 <code>proxy/</code> 下的 Worker 并写入 <code>DEEPSEEK_KEY</code>、<code>SILICONFLOW_KEY</code> 两个 Secret，再把 Worker 的访问地址填进页面顶部 <code>CONFIG.PROXY_BASE</code>。详见 <code>proxy/README.md</code>。</p>
+    <p style="margin-bottom:8px">③ <b>限流</b>：前端已有每小时 20 次的本地限流；如需更严，可在 Worker 侧用 Cloudflare 的 Rate Limiting 规则或 KV 按 IP 限。</p>
   </div>
 
   <div class="info-grid">
     <div class="info-block">
       <h3>为什么做这个</h3>
-      <p>我两年积累了 <strong>59 篇笔记、127 个代码文件</strong>，散落在 Obsidian 目录里。
-      传统搜索只能关键词匹配，RAG 让我能用自然语言问"我之前对强化学习是怎么想的"、
-      "我转专业时的绩点情况"，模型直接从我的笔记里找答案。</p>
-      <p>这也是我理解 <strong>LangChain / 向量数据库 / Embedding</strong> 的最快路径——
-      用自己的数据，比用公开数据集有意义得多。</p>
+      <p>我两年积累了 <strong>59 篇学习笔记、127 个代码文件、197 个 Markdown</strong>，散在 Obsidian 里。
+      普通 Ctrl+F 只能匹配关键词——问“我之前怎么理解 RAG 的”，匹配“之前”“理解”毫无意义。</p>
+      <p>RAG 做的是：<strong>先语义检索出最相关的几段笔记，再让大模型基于它们作答</strong>。
+      用自己的数据，比拿公开数据集练手有意义得多，也是我想搞懂 <strong>Embedding / 向量库 / 检索</strong> 的最快路径。</p>
     </div>
     <div class="info-block">
       <h3>技术栈</h3>
-      <div class="tech-list"><span>Python</span><span>LangChain</span><span>DeepSeek</span><span>BGE Embedding</span><span>Chroma</span><span>Gradio</span></div>
-      <h3 style="margin-top:32px">代码结构</h3>
+      <div class="tech-list"><span>Vanilla JS</span><span>硅基流动 SiliconFlow</span><span>bge-m3</span><span>BM25</span><span>余弦相似度</span><span>DeepSeek</span></div>
+      <h3 style="margin-top:32px">检索管线</h3>
+      <div class="pipe">
+        <div class="step"><div class="n">01</div><div class="t">语料</div><div class="d">40+ 段真实笔记</div></div>
+        <div class="arw">→</div>
+        <div class="step"><div class="n">02</div><div class="t">Embedding</div><div class="d">bge-m3 向量 / BM25</div></div>
+        <div class="arw">→</div>
+        <div class="step"><div class="n">03</div><div class="t">Top-K</div><div class="d">余弦相似度取前 5</div></div>
+        <div class="arw">→</div>
+        <div class="step"><div class="n">04</div><div class="t">DeepSeek</div><div class="d">基于片段生成</div></div>
+      </div>
       <div class="code-block">
-<span class="c"># knowledge-rag/</span>
-ingest.py        <span class="c"># 读取笔记、切分</span>
-embed.py         <span class="c"># 生成 Embedding、入库</span>
-retrieve.py      <span class="c"># 检索 + rerank</span>
-app.py           <span class="c"># 问答界面</span>
-config.yaml      <span class="c"># API key 配置</span>
+<span class="c">// 核心检索逻辑（伪代码）</span>
+<span class="k">const</span> qv = <span class="k">await</span> embed(query)          <span class="c">// 1. 问题向量化</span>
+<span class="k">const</span> top = docs
+  .map(d => ({d, s: cosine(qv, d.vec)}))  <span class="c">// 2. 逐一算相似度</span>
+  .sort((a,b) => b.s - a.s)
+  .slice(<span class="s">0</span>, <span class="s">5</span>)                              <span class="c">// 3. 取最相关 5 段</span>
+answer = deepseek(prompt(top, query))     <span class="c">// 4. 生成回答</span>
       </div>
     </div>
   </div>
@@ -134,84 +181,332 @@ config.yaml      <span class="c"># API key 配置</span>
 
 <footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
 
+<!-- 预生成的文档向量（bge-m3，36 段 × 1024 维），由 build 脚本自动生成 -->
+<script src="rag-vectors.js"></script>
 <script>
+/* =========================================================================
+   个人知识 RAG 助手
+   语料来自我真实的自学笔记（已整理成结构化片段，剔除隐私）
+   检索：向量语义（硅基流动 bge-m3，文档向量预生成）；无 key 时降级 BM25 中文检索
+   生成：DeepSeek
+   ========================================================================= */
+
+/* ---------- CONFIG：部署时改这里 ---------- */
+const CONFIG = {
+  // —— 通过 Cloudflare Worker 代理调用，本文件不含任何密钥 ——
+  // 部署好 Worker 后，把它的地址填这里，例如 "https://rag-proxy.<你的子域>.workers.dev"
+  // 留空则：向量检索与回答都不可用（检索降级 BM25，生成会提示"代理未配置"）。
+  PROXY_BASE: "__PROXY_BASE__",
+
+  DEEPSEEK_MODEL: "deepseek-chat",   // 生成模型（Worker 内转发到 DeepSeek）
+  EMBED_MODEL: "BAAI/bge-m3",        // 嵌入模型（需与 rag-vectors.js 生成时一致；Worker 内转发到硅基流动）
+
+  TOP_K: 5,            // 检索返回的片段数
+  MAX_PER_HOUR: 20,    // 客户端限流（每小时最多问答次数）
+};
+
+/* ---------- 语料库（category, title, text）· 40+ 段真实笔记 ---------- */
 const DOCS = [
-  ["个人简介","陈斐阳，湖南大学工商管理学院大数据管理与应用专业2025级本科生。大一读土木工程，大二未留级转入大数据管理与应用，保留参与推免竞争资格。四川遂宁人，2007年生。"],
-  ["学业记录","核心课加权平均成绩排名 25/74（前34%）。已锁定核心课：高等数学AⅠ 86分、高等数学AⅡ 80分、线性代数A 83分。推免目标：未来把加权推到约88分，进入前20%。"],
-  ["方向判断","方向选择：具身智能（Embodied AI），主攻大脑侧——深度学习、强化学习、数据与仿真。判断依据：硬件已经是相当成熟的商品，真正拉开差距的是让机器在物理世界学习、决策、泛化的算法与数据。身体侧只做到功能理解，不自己造硬件。"],
-  ["跨学科背景","跨学科优势：土木阶段的理论力学通向机器人动力学；管理学的运筹学与最优化通向运动规划与轨迹优化（MPC）。这是相对纯计科学生的差异化资产。"],
-  ["学习节奏","学习节奏：本科至今每周保持约48小时自学投入。作息早六点半起，午饭后一点睡两点起，晚上十二点睡。已完成 311/1281 讲课程，127 个代码文件，59 篇笔记。"],
-  ["项目列表","项目1：个人知识RAG助手。项目2：端到端ML Pipeline。项目3：MuJoCo强化学习（纯PyTorch手写DQN/PPO）。项目4：LeRobot行为克隆。项目5：机械臂运动规划（RRT*/MPC）。"],
-  ["近期计划","【已移除】【已移除】助理教授，【已移除】，准备进组。报名创新创业人才试点班（机器人方向），11月初面试。12月考大学英语【已移除】（推免硬门槛）。"],
-  ["技能栈","技能栈：Python熟练（NumPy/Pandas/Streamlit），C语言91%，Sklearn 24/129讲，PyTorch 21/108讲。AutoCAD熟练、Revit建模。RAG/LangChain跑通入门案例。MuJoCo hello world。"],
+  // —— 个人身份与经历 ——
+  ["个人简介","基本信息","陈斐阳，湖南大学工商管理学院，大数据管理与应用（商务大数据）2502 班，2025 级本科生。四川遂宁人，2007 年生。"],
+  ["个人简介","转专业","大一读的是土木工程，大二通过转专业进入大数据管理与应用，且没有留级，因此保留了参与推免（保研）竞争的完整资格。转专业方向选择偏求稳——从纯工科转到商科+数据的交叉地带。"],
+  ["学业","成绩与排名","核心课程加权平均成绩排名 25/74（前 34%）。已锁定的核心课分数：高等数学 AⅠ 86、高等数学 AⅡ 80、线性代数 A 83。推免排序用的是‘核心课程学分加权平均成绩排名’，不是绩点排名。"],
+  ["学业","保研目标","要把排名从 25/74（前 34%）推进到前 20%，大约差 7–10 名，大二大三两年可以冲。湖大整体保研率≥24%，工管院各专业约 21–25%，商务大数据 74 人估计有 15–18 个名额。"],
+  ["学业","推免硬门槛","推免遴选总成绩 = 学业综合成绩（核心课初修加权，100 分）+ 专项评价（≤3 分）。硬门槛：大学英语【已移除】 【已移除】 ≥ 425（工管 2027 细则）、前三年必修课修完、无作弊处分。【已移除】不过 = 没有申请资格，所以当前我把【已移除】列为最高优先级之一。"],
+  ["学业","刷分规则","湖大绩点满分 4.0、无 A+、90 分封顶，89 到 90 差 0.3 是最大断档。工管院推免细则规定每门课只算初修成绩，重修/补考刷分对保研无效——所以必须初修一锤定音，每门力争 90+。"],
+  // —— 方向判断 ——
+  ["方向","主攻具身智能大脑","长期目标：从事具身智能（Embodied AI）。定位很清晰——主攻‘大脑侧’：深度学习、强化学习、数据与仿真；‘身体侧’只做功能理解，不自己造硬件。核心信念：硬件已经相当成熟，真正拉开差距的是让机器在物理世界学习、决策、泛化的算法与数据。"],
+  ["方向","为什么信大脑","判断依据：机械本体、电机、传感这些正在快速商品化，成本下降；而让机器人‘会思考、能泛化’的算法和数据是稀缺能力。所以我选择把有限的精力压在 DL/RL/数据/仿真这条大脑主线上。"],
+  ["方向","跨学科优势","相对纯计科学生的差异化资产：土木阶段学的理论力学通向机器人动力学；管理学的运筹学与最优化通向运动规划与轨迹优化（如 MPC）。物理直觉 + 优化思维是我转方向后能复用的底子。"],
+  // —— 学习节奏与特质 ——
+  ["习惯","作息与强度","本科至今每周保持约 48 小时自学投入。作息：6:30 起，午饭后 13:00 午睡、14:00 起，24:00 睡。自学规模累计：完成 311/1281 讲课程、127 个代码文件、59 篇笔记、197 个 Markdown。"],
+  ["习惯","性格自评","很卷，闲不下来——‘996 哪怕在大学对我来说是休息’；但对自由时间有要求，反感被超长时间身不由己地绑死（卷要自己选）。性格偏内向、抗压、越挫越勇，同时也会焦虑——坚韧是行为模式，焦虑是情绪底色，两者不矛盾。"],
+  ["习惯","决策原则","关键决策可反推原则：土木→大数据为求稳、且‘转专业不留级’是硬约束；不能再转专业，定了就往前冲。原则是——风险与收益权衡时，优先保住已有的筹码。考公考编对我是保底项，不是首选。"],
+  ["技能","技能栈","主力语言 Python（NumPy/Pandas/Streamlit）；C 语言较好、C++ 了解基础；Sklearn、PyTorch 在系统学；AutoCAD 熟练、Revit 建模、工程制图。RAG/LangChain 跑通入门案例，MuJoCo 写了 hello world。"],
+  ["技能","自学史","纸质自学史（大一及以前）：微积分、线性代数、理论物理、AutoCAD、Revit、工程制图都学过；大学物理的电磁学部分还没补。工具用 Obsidian 管理整个知识库。"],
+  // —— 项目 ——
+  ["项目","个人知识 RAG 助手","项目本身：把自学笔记做成问答机器人。语料是真实笔记整理出的结构化片段；检索用向量语义匹配（硅基流动 bge-m3 Embedding + 余弦相似度，未配置 key 时 BM25 兜底），生成用 DeepSeek。纯前端，部署在 GitHub Pages。这是我最想做好的一件，因为它把我学的东西直接落地了。"],
+  ["项目","端到端 ML Pipeline","第二个项目：k-NN 决策边界可视化。可交互调 k 值（1–15）、点击画布加样本点、实时重算决策边界，直观展示过拟合/欠拟合。纯 JavaScript，不依赖库。"],
+  ["项目","MuJoCo 强化学习","第三个项目：CartPole 物理仿真（牛顿力学正确），方向键控制、显示存活步数，并提供一个规则/PID 自动平衡策略演示。延伸方向是用纯 PyTorch 手写 DQN/PPO。"],
+  ["项目","LeRobot 行为克隆","第四个项目：行为克隆（Behavior Cloning）示教画布。用户在画布上点击示教点，点‘开始模仿’后拟合曲线，直观解释 BC 的本质——从（状态→动作）样本对中学习映射，模仿人示教的策略。"],
+  ["项目","机械臂运动规划","第五个项目：RRT* 运动规划交互 demo。随机树生长、rewire、路径逐步收敛，可调步长/重连半径/障碍物数量，并显示最终路径长度。MPC 轨迹优化是它的延伸话题。"],
+  ["项目","T800 具身仿真","跟着黑马《零基础具身智能机器人实战》做 T800（众擎人形机器人）的 MuJoCo 仿真：从加载模型、PD 控制、力矩约束到 AI 策略网络让机器人自主行走的全链路，代码和笔记都留档了。"],
+  // —— 技术笔记摘录（我真实学过的内容）——
+  ["技术笔记","什么是 RAG","RAG = 检索增强生成（Retrieval-Augmented Generation）。先检索相关资料，再让大模型基于资料生成回答。"],
+  ["技术笔记","RAG 解决的问题","我笔记里记的大模型四大痛点：①知识不会自动更新（有训练截止日期）；②专业知识不足；③幻觉问题；④数据安全性/隐私。RAG 把知识外挂成检索库，不重训模型就能更新、能带专业资料、能抑制幻觉。"],
+  ["技术笔记","KNN 思想","K 近邻算法：一个样本在特征空间里最相似的 K 个训练样本中，大多数属于同一类，该样本就归为那一类。K 值小 → 模型复杂易过拟合；K 值过大 → 模型太简单易欠拟合（K 无限大等于没训练）。"],
+  ["技术笔记","KNN 流程","分类走多数表决（平票按距离再判），回归取 K 个邻居目标值的平均。K 这个超参可以用交叉验证 / 网格搜索来选。"],
+  ["技术笔记","常见深度学习模型","我整理的常见模型：卷积神经网络（图像）、循环神经网络（文本/语音）、自编码器（降维）、生成对抗网络 GAN（图像生成/视频合成）、Transformer（NLP，摒弃递归、用自注意力）、深度强化学习、图神经网络。框架主力用 PyTorch，TensorFlow 不学。"],
+  ["技术笔记","具身智能概念","具身智能（Embodied AI）：让 AI 拥有‘身体’，通过与环境交互来感知、决策、行动，而不只是处理纯文本/图像。为什么用仿真——真机贵、易损坏、调试慢，先在 MuJoCo 里把控制策略（大脑）训练验证好，再迁移到真机。"],
+  ["技术笔记","MuJoCo 状态参数","MuJoCo 核心概念：joint（关节）、link（连杆）；nq/nv/nu 分别是广义坐标/广义速度/控制维度；qpos（位置状态）、qvel（速度状态）、ctrl（控制输入）。PD 控制把目标关节角转成力矩；力矩有上下限约束。"],
+  ["技术笔记","观测空间 obs","策略网络不能直接吃机器人原始状态，要设计‘观测空间’：把 qpos/qvel 等加工成网络输入 obs，再输出动作指令到机器人‘肌肉’（执行器）——这是 AI 指令到运动的关键一环。"],
+  ["技术笔记","机械臂课程体系","我在学的机械臂课程共 115 集、12 个模块、约 31 小时：导论、电机与位置传感、URDF 建模、同构遥操作、运动学、PID 同步控制、OpenCV 视觉、ML 与视觉模型训练、语音识别与大模型 Agent/MCP 联动、LeRobot 行为克隆与数据采集。"],
+  ["技术笔记","行为克隆本质","行为克隆（BC）本质是监督学习：采集人示教的（状态→动作）配对数据，让网络拟合这个映射，从而模仿示教者的策略。它是模仿学习里最简单的形式，是理解更高级 RL 的起点。"],
+  // —— 近期计划 ——
+  ["计划","进组与竞赛","近期动作：【已移除】【已移除】助理教授、【已移除】争取进组；报名创新创业人才试点班（机器人方向），准备面试。目标加入校跃鹿战队（RoboMaster），算法组与我背景最契合——秋季报名+面试入营，之后走 task 训练营（C++/计算机基础→ROS 仿真项目→12 月底三重验收）。"],
+  ["计划","导师调研","为进跃鹿和保研铺路，我调研了机器人学院【已移除】教授（2026 晋升、博导、方向为灵巧手/具身智能/人形机器人，2019 年起任跃鹿战队指导老师）。策略：先入跃鹿算法组，争取进他课题组实习，作为保研【已移除】。"],
+  ["计划","当前优先级","当前最高优先级排序：①大二上每门课冲 90+（初修一锤定音）②通过【已移除】③进组/跃鹿积累项目经历。实习投递窗口在大二升大三暑假，现在优先级排在绩点和跃鹿之后。"],
+  ["学习史","个人网站","这个 GitHub Pages 个人站是我自己做的项目作品集，用来把学过的东西做成能跑、能看的 demo。视觉用暖纸 + 深青、衬线字体，全站纯 HTML/CSS/JS，无框架。"],
+  ["规划","院校调研","为保研做了具身智能方向调研：梳理了大陆具身智能高校梯队、方向毕业生薪资、以及保研与城市选择的综合对比——这是我为长期方向做的功课。"],
+  ["联系","联系方式","想交流具身智能、RAG、强化学习或保研经验，欢迎通过首页 Contact 区块联系我（邮箱 chenfeiyang20071228@gmail.com，GitHub：Feiyang2007）。"],
 ];
 
-function retrieve(q, k) {
-  const qChars = new Set(q);
-  return DOCS.map(([tag, text]) => {
-    const overlap = [...qChars].filter(c => text.includes(c)).length;
-    return {overlap, tag, text};
-  }).sort((a,b) => b.overlap - a.overlap).slice(0, k || 3);
-}
-
-async function ask() {
-  const input = document.getElementById("qInput");
-  const btn = document.getElementById("sendBtn");
-  const q = input.value.trim();
-  if (!q) return;
-  input.value = "";
-  btn.disabled = true;
-
-  const chatBox = document.getElementById("chatBox");
-  // 用户消息
-  chatBox.insertAdjacentHTML("beforeend",
-    '<div class="msg"><div class="msg-q">你</div><div class="msg-a">' + q.replace(/</g,"&lt;") + '</div></div>');
-  // 加载中
-  chatBox.insertAdjacentHTML("beforeend",
-    '<div class="msg" id="loadingMsg"><div class="msg-q">助手</div><div class="msg-a loading">正在检索并生成...</div></div>');
-  chatBox.scrollTop = chatBox.scrollHeight;
-
-  const hits = retrieve(q, 3);
-  const context = hits.map(h => "【" + h.tag + "】" + h.text).join("\n\n");
-  const prompt = "你是陈斐阳的个人知识助手。基于以下资料回答问题。如果资料里没有，就说不知道，不要编造。\n\n资料：\n" + context + "\n\n问题：" + q + "\n回答：";
-
-  try {
-    const resp = await fetch("https://api.deepseek.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer sk-17b9e35573b84345be5945236a0ad669"
-      },
-      body: JSON.stringify({
-        model: "deepseek-chat",
-        messages: [{role: "user", content: prompt}],
-        temperature: 0.3,
-        max_tokens: 500
-      })
-    });
-    const data = await resp.json();
-    const ans = data.choices[0].message.content;
-    const sources = hits.map(h => h.tag).join("、");
-    document.getElementById("loadingMsg").remove();
-    chatBox.insertAdjacentHTML("beforeend",
-      '<div class="msg"><div class="msg-q">助手</div><div class="msg-a">' + ans.replace(/</g,"&lt;") + '</div><div class="chunks">检索来源：' + sources + '</div></div>');
-  } catch (e) {
-    document.getElementById("loadingMsg").remove();
-    chatBox.insertAdjacentHTML("beforeend",
-      '<div class="msg"><div class="msg-q">助手</div><div class="msg-a">调用失败：' + e.message + '</div></div>');
+/* =========================================================================
+   1) 中文分词 + BM25 检索（无需任何 API，永远可用）
+   ========================================================================= */
+// 混合分词：中文按 bigram + 单字，英文/数字按单词。解决"字符匹配太蠢"的问题。
+function tokenize(text){
+  const tokens = [];
+  const lower = text.toLowerCase();
+  // 英文单词/数字
+  const en = lower.match(/[a-z0-9]+/g) || [];
+  tokens.push(...en);
+  // 中文：抽取连续汉字串，切单字 + 相邻 bigram
+  const cjkRuns = lower.match(/[\u4e00-\u9fa5]+/g) || [];
+  for (const run of cjkRuns){
+    for (let i=0;i<run.length;i++){
+      tokens.push(run[i]);
+      if (i < run.length-1) tokens.push(run[i] + run[i+1]);
+    }
   }
-  chatBox.scrollTop = chatBox.scrollHeight;
-  btn.disabled = false;
-  input.focus();
+  return tokens;
+}
+function buildBM25(docs){
+  const k1=1.5, b=0.75;
+  const df = Object.create(null);       // 词 -> 出现文档数
+  const tf = docs.map(d=>{
+    const counts = Object.create(null);
+    const toks = tokenize(d[2]);           // d = [category, title, text]
+    for (const t of toks) counts[t]=(counts[t]||0)+1;
+    const seen = new Set(toks);
+    for (const t of seen) df[t]=(df[t]||0)+1;
+    return {counts, len: toks.length};
+  });
+  const N = docs.length;
+  const avgLen = tf.reduce((s,x)=>s+x.len,0)/N || 1;
+  const idf = Object.create(null);
+  for (const t in df) idf[t] = Math.log(1 + (N - df[t] + 0.5)/(df[t] + 0.5));
+  return function(query){
+    const qtoks = tokenize(query);
+    const scores = docs.map((d,i)=>{
+      let s=0;
+      for (const t of qtoks){
+        const f = tf[i].counts[t]||0;
+        if(!f) continue;
+        const denom = f + k1*(1 - b + b*tf[i].len/avgLen);
+        s += (idf[t]||0) * (f*(k1+1))/denom;
+      }
+      return {doc:d, score:s};
+    });
+    scores.sort((a,b)=>b.score-a.score);
+    return scores;
+  };
+}
+const bm25 = buildBM25(DOCS);
+
+/* =========================================================================
+   2) 向量检索（硅基流动 bge-m3）
+   文档向量已预生成在 rag-vectors.js（window.RAG_VECS）；运行时只嵌"问题"。
+   若无预置向量但有 key，则首访现算全部文档向量并缓存到 localStorage。
+   ========================================================================= */
+let EMBED = null; // {vectors:number[][]} 就绪即表示可用向量模式
+const CORPUS_VERSION = "v1-" + DOCS.length;   // 语料变化时失效缓存
+
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+
+function proxyReady(){ return CONFIG.PROXY_BASE && !CONFIG.PROXY_BASE.includes("__PROXY_BASE__"); }
+
+async function embedTexts(texts){
+  const resp = await fetch(CONFIG.PROXY_BASE.replace(/\/$/,"") + "/embeddings", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ model: CONFIG.EMBED_MODEL, input: texts, encoding_format:"float" })
+  });
+  if(!resp.ok) throw new Error("embedding HTTP "+resp.status);
+  const data = await resp.json();
+  const arr = (data.data || data.embeddings || []);
+  return arr.map(x => x.embedding || x);
+}
+async function embedBatched(texts){
+  const out=[]; const B=12;
+  for(let i=0;i<texts.length;i+=B){
+    out.push(...await embedTexts(texts.slice(i,i+B)));
+  }
+  return out;
+}
+function cosine(a,b){
+  let dot=0,na=0,nb=0;
+  for(let i=0;i<a.length;i++){ dot+=a[i]*b[i]; na+=a[i]*a[i]; nb+=b[i]*b[i]; }
+  return dot/(Math.sqrt(na)*Math.sqrt(nb)||1);
+}
+async function initEmbedding(){
+  if(!proxyReady()){ setMode("bm25"); return false; }
+  // 1) 优先用随站点发布的预置向量
+  const pre = window.RAG_VECS;
+  if(pre && Array.isArray(pre.vectors) && pre.vectors.length===DOCS.length){
+    EMBED = {vectors: pre.vectors};
+    setMode("vector");
+    return true;
+  }
+  // 2) 没有预置向量：查 localStorage 缓存，再没有就现算并缓存
+  const cacheKey = "ragvec_"+CORPUS_VERSION+"_"+CONFIG.EMBED_MODEL;
+  try{
+    const cached = lsGet(cacheKey);
+    if(cached){
+      const vecs = JSON.parse(cached);
+      if(Array.isArray(vecs) && vecs.length===DOCS.length){ EMBED={vectors:vecs}; setMode("vector"); return true; }
+    }
+    const texts = DOCS.map(d => "【"+d[0]+"·"+d[1]+"】"+d[2]);
+    const vectors = await embedBatched(texts);
+    lsSet(cacheKey, JSON.stringify(vectors));
+    EMBED = {vectors};
+    setMode("vector");
+    return true;
+  }catch(e){
+    console.warn("向量检索初始化失败，降级 BM25：", e);
+    setMode("bm25");
+    return false;
+  }
+}
+async function vectorSearch(query){
+  const [qv] = await embedTexts([query]);
+  return DOCS.map((d,i)=>({doc:d, score:cosine(qv, EMBED.vectors[i])})).sort((a,b)=>b.score-a.score);
 }
 
-document.getElementById("sendBtn").addEventListener("click", ask);
-document.getElementById("qInput").addEventListener("keydown", e => { if (e.key === "Enter") ask(); });
-document.querySelectorAll(".examples span").forEach(el => {
-  el.addEventListener("click", () => {
-    document.getElementById("qInput").value = el.textContent;
-    ask();
+/* 统一检索入口：向量优先，BM25 兜底 */
+let usingVector = false;
+async function retrieve(query){
+  if(EMBED && proxyReady()){
+    try{ const r = await vectorSearch(query); usingVector=true; return r; }
+    catch(e){ console.warn("查询向量失败，本次降级 BM25", e); usingVector=false; setMode("bm25"); }
+  }
+  usingVector=false;
+  return bm25(query);
+}
+
+/* =========================================================================
+   3) 限流：localStorage，每小时最多 MAX_PER_HOUR 次
+   ========================================================================= */
+function rateLimitOk(){
+  const key="rag_hits";
+  const now=Date.now();
+  let hits=[];
+  try{ hits=(JSON.parse(lsGet(key)||"[]")).filter(t=>now-t<3600000); }catch(e){}
+  if(hits.length>=CONFIG.MAX_PER_HOUR) return false;
+  hits.push(now); lsSet(key, JSON.stringify(hits));
+  return true;
+}
+
+/* =========================================================================
+   4) LLM 生成（DeepSeek）
+   ========================================================================= */
+async function generate(query, topDocs, history){
+  const ctx = topDocs.map(d => "【"+d.doc[0]+"·"+d.doc[1]+"】"+d.doc[2]).join("\n\n");
+  const system =
+    "你叫小斐，是陈斐阳的‘自学笔记问答助手’。陈斐阳把两年自学笔记做成了这个机器人。\n"+
+    "规则：\n"+
+    "1) 优先根据下面提供的资料来回答；资料里有的信息，用自然、口语化的中文讲出来，像一个人在介绍自己，不要照抄、不要说‘根据资料/资料里没有’这种机械话。\n"+
+    "2) 如果资料里没有明确答案，但属于对陈斐阳这个人的一般性问题（打招呼、你是谁、感谢等），就正常自然地回应。\n"+
+    "3) 涉及具体数字（排名、分数、讲数等）只用资料里的，不要编造。\n"+
+    "4) 回答控制在 3 句话左右，简洁。适当用第一人称视角转述（‘他…’或‘我…’都行，保持一致）。\n\n"+
+    "=== 相关资料 ===\n"+ctx+"\n=== 资料结束 ===";
+  const messages = [{role:"system", content: system}];
+  // 带入最近 4 轮对话上下文（user/assistant 交替）
+  for(const m of history.slice(-8)) if(m.role!=="system") messages.push(m);
+  messages.push({role:"user", content: query});
+
+  const resp = await fetch(CONFIG.PROXY_BASE.replace(/\/$/,"") + "/chat/completions",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({ model:CONFIG.DEEPSEEK_MODEL, messages, temperature:0.6, max_tokens:400 })
   });
+  if(!resp.ok){
+    const t = await resp.text();
+    throw new Error("生成 HTTP "+resp.status+" "+t.slice(0,120));
+  }
+  const data = await resp.json();
+  return data.choices[0].message.content;
+}
+
+/* =========================================================================
+   5) UI
+   ========================================================================= */
+const chatBox = document.getElementById("chatBox");
+const qInput  = document.getElementById("qInput");
+const sendBtn = document.getElementById("sendBtn");
+const history = []; // {role, content}
+
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function addMsg(role, text, opts={}){
+  const div=document.createElement("div");
+  div.className="msg "+(role==="user"?"user":"bot")+(opts.typing?" typing":"");
+  if(opts.id) div.id=opts.id;
+  const who = role==="user"?"你":"小斐";
+  div.innerHTML='<div class="who">'+who+'</div><div class="bubble'+(opts.err?' err':'')+'">'+esc(text)+'</div>'+
+    (opts.srcs||"");
+  chatBox.appendChild(div);
+  chatBox.scrollTop=chatBox.scrollHeight;
+  return div;
+}
+function setMode(mode){
+  const pill=document.getElementById("modePill"), txt=document.getElementById("modeText");
+  pill.classList.remove("ok","vec","warn");
+  if(mode==="vector"){ pill.classList.add("vec"); txt.textContent="检索模式：向量语义（bge-m3，经 Worker 代理）"; }
+  else if(mode==="bm25"){ pill.classList.add("warn"); txt.textContent="检索模式：BM25 中文（未配置 Worker 代理地址）"; }
+  else { txt.textContent="初始化中…"; }
+  document.getElementById("docText").textContent = "语料 "+DOCS.length+" 段";
+  document.getElementById("docPill").classList.add("ok");
+}
+
+async function ask(raw){
+  const q = (raw!==undefined?raw:qInput.value).trim();
+  if(!q) return;
+  if(!rateLimitOk()){
+    addMsg("bot","这个点的免费额度用完啦（每小时 20 次）。歇一会儿再来问 🙂",{err:true});
+    return;
+  }
+  if(!proxyReady()){
+    // 未部署代理：展示 BM25 命中的资料，但无法调用 DeepSeek 生成
+    addMsg("user", q);
+    const ranked = bm25(q).filter(r=>r.score>0).slice(0,CONFIG.TOP_K);
+    addMsg("bot","在线生成还没开启（需在 CONFIG.PROXY_BASE 填入你部署好的 Cloudflare Worker 代理地址，README 有步骤）。不过用本地 BM25 检索，我能帮你定位到最相关的笔记段落：",
+      {srcs: '<div class="srcs">检索到 ' + ranked.length + ' 段（BM25）：<b>' + ranked.map(r=>esc(r.doc[1])).join(" · ") + '</b></div>'});
+    return;
+  }
+  qInput.value="";
+  sendBtn.disabled=true;
+  addMsg("user", q);
+  history.push({role:"user", content:q});
+  const loading = addMsg("bot","正在检索并生成…",{typing:true, id:"loadingMsg"});
+
+  try{
+    const ranked = await retrieve(q);
+    const top = ranked.slice(0, CONFIG.TOP_K).filter(r=>r.score>0);
+    const picked = top.length? top : ranked.slice(0,CONFIG.TOP_K);
+    const srcHtml = '<div class="srcs">检索到 ' + picked.length + ' 段（'+
+      (usingVector?"向量":"BM25")+'）：<b>'+ picked.map(r=>esc(r.doc[1])).join(" · ") +'</b></div>';
+    const answer = await generate(q, picked, history);
+    document.getElementById("loadingMsg")?.remove();
+    addMsg("bot", answer, {srcs:srcHtml});
+    history.push({role:"assistant", content:answer});
+  }catch(e){
+    document.getElementById("loadingMsg")?.remove();
+    addMsg("bot","调用出错："+e.message,{err:true});
+  }
+  sendBtn.disabled=false;
+  qInput.focus();
+}
+
+sendBtn.addEventListener("click", ()=>ask());
+qInput.addEventListener("keydown", e=>{ if(e.key==="Enter") ask(); });
+document.querySelectorAll("#examples span").forEach(el=>{
+  el.addEventListener("click", ()=>ask(el.textContent));
 });
+
+// 首屏问候
+addMsg("bot","你好，我是小斐——陈斐阳把他两年自学笔记做成了我。关于他的经历、方向、项目，或他笔记里的技术点（RAG、KNN、MuJoCo、强化学习……），随便问。");
+// 初始化向量检索（有 key 才联网；无 key 直接 BM25）
+initEmbedding();
 </script>
 </body></html>
