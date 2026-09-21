@@ -100,6 +100,20 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </div>
   </div>
 
+  <div style="background:var(--paper-warm);border:1px solid var(--line);padding:28px;margin-top:40px">
+    <h3 style="margin-bottom:12px">行为克隆迷你演示 — 你示教，它学</h3>
+    <p style="font-size:14px;color:var(--ink-soft);margin-bottom:16px">
+      在下面画布上从左到右点几个点（模拟人操作轨迹），然后点"开始模仿"，看一条平滑曲线拟合你的示教。
+      这就是 BC 的核心：从 (状态→动作) 对中学习一个映射。
+    </p>
+    <canvas id="bcCanvas" width="1000" height="280" style="width:100%;border:1px solid var(--line);background:#FAF8F2;display:block"></canvas>
+    <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap">
+      <button class="btn" id="bcTrain" style="font-family:var(--mono);font-size:13px;padding:8px 18px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer">开始模仿</button>
+      <button class="btn" id="bcClear" style="font-family:var(--mono);font-size:13px;padding:8px 18px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer">清空</button>
+      <span style="font-family:var(--mono);font-size:12px;color:var(--muted)">示教点数：<b id="bcCount" style="color:var(--accent)">0</b></span>
+    </div>
+  </div>
+
   <div class="info-grid">
     <div class="info-block">
       <h3>为什么学这个</h3>
@@ -127,4 +141,65 @@ eval.py          <span class="c"># rollout 评估</span>
 </div></section>
 
 <footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
+
+<script>
+(function(){
+  var cv = document.getElementById('bcCanvas');
+  var ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+  var points = [];
+  var learned = false;
+
+  function drawGrid(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle = '#E0DCD0'; ctx.lineWidth = 1;
+    for(var i=0;i<W;i+=50){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke();}
+    for(var j=0;j<H;j+=50){ctx.beginPath();ctx.moveTo(0,j);ctx.lineTo(W,j);ctx.stroke();}
+  }
+  function drawPoints(){
+    points.forEach(function(p){
+      ctx.fillStyle = '#1F5F5B';
+      ctx.beginPath(); ctx.arc(p.x, p.y, 5, 0, Math.PI*2); ctx.fill();
+    });
+  }
+  function drawLearned(){
+    if(points.length < 2) return;
+    ctx.strokeStyle = '#B5651D'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for(var i=1;i<points.length-1;i++){
+      var xc = (points[i].x + points[i+1].x)/2;
+      var yc = (points[i].y + points[i+1].y)/2;
+      ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+    }
+    ctx.lineTo(points[points.length-1].x, points[points.length-1].y);
+    ctx.stroke();
+  }
+  cv.addEventListener('click', function(e){
+    var rect = cv.getBoundingClientRect();
+    var scaleX = W/rect.width, scaleY = H/rect.height;
+    var x = (e.clientX - rect.left)*scaleX;
+    var y = (e.clientY - rect.top)*scaleY;
+    points.push({x:x, y:y});
+    learned = false;
+    document.getElementById('bcCount').textContent = points.length;
+    redraw();
+  });
+  function redraw(){
+    drawGrid();
+    drawPoints();
+    if(learned) drawLearned();
+  }
+  document.getElementById('bcTrain').addEventListener('click', function(){
+    learned = true;
+    redraw();
+  });
+  document.getElementById('bcClear').addEventListener('click', function(){
+    points = []; learned = false;
+    document.getElementById('bcCount').textContent = '0';
+    redraw();
+  });
+  redraw();
+})();
+</script>
 </body></html>

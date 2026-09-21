@@ -75,6 +75,17 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   </div>
 
   <div class="demo-wrap">
+    <h3 style="margin-bottom:12px">可交互 CartPole — 你自己当 RL Agent</h3>
+    <canvas id="cartpole" width="1000" height="300" style="width:100%;border:1px solid var(--line);background:#FAF8F2;display:block"></canvas>
+    <div style="display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap">
+      <button class="btn" id="cpStart" style="font-family:var(--mono);font-size:13px;padding:8px 18px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer">开始</button>
+      <span style="font-family:var(--mono);font-size:13px;color:var(--ink-soft)">存活步数：<b id="cpSteps" style="color:var(--accent)">0</b></span>
+      <span style="font-family:var(--mono);font-size:11.5px;color:var(--muted)">← → 方向键控制小车 · 杆保持竖直不掉下来就算成功</span>
+    </div>
+    <div class="demo-note" style="margin-top:12px">↑ 这是 CartPole 环境——RL 入门 benchmark。AI 要做的就是自动学会这个控制。你手动玩几下，就知道为什么 RL 难了。</div>
+  </div>
+
+  <div class="demo-wrap" style="margin-top:20px">
     <div id="chart"></div>
     <div class="demo-note">↑ 典型 RL 训练曲线示意（CartPole，每 episode 的累计回报随训练上升）· 真实训练曲线待跑出后替换</div>
   </div>
@@ -121,6 +132,73 @@ envs/            <span class="c"># 环境封装</span>
     tooltip:{trigger:'axis',renderMode:'richText',confine:true}
   });
   window.addEventListener('resize',function(){c.resize();});
+})();
+
+// CartPole 交互
+(function(){
+  var cv = document.getElementById('cartpole');
+  var ctx = cv.getContext('2d');
+  var W = cv.width, H = cv.height;
+  var x = W/2, theta = 0, xVel = 0, thetaVel = 0;
+  var running = false, steps = 0, rafId = null;
+  var keys = {left:false, right:false};
+
+  function reset(){
+    x = W/2; theta = (Math.random()-.5)*0.1; xVel = 0; thetaVel = 0;
+    steps = 0; document.getElementById('cpSteps').textContent = '0';
+  }
+  function step(force){
+    var gravity = 9.8, cartMass = 1, poleMass = 0.1, length = 60;
+    var totalMass = cartMass + poleMass;
+    var temp = (force + poleMass*length*thetaVel*thetaVel*Math.sin(theta))/totalMass;
+    var thetaAcc = (gravity*Math.sin(theta) - Math.cos(theta)*temp) /
+                   (length*(4/3 - poleMass*Math.cos(theta)*Math.cos(theta)/totalMass));
+    var xAcc = temp - poleMass*length*thetaAcc*Math.cos(theta)/totalMass;
+    xVel += xAcc; thetaVel += thetaAcc;
+    x += xVel; theta += thetaVel;
+    steps++;
+    document.getElementById('cpSteps').textContent = steps;
+    if(x<20||x>W-20||Math.abs(theta)>0.5||steps>500){running=false;return false;}
+    return true;
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle = '#D6D1C3'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0,H-40); ctx.lineTo(W,H-40); ctx.stroke();
+    // 小车
+    ctx.fillStyle = '#1F5F5B';
+    ctx.fillRect(x-25, H-55, 50, 15);
+    // 杆
+    ctx.strokeStyle = '#B5651D'; ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(x, H-55);
+    ctx.lineTo(x + Math.sin(theta)*60, H-55 - Math.cos(theta)*60);
+    ctx.stroke();
+    // 杆顶
+    ctx.fillStyle = '#B5651D';
+    ctx.beginPath(); ctx.arc(x + Math.sin(theta)*60, H-55 - Math.cos(theta)*60, 5, 0, Math.PI*2); ctx.fill();
+  }
+  function loop(){
+    if(!running) return;
+    var f = 0;
+    if(keys.left) f = -10;
+    if(keys.right) f = 10;
+    var ok = step(f);
+    draw();
+    if(ok) rafId = requestAnimationFrame(loop);
+  }
+  document.getElementById('cpStart').addEventListener('click', function(){
+    reset(); running = true; loop();
+  });
+  window.addEventListener('keydown', function(e){
+    if(e.key==='ArrowLeft') keys.left = true;
+    if(e.key==='ArrowRight') keys.right = true;
+  });
+  window.addEventListener('keyup', function(e){
+    if(e.key==='ArrowLeft') keys.left = false;
+    if(e.key==='ArrowRight') keys.right = false;
+  });
+  draw();
 })();
 </script>
 </body></html>
