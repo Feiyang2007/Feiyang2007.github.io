@@ -430,11 +430,11 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <div class="proj-item">
         <div class="p-left">
           <a class="p-link" href="projects/knowledge-rag.html"><h4>个人知识 RAG 助手</h4></a>
-          <span class="p-status">LIVE DEMO</span>
+          <span class="p-status">本地可跑</span>
         </div>
         <div>
-          <p class="p-desc">把两年自学笔记（197 篇 Markdown）整理成语料库，做了一个能用自然语言问答的机器人。检索是真·向量语义匹配（bge-m3 Embedding + 余弦相似度，经 Cloudflare Worker 代理，密钥不进仓库），生成用 DeepSeek。数据是自己的，故事也是自己的。</p>
-          <span class="p-tech">Vanilla JS · bge-m3 · BM25 兜底 · DeepSeek · Cloudflare Worker</span>
+          <p class="p-desc">把两年自学笔记（197 篇 Markdown）整理成 36 段结构化语料，做了一个能用自然语言问答的机器人。检索是真·向量语义匹配（bge-m3 Embedding + 余弦相似度），生成用 DeepSeek；本地用 <code>run_rag.py</code> 小代理跑通全功能（密钥只在本机环境变量，绝不进仓库），线上访客问任何问题也会用笔记原文如实作答。数据是自己的，故事也是自己的。</p>
+          <span class="p-tech">Vanilla JS · bge-m3 · BM25 兜底 · DeepSeek · 本地代理</span>
           <a class="p-cta" href="projects/knowledge-rag.html">查看项目 →</a>
         </div>
       </div>
@@ -444,8 +444,8 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
           <span class="p-status">LEARNING</span>
         </div>
         <div>
-          <p class="p-desc">从数据清洗、特征工程、模型训练到评估与可视化的完整流程，用 Streamlit 做交互 demo。把 Sklearn 课程里零散的练习收拢成一个可跑通的项目。</p>
-          <span class="p-tech">Python · Scikit-learn · Pandas · Streamlit</span>
+          <p class="p-desc">端到端 Sklearn 流程：在 UCI《手机 IMU 传感器人体活动识别》(HAR，561 维加速度计+陀螺仪特征、6 类姿态) 上，走通 数据清洗→特征工程→Pipeline(标准化→分类器)→5折交叉验证选模→网格搜索调 KNN→评估可视化→Streamlit 交互 demo。对比 KNN / 逻辑回归 / 随机森林 / MLP。下面是 k-NN 决策边界的可视化版。</p>
+          <span class="p-tech">Python · Scikit-learn · Pandas · Matplotlib · Streamlit · UCI HAR</span>
           <a class="p-cta" href="projects/ml-pipeline.html">查看项目 →</a>
         </div>
       </div>

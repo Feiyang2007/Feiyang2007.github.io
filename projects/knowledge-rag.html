@@ -143,6 +143,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <p style="margin-bottom:8px">① <b>向量检索</b>：文档向量已用 <b>bge-m3</b> 预生成在 <code>rag-vectors.js</code> 随站点发布；运行时只嵌入你输入的“问题”（经代理转发到硅基流动）。代理地址未配置时自动降级 <b>BM25 中文检索</b>，仍可按关键词命中，但无法调用大模型生成。</p>
     <p style="margin-bottom:8px">② <b>启用方法</b>：部署 <code>proxy/</code> 下的 Worker 并写入 <code>DEEPSEEK_KEY</code>、<code>SILICONFLOW_KEY</code> 两个 Secret，再把 Worker 的访问地址填进页面顶部 <code>CONFIG.PROXY_BASE</code>。详见 <code>proxy/README.md</code>。</p>
     <p style="margin-bottom:8px">③ <b>限流</b>：前端已有每小时 20 次的本地限流；如需更严，可在 Worker 侧用 Cloudflare 的 Rate Limiting 规则或 KV 按 IP 限。</p>
+    <p style="margin-bottom:0">④ <b>本地全功能运行（当前推荐）</b>：上线前先在自己电脑上跑通——用仓库里的 <code>rag_local/run_rag.py</code> 起一个本地代理（密钥只读本机环境变量），打开 <code>http://127.0.0.1:8017/projects/knowledge-rag.html</code> 即可真正问答。详见 <code>rag_local/README.md</code>。</p>
   </div>
 
   <div class="info-grid">
@@ -404,12 +405,12 @@ function rateLimitOk(){
 async function generate(query, topDocs, history){
   const ctx = topDocs.map(d => "【"+d.doc[0]+"·"+d.doc[1]+"】"+d.doc[2]).join("\n\n");
   const system =
-    "你叫小斐，是陈斐阳的‘自学笔记问答助手’。陈斐阳把两年自学笔记做成了这个机器人。\n"+
+    "你叫小斐，是陈斐阳的’自学笔记问答助手’。陈斐阳把两年自学笔记做成了这个机器人。\n"+
     "规则：\n"+
-    "1) 优先根据下面提供的资料来回答；资料里有的信息，用自然、口语化的中文讲出来，像一个人在介绍自己，不要照抄、不要说‘根据资料/资料里没有’这种机械话。\n"+
+    "1) 优先根据下面提供的资料来回答；资料里有的信息，用自然、口语化的中文讲出来，像一个熟人在介绍斐阳这个人，不要照抄、不要说’根据资料/资料里没有’这种机械话。\n"+
     "2) 如果资料里没有明确答案，但属于对陈斐阳这个人的一般性问题（打招呼、你是谁、感谢等），就正常自然地回应。\n"+
     "3) 涉及具体数字（排名、分数、讲数等）只用资料里的，不要编造。\n"+
-    "4) 回答控制在 3 句话左右，简洁。适当用第一人称视角转述（‘他…’或‘我…’都行，保持一致）。\n\n"+
+    "4) 回答控制在 3 句话左右，简洁。全程用第三人称，把陈斐阳称作’斐阳’或’他’，不要自称’我’（你是介绍他的助手，不是他本人）。\n\n"+
     "=== 相关资料 ===\n"+ctx+"\n=== 资料结束 ===";
   const messages = [{role:"system", content: system}];
   // 带入最近 4 轮对话上下文（user/assistant 交替）
@@ -467,11 +468,16 @@ async function ask(raw){
     return;
   }
   if(!proxyReady()){
-    // 未部署代理：展示 BM25 命中的资料，但无法调用 DeepSeek 生成
+    // 未配置在线生成：直接用中文检索命中的笔记原文作答（零密钥、零部署，仍能给真实内容）
     addMsg("user", q);
-    const ranked = bm25(q).filter(r=>r.score>0).slice(0,CONFIG.TOP_K);
-    addMsg("bot","在线生成还没开启（需在 CONFIG.PROXY_BASE 填入你部署好的 Cloudflare Worker 代理地址，README 有步骤）。不过用本地 BM25 检索，我能帮你定位到最相关的笔记段落：",
-      {srcs: '<div class="srcs">检索到 ' + ranked.length + ' 段（BM25）：<b>' + ranked.map(r=>esc(r.doc[1])).join(" · ") + '</b></div>'});
+    const ranked = bm25(q).filter(r=>r.score>0).slice(0,2);
+    if(ranked.length){
+      const body = ranked.map(r=>r.doc[2]).join("\n\n");
+      addMsg("bot", "根据斐阳的笔记——\n\n" + body,
+        {srcs: '<div class="srcs">摘自笔记：<b>' + ranked.map(r=>esc(r.doc[1])).join(" · ") + '</b></div>'});
+    }else{
+      addMsg("bot", "这个问题我在斐阳的笔记里没找到直接相关的段落。换个角度问我他的方向、项目、成绩，或某个技术点（RAG / KNN / MuJoCo / 强化学习）试试～");
+    }
     return;
   }
   qInput.value="";
