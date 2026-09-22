@@ -54,6 +54,11 @@ h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
 .code-block .c{color:#8A8678}.code-block .k{color:#7FB5B0}
 .tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:20px}
+.results-grid figure{margin:0}
+.results-grid img{width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block}
+.results-grid figcaption{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.5}
+@media(max-width:760px){.results-grid{grid-template-columns:1fr}}
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
 </head>
@@ -121,6 +126,16 @@ evaluate.py       <span class="c"># 分类报告 / 混淆矩阵 / 学习曲线 /
 app.py            <span class="c"># Streamlit 交互界面</span>
       </div>
       <p style="margin-top:14px;font-size:14px;color:var(--muted)">候选模型：KNN / 逻辑回归 / 随机森林 / MLP。</p>
+    </div>
+  </div>
+  <div style="margin-top:56px">
+    <h3>真实训练结果 · UCI HAR</h3>
+    <p style="font-size:15px;color:var(--ink-soft);margin-bottom:20px;max-width:700px">下面四张图都是这条 pipeline 在<strong>真实 HAR 数据</strong>上跑出来的，不是示意图。逻辑回归为冠军，测试集准确率 <strong>95.4%</strong>。</p>
+    <div class="results-grid">
+      <figure><img src="img/model_comparison.png" alt="候选模型交叉验证对比"><figcaption>① 候选模型 5 折交叉验证准确率对比（KNN / 逻辑回归 / 随机森林 / MLP）</figcaption></figure>
+      <figure><img src="img/confusion_matrix.png" alt="测试集混淆矩阵"><figcaption>② 测试集混淆矩阵——坐↔站、上楼↔下楼是 HAR 公认最难分的样本</figcaption></figure>
+      <figure><img src="img/learning_curve.png" alt="学习曲线"><figcaption>③ 冠军模型学习曲线——训练/验证随样本量收敛，无明显过拟合</figcaption></figure>
+      <figure><img src="img/pca_scatter.png" alt="PCA 投影"><figcaption>④ 561 维传感器特征 PCA 降到 2 维后的类别分布</figcaption></figure>
     </div>
   </div>
 </div></section>

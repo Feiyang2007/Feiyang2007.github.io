@@ -7,3 +7,12 @@ compatibility_date = "2026-01-01"
 #   wrangler secret put DEEPSEEK_KEY
 #   wrangler secret put SILICONFLOW_KEY
 #   wrangler secret put ALLOW_ORIGIN   # 可选，填 https://feiyang2007.github.io
+
+# 服务端按 IP 的小时级限流（防止公开端点被盗刷 DeepSeek/硅基流动额度）
+[vars]
+RATE_LIMIT_PER_HOUR = "60"
+
+# 计数用的 KV 命名空间（wrangler kv namespace create COUNTERS 生成）
+[[kv_namespaces]]
+binding = "COUNTERS"
+id = "0a15acf4a18a494f979bcab47715c23a"
