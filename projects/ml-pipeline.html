@@ -74,11 +74,13 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="proj-head">
     <div class="proj-label">PROJECT 02 · LEARNING</div>
     <h1>端到端机器学习 Pipeline</h1>
-    <div class="proj-meta"><span>2026.09 — 进行中</span><span class="dot">●</span><span>Sklearn 完整流程 + Streamlit</span></div>
+    <div class="proj-meta"><span>2026.09 — 进行中</span><span class="dot">●</span><span>Sklearn 完整流程 + Streamlit</span><span class="dot">●</span><span>UCI HAR · 手机 IMU 传感器</span></div>
     <p class="proj-lede">
-      从数据清洗、特征工程、模型训练到评估与可视化的完整流程。
-      下面是 <strong>k-NN 分类器</strong>的交互式演示——调 k 值，看决策边界怎么变；
-      在画布上点一个新点，看模型把它分到哪一类。这是理解"偏差-方差权衡"最直观的方式。
+      在 <strong>UCI《用智能手机识别人体活动》(HAR)</strong> 数据集上——三轴加速度计 + 三轴陀螺仪
+      的 2.56 秒窗口统计特征（561 维）、6 类姿态——走通一整条流程：
+      <strong>数据清洗 → 特征工程 → 训练 → 交叉验证选模 → 评估可视化 → Streamlit 交互 demo</strong>。
+      下面这块 <strong>k-NN 决策边界</strong>是可交互的直觉演示——调 k 值看边界如何从锯齿变平滑，
+      这正是完整 pipeline 里"偏差-方差权衡"最直观的一帧。
     </p>
   </div>
 
@@ -97,22 +99,28 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <h3>为什么做这个</h3>
       <p>Sklearn 课程里 24/129 讲的练习都是零散的——每节课跑一个模型，不知道全貌。
       我要把它收拢成一个<strong>能跑通的完整 pipeline</strong>：
-      拿到一份数据 → 清洗 → 切分 → 训练 → 评估 → 部署成 Streamlit 应用。</p>
-      <p>这个 demo 用 k-NN 演示最核心的直觉：<strong>k 小了过拟合，k 大了欠拟合</strong>。
-      调一调滑块，边界从锯齿变得平滑——这比看十张图都有用。</p>
+      拿到一份真实的传感器数据 → 清洗 → 切分 → 训练 → 评估 → 部署成 Streamlit 应用。</p>
+      <p>数据选的是 <strong>手机 IMU（加速度计+陀螺仪）姿态识别</strong>——跟"机器人/穿戴设备用惯性传感器
+      判断姿态"同源，正对具身智能方向。代码在仓库 <code>30-自学/编程/projects/ml-pipeline</code>：
+      <code>python train.py</code> 训练、<code>evaluate.py</code> 出混淆矩阵/学习曲线、<code>streamlit run app.py</code> 交互。</p>
+      <p>这块 demo 用 k-NN 演示最核心的直觉：<strong>k 小了过拟合，k 大了欠拟合</strong>。
+      调一调滑块，边界从锯齿变得平滑——比看十张图都有用。</p>
+      <p><strong>实测结果（真实 HAR，2947 条测试）：</strong>逻辑回归 <strong>95.4%</strong>、MLP 98.2%(CV)、
+      随机森林 97.6%(CV)、KNN 调参后 95.8%；混淆矩阵如实呈现 HAR 里最难的坐↔站、上楼↔下楼误判。</p>
     </div>
     <div class="info-block">
       <h3>技术栈</h3>
-      <div class="tech-list"><span>Python</span><span>Scikit-learn</span><span>Pandas</span><span>NumPy</span><span>Streamlit</span><span>Matplotlib</span></div>
+      <div class="tech-list"><span>Python</span><span>Scikit-learn</span><span>Pandas</span><span>NumPy</span><span>Streamlit</span><span>Matplotlib</span><span>UCI HAR</span></div>
       <h3 style="margin-top:32px">代码结构</h3>
       <div class="code-block">
 <span class="c"># ml-pipeline/</span>
-data_loader.py    <span class="c"># 数据加载与清洗</span>
-features.py       <span class="c"># 特征工程</span>
-train.py          <span class="c"># 模型训练与交叉验证</span>
-evaluate.py       <span class="c"># 指标评估 + 可视化</span>
+data_loader.py    <span class="c"># 下载/缓存 HAR + 去零方差列 + 离线兜底</span>
+features.py       <span class="c"># 抽 X/y、训练内部再切验证集（不碰 test）</span>
+train.py          <span class="c"># Pipeline(标准化→分类器) + 5折CV + 网格调KNN</span>
+evaluate.py       <span class="c"># 分类报告 / 混淆矩阵 / 学习曲线 / PCA</span>
 app.py            <span class="c"># Streamlit 交互界面</span>
       </div>
+      <p style="margin-top:14px;font-size:14px;color:var(--muted)">候选模型：KNN / 逻辑回归 / 随机森林 / MLP。</p>
     </div>
   </div>
 </div></section>

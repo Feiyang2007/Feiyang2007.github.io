@@ -120,7 +120,8 @@ envs/            <span class="c"># 环境封装</span>
 <script>
 (function(){
   var el = document.getElementById('chart');
-  if(!el || typeof echarts==='undefined'){el.style.display='none';return;}
+  if(!el){return;}
+  if(typeof echarts==='undefined'){el.style.display='none';return;}
   var c = echarts.init(el);
   var xs = [], ys = [];
   for(var i=0;i<100;i++){xs.push(i); ys.push(Math.min(500, i*4 + Math.random()*30));}
