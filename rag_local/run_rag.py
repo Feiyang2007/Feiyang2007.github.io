@@ -31,6 +31,7 @@
 """
 import os
 import sys
+import re
 import json
 import ssl
 import gzip
@@ -201,7 +202,10 @@ class Handler(BaseHTTPRequestHandler):
         if is_rag_page:
             html = target.read_text(encoding="utf-8")
             base = f"http://127.0.0.1:{self.server.server_port}"
-            html = html.replace("__PROXY_BASE__", base)
+            # 无论仓库里 PROXY_BASE 现在是占位符还是已部署的 Worker 地址，
+            # 本地运行时都强制改指向本机代理（本地开发不依赖线上 Worker）。
+            html = re.sub(r'(PROXY_BASE:\s*)"[^"]*"',
+                          lambda m: m.group(1) + '"' + base + '"', html, count=1)
             data = html.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")

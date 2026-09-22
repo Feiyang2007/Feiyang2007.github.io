@@ -430,11 +430,11 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <div class="proj-item">
         <div class="p-left">
           <a class="p-link" href="projects/knowledge-rag.html"><h4>个人知识 RAG 助手</h4></a>
-          <span class="p-status">本地可跑</span>
+          <span class="p-status">在线可答</span>
         </div>
         <div>
-          <p class="p-desc">把两年自学笔记（197 篇 Markdown）整理成 36 段结构化语料，做了一个能用自然语言问答的机器人。检索是真·向量语义匹配（bge-m3 Embedding + 余弦相似度），生成用 DeepSeek；本地用 <code>run_rag.py</code> 小代理跑通全功能（密钥只在本机环境变量，绝不进仓库），线上访客问任何问题也会用笔记原文如实作答。数据是自己的，故事也是自己的。</p>
-          <span class="p-tech">Vanilla JS · bge-m3 · BM25 兜底 · DeepSeek · 本地代理</span>
+          <p class="p-desc">把两年自学笔记（197 篇 Markdown）整理成 36 段结构化语料，做了一个能用自然语言问答的机器人。检索是真·向量语义匹配（bge-m3 Embedding + 余弦相似度），生成用 DeepSeek。线上访客现在可直接对话式问答——所有对外调用走一个自建的 Cloudflare Worker 代理，密钥存在 Worker 的 Secret 里、源码零密钥；本地也可用 <code>run_rag.py</code> 离线跑通。数据是自己的，故事也是自己的。</p>
+          <span class="p-tech">Vanilla JS · bge-m3 · BM25 兜底 · DeepSeek · Cloudflare Worker</span>
           <a class="p-cta" href="projects/knowledge-rag.html">查看项目 →</a>
         </div>
       </div>
