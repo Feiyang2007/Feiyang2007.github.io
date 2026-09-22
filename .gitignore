@@ -1,6 +1,9 @@
 _shots/
 *.jpg
 *.png
+# 项目页需要的真实训练图表，显式放行
+!projects/img/
+!projects/img/*.png
 .DS_Store
 Thumbs.db
 # 内部交接文档，含明文 API key，绝不推送到公开仓库
