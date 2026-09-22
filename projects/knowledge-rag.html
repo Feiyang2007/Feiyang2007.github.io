@@ -138,12 +138,12 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   </div>
 
   <div class="cfg" id="cfgBox">
-    <h4>关于运行模式与密钥（部署前请读）</h4>
+    <h4>运行模式与密钥说明</h4>
     <p style="margin-bottom:10px">为<strong>不在公开仓库泄露密钥</strong>，页面所有对外调用都走一个自建的 <b>Cloudflare Worker 代理</b>——密钥存在 Worker 的环境变量里，前端源码零密钥。</p>
     <p style="margin-bottom:8px">① <b>向量检索</b>：文档向量已用 <b>bge-m3</b> 预生成在 <code>rag-vectors.js</code> 随站点发布；运行时只嵌入你输入的“问题”（经代理转发到硅基流动）。代理地址未配置时自动降级 <b>BM25 中文检索</b>，仍可按关键词命中，但无法调用大模型生成。</p>
-    <p style="margin-bottom:8px">② <b>启用方法</b>：部署 <code>proxy/</code> 下的 Worker 并写入 <code>DEEPSEEK_KEY</code>、<code>SILICONFLOW_KEY</code> 两个 Secret，再把 Worker 的访问地址填进页面顶部 <code>CONFIG.PROXY_BASE</code>。详见 <code>proxy/README.md</code>。</p>
+    <p style="margin-bottom:8px">② <b>状态</b>：代理已部署到 Cloudflare Worker（<code>rag-proxy.…workers.dev</code>），两个密钥存在 Worker 的 Secret 里、源码零密钥，且 CORS 限定为本站域名——线上访客可直接对话式问答。</p>
     <p style="margin-bottom:8px">③ <b>限流</b>：前端已有每小时 20 次的本地限流；如需更严，可在 Worker 侧用 Cloudflare 的 Rate Limiting 规则或 KV 按 IP 限。</p>
-    <p style="margin-bottom:0">④ <b>本地全功能运行（当前推荐）</b>：上线前先在自己电脑上跑通——用仓库里的 <code>rag_local/run_rag.py</code> 起一个本地代理（密钥只读本机环境变量），打开 <code>http://127.0.0.1:8017/projects/knowledge-rag.html</code> 即可真正问答。详见 <code>rag_local/README.md</code>。</p>
+    <p style="margin-bottom:0">④ <b>本地运行（离线/无网也可用）</b>：想在完全离线或不想占用线上额度时，用仓库里的 <code>rag_local/run_rag.py</code> 起一个本地代理（密钥只读本机环境变量），打开 <code>http://127.0.0.1:8017/projects/knowledge-rag.html</code> 同样能对话式问答。详见 <code>rag_local/README.md</code>。</p>
   </div>
 
   <div class="info-grid">
@@ -195,9 +195,8 @@ answer = deepseek(prompt(top, query))     <span class="c">// 4. 生成回答</sp
 /* ---------- CONFIG：部署时改这里 ---------- */
 const CONFIG = {
   // —— 通过 Cloudflare Worker 代理调用，本文件不含任何密钥 ——
-  // 部署好 Worker 后，把它的地址填这里，例如 "https://rag-proxy.<你的子域>.workers.dev"
-  // 留空则：向量检索与回答都不可用（检索降级 BM25，生成会提示"代理未配置"）。
-  PROXY_BASE: "__PROXY_BASE__",
+  // 已部署的代理地址（密钥存在 Worker 的 Secret 里，源码零密钥）：
+  PROXY_BASE: "https://rag-proxy.chenfeiyang20071228.workers.dev",
 
   DEEPSEEK_MODEL: "deepseek-chat",   // 生成模型（Worker 内转发到 DeepSeek）
   EMBED_MODEL: "BAAI/bge-m3",        // 嵌入模型（需与 rag-vectors.js 生成时一致；Worker 内转发到硅基流动）
