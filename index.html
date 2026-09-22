@@ -451,12 +451,12 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       </div>
       <div class="proj-item">
         <div class="p-left">
-          <a class="p-link" href="projects/mujoco-rl.html"><h4>MuJoCo 强化学习（从零实现）</h4></a>
-          <span class="p-status">PLANNED</span>
+          <a class="p-link" href="projects/mujoco-rl.html"><h4>强化学习从零实现（DQN → PPO）</h4></a>
+          <span class="p-status">进行中</span>
         </div>
         <div>
-          <p class="p-desc">不依赖现成 RL 库，纯 PyTorch 实现 DQN / PPO，在 MuJoCo 仿真环境中训练连续控制策略。这是具身智能"大脑侧"的核心练习——从 hello world 到真能训出一个策略。</p>
-          <span class="p-tech">PyTorch · MuJoCo · Reinforcement Learning</span>
+          <p class="p-desc">不调任何 RL 库、连 CartPole 环境都用 NumPy 手写，纯 PyTorch 实现 Double-DQN。已把智能体从随机策略训练到第 573 回合解决 CartPole（贪心 100 回合平均 478 ≥ 官方 475 线）。踩坑记录：朴素 DQN 反复震荡，靠 Double-DQN + 软更新目标网络 + 贪心评估才稳定收敛。下一步 PPO 与 MuJoCo 连续控制。</p>
+          <span class="p-tech">PyTorch · NumPy · Double-DQN · Replay Buffer · 软更新</span>
           <a class="p-cta" href="projects/mujoco-rl.html">查看项目 →</a>
         </div>
       </div>

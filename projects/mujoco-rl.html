@@ -64,13 +64,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
 <section><div class="wrap">
   <div class="proj-head">
-    <div class="proj-label">PROJECT 03 · PLANNED</div>
-    <h1>MuJoCo 强化学习（从零实现）</h1>
-    <div class="proj-meta"><span>2026.10 — 规划中</span><span class="dot">●</span><span>纯 PyTorch · 不依赖现成 RL 库</span></div>
+    <div class="proj-label">PROJECT 03 · 进行中</div>
+    <h1>强化学习从零实现（DQN → PPO）</h1>
+    <div class="proj-meta"><span>2026.09 — DQN 已跑通</span><span class="dot">●</span><span>纯 PyTorch · 不调任何 RL 库 · 环境也手写</span></div>
     <p class="proj-lede">
-      不依赖 Stable-Baselines3 或 Ray RLlib，<strong>纯 PyTorch 手写 DQN 与 PPO</strong>，
-      在 MuJoCo 仿真环境（CartPole / Pendulum / HalfCheetah）中训练连续控制策略。
-      这是具身智能"大脑侧"的核心练习——从 hello world 到真能训出一个策略。
+      不依赖 Stable-Baselines3 / RLlib / gym，<strong>连 CartPole 环境都用 NumPy 手写</strong>，
+      再纯 PyTorch 实现 <strong>Double-DQN</strong>。已把智能体从随机策略（活 ~10 步）训练到
+      <strong>第 573 回合解决 CartPole</strong>（贪心 100 回合平均 478 ≥ 官方 475 线）。
+      下一步：连续动作的 PPO，再迁移到 MuJoCo。
     </p>
   </div>
 
@@ -86,30 +87,32 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   </div>
 
   <div class="demo-wrap" style="margin-top:20px">
-    <div id="chart"></div>
-    <div class="demo-note">↑ 典型 RL 训练曲线示意（CartPole，每 episode 的累计回报随训练上升）· 真实训练曲线待跑出后替换</div>
+    <h3 style="margin-bottom:12px">真实训练曲线 · Double-DQN 从零解决 CartPole</h3>
+    <img src="img/dqn_curve.png" alt="DQN 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <div class="demo-note">↑ 真实产出（非示意）：贪心策略存活步数 + 50 回合滑动平均，第 573 回合越过 solved 线 475。曲线里的震荡正是 DQN 的真实脾气——靠 Double-DQN + 软更新目标网络才压稳。</div>
   </div>
 
   <div class="info-grid">
     <div class="info-block">
       <h3>为什么从零写</h3>
-      <p>调库谁都会，但 RL 的核心坑——<strong>回报稀疏、信用分配、探索与利用</strong>——
-      只有自己写一遍才能真正理解。我计划先写 DQN（离散动作），再写 PPO（连续动作）。</p>
-      <p>环境顺序：CartPole（入门）→ Pendulum（连续控制）→ HalfCheetah（复杂 locomotion）。
-      每一步都画训练曲线、记录失败原因，沉淀成笔记。</p>
+      <p>调库谁都会，但 RL 的核心坑——<strong>Q 值高估、目标网络漂移、探索与利用、
+      学会又忘记</strong>——只有自己写一遍才懂。这个项目我连环境都手写，逼自己搞清每一步。</p>
+      <p>真实踩坑：朴素 DQN 反复震荡（冲到 400 又崩回 200），靠 <strong>Double-DQN + 软更新
+      目标网络 + 用贪心策略判定 solved</strong> 才稳定越过 475 线。这段过程本身比结果更有价值。</p>
+      <p>路线：CartPole（离散，已完成）→ Pendulum / MountainCar（连续）→ PPO → MuJoCo。</p>
     </div>
     <div class="info-block">
       <h3>技术栈</h3>
-      <div class="tech-list"><span>PyTorch</span><span>MuJoCo</span><span>Gymnasium</span><span>DQN</span><span>PPO</span><span>Replay Buffer</span></div>
-      <h3 style="margin-top:32px">代码结构</h3>
+      <div class="tech-list"><span>PyTorch</span><span>NumPy</span><span>Double-DQN</span><span>Replay Buffer</span><span>软更新目标网络</span><span>ε-greedy</span></div>
+      <h3 style="margin-top:32px">代码结构（已实现）</h3>
       <div class="code-block">
-<span class="c"># mujoco-rl/</span>
-dqn.py           <span class="c"># DQN：Q 网络 + Replay Buffer</span>
-ppo.py           <span class="c"># PPO：Actor-Critic + GAE</span>
-train.py         <span class="c"># 训练循环 + 日志</span>
-plot.py          <span class="c"># 训练曲线可视化</span>
-envs/            <span class="c"># 环境封装</span>
+<span class="c"># dqn-cartpole/</span>
+envs/cartpole.py <span class="c"># 手写 CartPole 环境（Gym 标准动力学）</span>
+dqn.py           <span class="c"># Q 网络 + Replay Buffer + Double-DQN + 软更新</span>
+train.py         <span class="c"># 训练循环 + 贪心评估判 solved + 出图</span>
+reports/         <span class="c"># 训练曲线 + 指标 + 原始数据</span>
       </div>
+      <p style="margin-top:14px;font-size:13.5px;color:var(--muted)">代码在仓库 <code>30-自学/具身智能/dqn-cartpole</code>。下一步：PPO（连续控制）。</p>
     </div>
   </div>
 </div></section>
