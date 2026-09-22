@@ -4,3 +4,7 @@ _shots/
 .DS_Store
 Thumbs.db
 交接包.md
+# Cloudflare/wrangler 本地状态（含账号缓存），绝不入库
+.wrangler/
+proxy/.wrangler/
+node_modules/
