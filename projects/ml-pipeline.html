@@ -157,6 +157,7 @@ app.py            <span class="c"># Streamlit 交互界面</span>
       ptsB.push({x: 450+Math.random()*320, y: 180+Math.random()*220});
     }
     newPoint = null;
+    document.getElementById('status').innerHTML = '点击画布任意位置分类 · 蓝=A类 · 橙=B类';
     draw();
   }
   function dist(a,b){return Math.hypot(a.x-b.x, a.y-b.y);}
