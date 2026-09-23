@@ -244,9 +244,11 @@ reports/           <span class="c"># 规划结果图 + 指标</span>
     tree = [{x:start.x,y:start.y,parent:null,cost:0}];
     path = null;
     running = false;
+    iter = 0;
     if(rafId) cancelAnimationFrame(rafId);
     document.getElementById('iter').textContent = '0';
     document.getElementById('nodes').textContent = '1';
+    document.getElementById('status').innerHTML = '就绪 · 点"开始规划"';
     draw();
   }
 
