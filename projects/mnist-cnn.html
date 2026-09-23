@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>手写数字识别 · CNN — 陈斐阳</title>
+<meta name="description" content="用 PyTorch 手写的小 CNN 在真实 MNIST 上训练到 98.9% 测试准确率。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:720px){.nav-links{display:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+.proj-head{padding:32px 0 48px}
+.proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
+.proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.proj-meta .dot{color:var(--accent)}
+.proj-lede{font-size:18px;line-height:1.6;max-width:700px;color:var(--ink-soft);font-weight:300}
+.proj-lede strong{font-weight:600;color:var(--ink)}
+h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
+.figure{margin:0 0 28px}
+.figure img{width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block}
+.figure figcaption{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+.stat-row{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);margin:8px 0 40px}
+.stat{background:var(--paper-warm);padding:20px 22px;flex:1}
+.stat .num{font-family:var(--serif);font-size:30px;font-weight:600;color:var(--accent-deep);display:block;line-height:1;margin-bottom:8px}
+.stat .lbl{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
+.info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
+.info-block p strong{color:var(--ink);font-weight:600}
+.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border-radius:2px}
+.code-block .c{color:#8A8678}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px;background:#fff}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
+  <div class="nav-links">
+    <a href="../index.html#about">About</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#now">Now</a>
+    <a href="../index.html#contact">Contact</a>
+  </div>
+</div></nav>
+
+<div class="wrap"><div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>MNIST CNN</div></div>
+
+<section><div class="wrap">
+  <div class="proj-head">
+    <div class="proj-label">PROJECT 06 · 已完成</div>
+    <h1>手写数字识别 · CNN</h1>
+    <div class="proj-meta"><span>2026.09</span><span class="dot">●</span><span>MNIST · 真实训练</span><span class="dot">●</span><span>纯 PyTorch</span></div>
+    <p class="proj-lede">
+      机器学习最经典的入门任务：看一张 28×28 的手写数字图，认出它是 0–9 里的哪个。
+      我用 PyTorch 写了一个小 CNN，在<strong>真实 MNIST</strong>（6 万训练 / 1 万测试）上端到端训练，
+      测试集准确率 <strong>98.9%</strong>。下面都是这次训练真实产出的图和数字。
+    </p>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><span class="num">98.9%</span><span class="lbl">测试集准确率</span></div>
+    <div class="stat"><span class="num">20.7万</span><span class="lbl">模型参数量</span></div>
+    <div class="stat"><span class="num">7万</span><span class="lbl">MNIST 图片</span></div>
+    <div class="stat"><span class="num">6</span><span class="lbl">训练 epoch</span></div>
+  </div>
+
+  <figure class="figure">
+    <img src="img/mnist_curve.png" alt="训练曲线">
+    <figcaption>① 随 epoch 变化：测试准确率升到 ~98.9%，训练损失持续下降。</figcaption>
+  </figure>
+  <figure class="figure">
+    <img src="img/mnist_samples.png" alt="测试样例预测">
+    <figcaption>② 测试集随机样例，标注"真实→预测"。模型认得各种潦草写法，最容易混的是 8 和 6。</figcaption>
+  </figure>
+  <figure class="figure">
+    <img src="img/mnist_confusion.png" alt="混淆矩阵">
+    <figcaption>③ 混淆矩阵：对角线极亮，错分零散分布在 8/6/5 等相近字形上。</figcaption>
+  </figure>
+
+  <div class="info-grid">
+    <div class="info-block">
+      <h3>为什么做这个</h3>
+      <p>这是我系统学 PyTorch 之后，第一个从头到尾跑通的视觉模型：数据管道（下载→解析→归一化→DataLoader）、
+      卷积网络、训练循环、评估与可视化，一整条走了一遍。</p>
+      <p>也借它理解了卷积为什么适合图像——<strong>局部感受野 + 权值共享</strong>，参数比全连接少很多，还自带一点平移不变性。
+      以及 Dropout、学习率、epoch 数这些细节对最终结果的影响。</p>
+    </div>
+    <div class="info-block">
+      <h3>技术栈</h3>
+      <div class="tech-list"><span>Python</span><span>PyTorch</span><span>NumPy</span><span>Matplotlib</span><span>CNN</span><span>MNIST</span></div>
+      <h3 style="margin-top:32px">代码结构</h3>
+      <div class="code-block">
+<span class="c"># mnist-cnn/</span>
+data.py     <span class="c"># 下载 + 纯 NumPy 解析 MNIST idx 格式</span>
+model.py    <span class="c"># 两层卷积 + 全连接的小 CNN</span>
+train.py    <span class="c"># 训练 + 评估 + 出图 + 存模型</span>
+reports/    <span class="c"># 曲线 / 样例 / 混淆矩阵 / 指标</span>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
+</body></html>
