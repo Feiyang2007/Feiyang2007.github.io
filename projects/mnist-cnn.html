@@ -51,6 +51,18 @@ h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
 .code-block .c{color:#8A8678}
 .tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 .tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px;background:#fff}
+.draw-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:24px;margin:8px 0 40px}
+.draw-flex{display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start}
+#drawCanvas{background:#fff;border:1px solid var(--line);cursor:crosshair;touch-action:none;width:280px;height:280px}
+.draw-side{flex:1;min-width:220px}
+.btn{font-family:var(--mono);font-size:13px;padding:9px 18px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.pred-big{font-family:var(--serif);font-size:64px;font-weight:600;color:var(--accent-deep);line-height:1}
+.bars{margin-top:14px}
+.bar-row{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;margin:3px 0}
+.bar-row .d{width:12px;color:var(--muted)}
+.bar-track{flex:1;height:10px;background:var(--line);position:relative}
+.bar-fill{position:absolute;left:0;top:0;height:100%;background:var(--accent);width:0;transition:width .2s}
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
 </head>
@@ -77,6 +89,22 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       我用 PyTorch 写了一个小 CNN，在<strong>真实 MNIST</strong>（6 万训练 / 1 万测试）上端到端训练，
       测试集准确率 <strong>98.9%</strong>。下面都是这次训练真实产出的图和数字。
     </p>
+  </div>
+
+  <div class="draw-wrap">
+    <h3 style="margin-bottom:8px">动手试试：用鼠标写个数字</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:16px">在下面白板上用鼠标（或手指）写一个 0–9，点"识别"。浏览器里跑的就是上面那个训练好的 CNN——权重已导出到本地，不联网、不上传。画得尽量居中、笔画粗一点会更准。</p>
+    <div class="draw-flex">
+      <canvas id="drawCanvas" width="280" height="280"></canvas>
+      <div class="draw-side">
+        <div style="display:flex;gap:10px;margin-bottom:16px">
+          <button class="btn" id="btnRecognize">识别</button>
+          <button class="btn ghost" id="btnClear">清空</button>
+        </div>
+        <div>识别结果：<span class="pred-big" id="predDigit">–</span> <span id="predConf" style="font-family:var(--mono);font-size:13px;color:var(--muted)"></span></div>
+        <div class="bars" id="bars"></div>
+      </div>
+    </div>
   </div>
 
   <div class="stat-row">
@@ -123,4 +151,47 @@ reports/    <span class="c"># 曲线 / 样例 / 混淆矩阵 / 指标</span>
 </div></section>
 
 <footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
+
+<script src="mnist_infer.js"></script>
+<script>
+(function(){
+  var cv=document.getElementById('drawCanvas'), ctx=cv.getContext('2d');
+  ctx.fillStyle='#fff'; ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.lineWidth=20; ctx.lineCap='round'; ctx.lineJoin='round'; ctx.strokeStyle='#000';
+  var drawing=false, last=null, weights=null;
+  fetch('mnist_weights.json').then(function(r){return r.json();})
+    .then(function(w){weights=w;}).catch(function(e){console.warn('权重加载失败',e);});
+
+  function pos(e){var r=cv.getBoundingClientRect();var t=e.touches?e.touches[0]:e;
+    return {x:(t.clientX-r.left)*cv.width/r.width, y:(t.clientY-r.top)*cv.height/r.height};}
+  function start(e){drawing=true;last=pos(e);e.preventDefault();}
+  function move(e){if(!drawing)return;var p=pos(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;e.preventDefault();}
+  function end(){drawing=false;}
+  cv.addEventListener('mousedown',start);cv.addEventListener('mousemove',move);window.addEventListener('mouseup',end);
+  cv.addEventListener('touchstart',start,{passive:false});cv.addEventListener('touchmove',move,{passive:false});cv.addEventListener('touchend',end);
+
+  function buildBars(probs){
+    var el=document.getElementById('bars');el.innerHTML='';
+    for(var d=0;d<10;d++){var p=probs?probs[d]:0;
+      var row=document.createElement('div');row.className='bar-row';
+      row.innerHTML='<span class="d">'+d+'</span><span class="bar-track"><span class="bar-fill" style="width:'+(p*100).toFixed(0)+'%"></span></span><span style="width:34px;text-align:right">'+(p*100).toFixed(0)+'%</span>';
+      el.appendChild(row);}
+  }
+  document.getElementById('btnClear').onclick=function(){
+    ctx.fillStyle='#fff';ctx.fillRect(0,0,cv.width,cv.height);
+    document.getElementById('predDigit').textContent='–';
+    document.getElementById('predConf').textContent='';buildBars(null);
+  };
+  document.getElementById('btnRecognize').onclick=function(){
+    if(!weights){document.getElementById('predConf').textContent='（模型加载中，稍等）';return;}
+    var img=preprocessCanvas(cv);
+    var probs=mnistSoftmax(mnistForward(weights,img));
+    var best=0;for(var i=1;i<10;i++)if(probs[i]>probs[best])best=i;
+    document.getElementById('predDigit').textContent=best;
+    document.getElementById('predConf').textContent='置信度 '+(probs[best]*100).toFixed(1)+'%';
+    buildBars(probs);
+  };
+  buildBars(null);
+})();
+</script>
 </body></html>
