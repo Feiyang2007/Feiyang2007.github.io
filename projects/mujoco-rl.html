@@ -66,12 +66,12 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="proj-head">
     <div class="proj-label">PROJECT 03 · 进行中</div>
     <h1>强化学习从零实现（DQN → PPO）</h1>
-    <div class="proj-meta"><span>2026.09 — DQN 已跑通</span><span class="dot">●</span><span>纯 PyTorch · 不调任何 RL 库 · 环境也手写</span></div>
+    <div class="proj-meta"><span>2026.09 — DQN 已跑通</span><span class="dot">●</span><span>纯 PyTorch 从零实现</span></div>
     <p class="proj-lede">
-      不依赖 Stable-Baselines3 / RLlib / gym，<strong>连 CartPole 环境都用 NumPy 手写</strong>，
-      再纯 PyTorch 实现 <strong>Double-DQN</strong>。已把智能体从随机策略（活 ~10 步）训练到
-      <strong>第 573 回合解决 CartPole</strong>（贪心 100 回合平均 478 ≥ 官方 475 线）。
-      下一步：连续动作的 PPO，再迁移到 MuJoCo。
+      为了真正弄懂强化学习，我从零实现了一个 <strong>Double-DQN</strong>——自己写了 CartPole
+      环境和训练算法，不借助现成的 RL 库。目标是让智能体学会把杆平衡起来：目前它已从随机策略
+      （活 ~10 步）训练到<strong>稳定解决 CartPole</strong>（贪心策略 100 回合平均 478，超过 475 的
+      官方判定线）。下一步想试试连续控制里的 PPO。
     </p>
   </div>
 
@@ -95,11 +95,13 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="info-grid">
     <div class="info-block">
       <h3>为什么从零写</h3>
-      <p>调库谁都会，但 RL 的核心坑——<strong>Q 值高估、目标网络漂移、探索与利用、
-      学会又忘记</strong>——只有自己写一遍才懂。这个项目我连环境都手写，逼自己搞清每一步。</p>
-      <p>真实踩坑：朴素 DQN 反复震荡（冲到 400 又崩回 200），靠 <strong>Double-DQN + 软更新
-      目标网络 + 用贪心策略判定 solved</strong> 才稳定越过 475 线。这段过程本身比结果更有价值。</p>
-      <p>路线：CartPole（离散，已完成）→ Pendulum / MountainCar（连续）→ PPO → MuJoCo。</p>
+      <p>现成的 RL 库很方便，但我想真正理解 DQN 的每一步，所以环境和算法都自己实现了一遍。
+      过程中体会到不少坑：<strong>Q 值高估、目标网络漂移、探索与利用的平衡、学会又忘记</strong>——
+      这些光看别人的代码不容易懂，亲手调一遍才明白。</p>
+      <p>比如最初的朴素 DQN 训练曲线反复震荡（冲到 400 又崩回 200），后来用了
+      <strong>Double-DQN、软更新目标网络，并用贪心策略判定是否解决</strong>，曲线才稳定越过 475。
+      比起结果，这段调试过程让我收获更大。</p>
+      <p>接下来的计划：CartPole（离散，已完成）→ Pendulum / MountainCar（连续）→ PPO → 迁移到 MuJoCo。</p>
     </div>
     <div class="info-block">
       <h3>技术栈</h3>
@@ -112,7 +114,7 @@ dqn.py           <span class="c"># Q 网络 + Replay Buffer + Double-DQN + 软�
 train.py         <span class="c"># 训练循环 + 贪心评估判 solved + 出图</span>
 reports/         <span class="c"># 训练曲线 + 指标 + 原始数据</span>
       </div>
-      <p style="margin-top:14px;font-size:13.5px;color:var(--muted)">代码在仓库 <code>30-自学/具身智能/dqn-cartpole</code>。下一步：PPO（连续控制）。</p>
+      <p style="margin-top:14px;font-size:13.5px;color:var(--muted)">完整代码与训练脚本已整理成一个独立小项目，需要的话欢迎联系我。</p>
     </div>
   </div>
 </div></section>
