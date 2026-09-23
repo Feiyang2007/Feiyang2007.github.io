@@ -66,12 +66,11 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="proj-head">
     <div class="proj-label">PROJECT 03 · 进行中</div>
     <h1>强化学习从零实现（DQN → PPO）</h1>
-    <div class="proj-meta"><span>2026.09 — DQN 已跑通</span><span class="dot">●</span><span>纯 PyTorch 从零实现</span></div>
+    <div class="proj-meta"><span>2026.09 — DQN / PPO 已跑通</span><span class="dot">●</span><span>纯 PyTorch 从零实现</span></div>
     <p class="proj-lede">
-      为了真正弄懂强化学习，我从零实现了一个 <strong>Double-DQN</strong>——自己写了 CartPole
-      环境和训练算法，不借助现成的 RL 库。目标是让智能体学会把杆平衡起来：目前它已从随机策略
-      （活 ~10 步）训练到<strong>稳定解决 CartPole</strong>（贪心策略 100 回合平均 478，超过 475 的
-      官方判定线）。下一步想试试连续控制里的 PPO。
+      为了真正弄懂强化学习，我从零实现过两个算法：先用 <strong>Double-DQN</strong> 让智能体学会
+      离散控制（CartPole，从随机策略训练到稳定把杆平衡），再用 <strong>PPO</strong> 挑战连续控制
+      （Pendulum 倒立摆，训练到能摆起并平衡）。环境和算法都自己写了一遍，不借助现成的 RL 库。
     </p>
   </div>
 
@@ -92,6 +91,12 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="demo-note">↑ 真实产出（非示意）：贪心策略存活步数 + 50 回合滑动平均，第 573 回合越过 solved 线 475。曲线里的震荡正是 DQN 的真实脾气——靠 Double-DQN + 软更新目标网络才压稳。</div>
   </div>
 
+  <div class="demo-wrap" style="margin-top:20px">
+    <h3 style="margin-bottom:12px">真实训练曲线 · PPO 从零训练 Pendulum（连续控制）</h3>
+    <img src="img/ppo_curve.png" alt="PPO 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <div class="demo-note">↑ 真实产出：近 100 回合平均奖励从 ~-1300 一路提升，在第 465 个 iteration 越过 solved 线（-150），最佳单回合接近满分（稳定摆到顶点并平衡）。PPO 是 on-policy、面向连续动作的算法，和 DQN 是两条路子。</div>
+  </div>
+
   <div class="info-grid">
     <div class="info-block">
       <h3>为什么从零写</h3>
@@ -101,18 +106,21 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <p>比如最初的朴素 DQN 训练曲线反复震荡（冲到 400 又崩回 200），后来用了
       <strong>Double-DQN、软更新目标网络，并用贪心策略判定是否解决</strong>，曲线才稳定越过 475。
       比起结果，这段调试过程让我收获更大。</p>
-      <p>接下来的计划：CartPole（离散，已完成）→ Pendulum / MountainCar（连续）→ PPO → 迁移到 MuJoCo。</p>
+      <p>目前进度：CartPole（离散，DQN）和 Pendulum（连续，PPO）都已跑通；下一步想迁移到 MuJoCo 里更复杂的连续控制任务。</p>
     </div>
     <div class="info-block">
       <h3>技术栈</h3>
-      <div class="tech-list"><span>PyTorch</span><span>NumPy</span><span>Double-DQN</span><span>Replay Buffer</span><span>软更新目标网络</span><span>ε-greedy</span></div>
+      <div class="tech-list"><span>PyTorch</span><span>NumPy</span><span>Double-DQN</span><span>PPO</span><span>GAE</span><span>Actor-Critic</span><span>Replay Buffer</span><span>软更新目标网络</span></div>
       <h3 style="margin-top:32px">代码结构（已实现）</h3>
       <div class="code-block">
-<span class="c"># dqn-cartpole/</span>
+<span class="c"># dqn-cartpole/  （离散控制：DQN）</span>
 envs/cartpole.py <span class="c"># 手写 CartPole 环境（Gym 标准动力学）</span>
 dqn.py           <span class="c"># Q 网络 + Replay Buffer + Double-DQN + 软更新</span>
 train.py         <span class="c"># 训练循环 + 贪心评估判 solved + 出图</span>
-reports/         <span class="c"># 训练曲线 + 指标 + 原始数据</span>
+
+<span class="c"># ppo-pendulum/  （连续控制：PPO）</span>
+ppo.py           <span class="c"># 独立 Actor/Critic + 裁剪目标 + 优势归一化</span>
+train_ppo.py     <span class="c"># rollout + GAE + lr 衰减，训练 Pendulum</span>
       </div>
       <p style="margin-top:14px;font-size:13.5px;color:var(--muted)">完整代码与训练脚本已整理成一个独立小项目，需要的话欢迎联系我。</p>
     </div>
