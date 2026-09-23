@@ -65,12 +65,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <section><div class="wrap">
   <div class="proj-head">
     <div class="proj-label">PROJECT 03 · 进行中</div>
-    <h1>强化学习从零实现（DQN → PPO）</h1>
-    <div class="proj-meta"><span>2026.09 — DQN / PPO 已跑通</span><span class="dot">●</span><span>纯 PyTorch 从零实现</span></div>
+    <h1>强化学习从零实现（DQN → PPO → MuJoCo）</h1>
+    <div class="proj-meta"><span>2026.09 — DQN / PPO / MuJoCo 已跑通</span><span class="dot">●</span><span>纯 PyTorch 从零实现</span></div>
     <p class="proj-lede">
-      为了真正弄懂强化学习，我从零实现过两个算法：先用 <strong>Double-DQN</strong> 让智能体学会
-      离散控制（CartPole，从随机策略训练到稳定把杆平衡），再用 <strong>PPO</strong> 挑战连续控制
-      （Pendulum 倒立摆，训练到能摆起并平衡）。环境和算法都自己写了一遍，不借助现成的 RL 库。
+      为了真正弄懂强化学习，我从零实现过两个算法，并让它们一步步走向真实物理：先用
+      <strong>Double-DQN</strong> 学会离散控制（CartPole，从随机策略训练到稳定把杆平衡），再用
+      <strong>PPO</strong> 挑战连续控制（Pendulum 倒立摆），最后把<strong>同一份手写 PPO 直接搬到
+      MuJoCo 物理仿真</strong>的 InvertedPendulum 上，验证它能迁移到真实刚体动力学。
+      环境和算法都自己写了一遍，不借助现成的 RL 库。
     </p>
   </div>
 
@@ -97,6 +99,12 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="demo-note">↑ 真实产出：近 100 回合平均奖励从 ~-1300 一路提升，在第 465 个 iteration 越过 solved 线（-150），最佳单回合接近满分（稳定摆到顶点并平衡）。PPO 是 on-policy、面向连续动作的算法，和 DQN 是两条路子。</div>
   </div>
 
+  <div class="demo-wrap" style="margin-top:20px">
+    <h3 style="margin-bottom:12px">真实训练曲线 · 同一份 PPO 迁移到 MuJoCo 物理（InvertedPendulum）</h3>
+    <img src="img/mujoco_curve.png" alt="MuJoCo PPO 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <div class="demo-note">↑ 没改一行 PPO 算法代码，只把环境从 classic-control 换成 MuJoCo 刚体动力学，第 56 个 iteration 就把近 100 回合平均回报练到 903（满分 1000）；用确定性策略复测 20 局全部 1000。这一步是从"玩具环境"跨到"真实物理仿真"，也是把策略迁移到真机前的必经环节。</div>
+  </div>
+
   <div class="info-grid">
     <div class="info-block">
       <h3>为什么从零写</h3>
@@ -106,11 +114,11 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <p>比如最初的朴素 DQN 训练曲线反复震荡（冲到 400 又崩回 200），后来用了
       <strong>Double-DQN、软更新目标网络，并用贪心策略判定是否解决</strong>，曲线才稳定越过 475。
       比起结果，这段调试过程让我收获更大。</p>
-      <p>目前进度：CartPole（离散，DQN）和 Pendulum（连续，PPO）都已跑通；下一步想迁移到 MuJoCo 里更复杂的连续控制任务。</p>
+      <p>目前进度：CartPole（离散，DQN）、Pendulum（连续，PPO）都已跑通，同一份 PPO 也已迁移到 MuJoCo 物理的 InvertedPendulum；下一步想挑战更复杂的 MuJoCo 任务（如 Reacher / Hopper）。</p>
     </div>
     <div class="info-block">
       <h3>技术栈</h3>
-      <div class="tech-list"><span>PyTorch</span><span>NumPy</span><span>Double-DQN</span><span>PPO</span><span>GAE</span><span>Actor-Critic</span><span>Replay Buffer</span><span>软更新目标网络</span></div>
+      <div class="tech-list"><span>PyTorch</span><span>NumPy</span><span>Double-DQN</span><span>PPO</span><span>GAE</span><span>Actor-Critic</span><span>Replay Buffer</span><span>MuJoCo</span></div>
       <h3 style="margin-top:32px">代码结构（已实现）</h3>
       <div class="code-block">
 <span class="c"># dqn-cartpole/  （离散控制：DQN）</span>
@@ -121,6 +129,7 @@ train.py         <span class="c"># 训练循环 + 贪心评估判 solved + 出�
 <span class="c"># ppo-pendulum/  （连续控制：PPO）</span>
 ppo.py           <span class="c"># 独立 Actor/Critic + 裁剪目标 + 优势归一化</span>
 train_ppo.py     <span class="c"># rollout + GAE + lr 衰减，训练 Pendulum</span>
+train_mujoco.py  <span class="c"># 同一份 PPO 迁移到 MuJoCo InvertedPendulum</span>
       </div>
       <p style="margin-top:14px;font-size:13.5px;color:var(--muted)">完整代码与训练脚本已整理成一个独立小项目，需要的话欢迎联系我。</p>
     </div>
