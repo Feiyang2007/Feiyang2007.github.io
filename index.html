@@ -463,11 +463,11 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <div class="proj-item">
         <div class="p-left">
           <a class="p-link" href="projects/lerobot-bc.html"><h4>LeRobot 行为克隆复现</h4></a>
-          <span class="p-status">LEARNING</span>
+          <span class="p-status">进行中</span>
         </div>
         <div>
-          <p class="p-desc">在仿真环境中录制操作轨迹，用行为克隆（BC）让模型复现机器人动作。跟随 LeRobot 课程推进，理解从示教到策略的完整路径。</p>
-          <span class="p-tech">PyTorch · LeRobot · Behavior Cloning</span>
+          <p class="p-desc">用行为克隆（BC）把"学策略"变成一个监督模仿问题：用一个 PD 示教者在 CartPole 上采集演示轨迹，再用 MLP 拟合专家动作。验证集动作预测准确率 99.6%，克隆策略在环境里的存活表现与示教者相当。也如实理解了 BC 的核心难点——分布漂移（covariate shift）与 DAgger 的动机。</p>
+          <span class="p-tech">PyTorch · Behavior Cloning · Imitation Learning</span>
           <a class="p-cta" href="projects/lerobot-bc.html">查看项目 →</a>
         </div>
       </div>
