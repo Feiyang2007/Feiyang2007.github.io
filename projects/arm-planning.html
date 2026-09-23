@@ -104,17 +104,18 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <section style="border-bottom:1px solid var(--line)">
   <div class="wrap">
     <div class="proj-head">
-      <div class="proj-label">PROJECT 05 · PLANNED</div>
+      <div class="proj-label">PROJECT 05 · 进行中</div>
       <h1>机械臂运动规划 — RRT* 无碰撞路径</h1>
       <div class="proj-meta">
-        <span>2026.10 — 进行中</span>
+        <span>2026.09 — Python 实现已跑通</span>
         <span class="dot">●</span>
-        <span>纯前端演示 · 后端 Python 实现开发中</span>
+        <span>前端交互 demo + Python 关节空间 RRT*</span>
       </div>
       <p class="proj-lede">
-        在二维工作空间中用 <strong>RRT*</strong> 算法为机械臂规划一条绕开障碍的无碰撞路径。
-        下面是可交互的演示——点"开始规划"，看一棵随机树从起点生长、rewire、最终收敛到最优路径。
-        这正好落在我学过的理论力学和最优化两块知识的交叉点上。
+        这块分两层：下面先是一个<strong>可交互的工作空间演示</strong>——把物体当成平面里的一个点，
+        点"开始规划"看随机树生长、rewire、收敛到无碰撞路径，用来直观理解 RRT*；
+        再往下是我用 Python 实现的<strong>真·多连杆机械臂规划</strong>——在关节（构型）空间里做 RRT*，
+        带正运动学和连杆碰撞检测。这正好落在我学过的理论力学和最优化两块知识的交叉点上。
       </p>
     </div>
 
@@ -126,6 +127,12 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <button class="btn ghost" id="btn-reset">重置</button>
         <span class="demo-status" id="status">就绪 · 迭代 <b id="iter">0</b> · 节点 <b id="nodes">0</b></span>
       </div>
+    </div>
+
+    <div class="demo-wrap" style="margin-top:20px">
+      <h3 style="margin-bottom:12px">真·机械臂规划 · 关节空间 RRT*（Python 实现）</h3>
+      <img src="img/arm_rrt_result.png" alt="机械臂关节空间 RRT* 规划结果" style="width:100%;max-width:640px;height:auto;border:1px solid var(--line);background:#fff;display:block;margin:0 auto">
+      <div class="demo-note" style="margin-top:12px">↑ 三连杆平面臂、两个圆形障碍。绿色=起始构型，红色=目标构型，淡色=沿途位姿，橙色虚线=末端轨迹。难点在于：障碍在<strong>工作空间</strong>里，而规划在<strong>关节（构型）空间</strong>里做——靠正运动学(FK)把两者连起来，边校验时沿关节插值、逐个做连杆碰撞检测。约 532 个树节点规划出一条无碰撞的关节轨迹。</div>
     </div>
 
     <div class="info-grid">
@@ -147,11 +154,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <h3 style="margin-top:32px">代码结构</h3>
         <div class="code-block">
 <span class="c"># arm-planning/</span>
-rrt_star.py        <span class="c"># RRT* 核心算法</span>
-collision.py       <span class="c"># 碰撞检测</span>
-kinematics.py      <span class="c"># 机械臂正/逆运动学</span>
-visualize.py       <span class="c"># 轨迹可视化</span>
-demo.ipynb         <span class="c"># 交互 notebook</span>
+rrt_star.py        <span class="c"># 点质量入门：2D 工作空间 RRT*</span>
+arm_planner.py     <span class="c"># 真·机械臂：FK + 连杆碰撞 + 关节空间 RRT*</span>
+reports/           <span class="c"># 规划结果图 + 指标</span>
         </div>
       </div>
     </div>
