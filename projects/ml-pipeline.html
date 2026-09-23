@@ -105,9 +105,8 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <p>Sklearn 课程里 24/129 讲的练习都是零散的——每节课跑一个模型，不知道全貌。
       我要把它收拢成一个<strong>能跑通的完整 pipeline</strong>：
       拿到一份真实的传感器数据 → 清洗 → 切分 → 训练 → 评估 → 部署成 Streamlit 应用。</p>
-      <p>数据选的是 <strong>手机 IMU（加速度计+陀螺仪）姿态识别</strong>——跟"机器人/穿戴设备用惯性传感器
-      判断姿态"同源，正对具身智能方向。代码在仓库 <code>30-自学/编程/projects/ml-pipeline</code>：
-      <code>python train.py</code> 训练、<code>evaluate.py</code> 出混淆矩阵/学习曲线、<code>streamlit run app.py</code> 交互。</p>
+      <p>数据选的是 <strong>手机 IMU（加速度计+陀螺仪）姿态识别</strong>——和"机器人 / 穿戴设备用惯性传感器
+      判断姿态"是同一类问题，也正对我想走的具身智能方向。</p>
       <p>这块 demo 用 k-NN 演示最核心的直觉：<strong>k 小了过拟合，k 大了欠拟合</strong>。
       调一调滑块，边界从锯齿变得平滑——比看十张图都有用。</p>
       <p><strong>实测结果（真实 HAR，2947 条测试）：</strong>逻辑回归 <strong>95.4%</strong>、MLP 98.2%(CV)、

@@ -352,7 +352,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <h4>跨学科的底子</h4>
         <p>土木阶段的<strong>理论力学</strong>通向机器人动力学；
         管理学的<strong>运筹学与最优化</strong>通向运动规划与轨迹优化（MPC）。
-        这是我相对纯计科学生的差异化资产。</p>
+        这些是我转方向后能复用的一点底子。</p>
       </div>
       <div class="pillar">
         <span class="tag">CURRENT GAP</span>
@@ -433,8 +433,8 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
           <span class="p-status">在线可答</span>
         </div>
         <div>
-          <p class="p-desc">把两年自学笔记（197 篇 Markdown）整理成 36 段结构化语料，做了一个能用自然语言问答的机器人。检索是真·向量语义匹配（bge-m3 Embedding + 余弦相似度），生成用 DeepSeek。线上访客现在可直接对话式问答——所有对外调用走一个自建的 Cloudflare Worker 代理，密钥存在 Worker 的 Secret 里、源码零密钥；本地也可用 <code>run_rag.py</code> 离线跑通。数据是自己的，故事也是自己的。</p>
-          <span class="p-tech">Vanilla JS · bge-m3 · BM25 兜底 · DeepSeek · Cloudflare Worker</span>
+          <p class="p-desc">把两年自学笔记（197 篇 Markdown）整理成 35 段结构化语料，做了一个能用自然语言问答的小工具：先做向量语义检索，找出最相关的几段笔记，再交给 DeepSeek 组织成回答。语料都是我自己真实学过的东西，所以问出来的也是真的。</p>
+          <span class="p-tech">Vanilla JS · bge-m3 · 向量检索 · DeepSeek</span>
           <a class="p-cta" href="projects/knowledge-rag.html">查看项目 →</a>
         </div>
       </div>
@@ -455,8 +455,8 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
           <span class="p-status">进行中</span>
         </div>
         <div>
-          <p class="p-desc">不调任何 RL 库、连 CartPole 环境都用 NumPy 手写，纯 PyTorch 实现 Double-DQN。已把智能体从随机策略训练到第 573 回合解决 CartPole（贪心 100 回合平均 478 ≥ 官方 475 线）。踩坑记录：朴素 DQN 反复震荡，靠 Double-DQN + 软更新目标网络 + 贪心评估才稳定收敛。下一步 PPO 与 MuJoCo 连续控制。</p>
-          <span class="p-tech">PyTorch · NumPy · Double-DQN · Replay Buffer · 软更新</span>
+          <p class="p-desc">为了真正理解强化学习，我从零实现了一个 Double-DQN——自己写了 CartPole 环境和训练算法，不借助现成的 RL 库，把智能体从随机策略训练到能稳定把杆平衡起来。过程中踩的坑（Q 值震荡、目标网络漂移）也一并记录了下来。下一步想试试连续控制的 PPO。</p>
+          <span class="p-tech">PyTorch · NumPy · Double-DQN · Replay Buffer</span>
           <a class="p-cta" href="projects/mujoco-rl.html">查看项目 →</a>
         </div>
       </div>
@@ -477,7 +477,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
           <span class="p-status plan">PLANNED</span>
         </div>
         <div>
-          <p class="p-desc">结合土木理论力学与运筹学最优化背景，用 RRT* / MPC 在仿真中实现机械臂无碰撞轨迹规划。这是我相对纯计科学生的差异化方向。</p>
+          <p class="p-desc">结合土木的理论力学与运筹学的最优化背景，用 RRT* / MPC 在仿真中实现机械臂的无碰撞轨迹规划。这是我愿意踏实投入的一个方向。</p>
           <span class="p-tech">Python · NumPy · Robotics · Optimization</span>
           <a class="p-cta" href="projects/arm-planning.html">在线体验 RRT* →</a>
         </div>

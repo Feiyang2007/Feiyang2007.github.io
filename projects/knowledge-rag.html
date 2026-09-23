@@ -110,8 +110,8 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="proj-meta"><span>2026.09</span><span class="dot">●</span><span>真实在线对话</span><span class="dot">●</span><span>语料 = 我的自学笔记</span></div>
     <p class="proj-lede">
       我把两年自学攒下的笔记（<strong>197 篇 Markdown、127 个代码文件</strong>）整理成一份语料库，
-      做了一个能用自然语言问答的机器人。检索是<strong>真·向量语义匹配</strong>（硅基流动 bge-m3，
-      文档向量预生成、运行时只嵌入问题），生成用 <strong>DeepSeek</strong>。下面是可直接交互的 demo。
+      做了一个能用自然语言问答的小工具。它先做<strong>向量语义检索</strong>（bge-m3 Embedding + 余弦相似度）
+      找出最相关的几段笔记，再交给 <strong>DeepSeek</strong> 组织成回答。下面是可以直接对话的 demo。
     </p>
     <div class="status-row">
       <span class="pill" id="modePill"><span class="led"></span><span id="modeText">初始化中…</span></span>
@@ -134,16 +134,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <span>你做过哪些项目？</span>
       <span>你现在最优先的事是什么？</span>
     </div>
-    <p class="hint" id="hint">先向量语义检索相关资料（top-k），再交给 DeepSeek 生成 · 每小时限 20 次</p>
-  </div>
-
-  <div class="cfg" id="cfgBox">
-    <h4>运行模式与密钥说明</h4>
-    <p style="margin-bottom:10px">为<strong>不在公开仓库泄露密钥</strong>，页面所有对外调用都走一个自建的 <b>Cloudflare Worker 代理</b>——密钥存在 Worker 的环境变量里，前端源码零密钥。</p>
-    <p style="margin-bottom:8px">① <b>向量检索</b>：文档向量已用 <b>bge-m3</b> 预生成在 <code>rag-vectors.js</code> 随站点发布；运行时只嵌入你输入的“问题”（经代理转发到硅基流动）。代理地址未配置时自动降级 <b>BM25 中文检索</b>，仍可按关键词命中，但无法调用大模型生成。</p>
-    <p style="margin-bottom:8px">② <b>状态</b>：代理已部署到 Cloudflare Worker（<code>rag-proxy.…workers.dev</code>），两个密钥存在 Worker 的 Secret 里、源码零密钥，且 CORS 限定为本站域名——线上访客可直接对话式问答。</p>
-    <p style="margin-bottom:8px">③ <b>限流</b>：前端已有每小时 20 次的本地限流；如需更严，可在 Worker 侧用 Cloudflare 的 Rate Limiting 规则或 KV 按 IP 限。</p>
-    <p style="margin-bottom:0">④ <b>本地运行（离线/无网也可用）</b>：想在完全离线或不想占用线上额度时，用仓库里的 <code>rag_local/run_rag.py</code> 起一个本地代理（密钥只读本机环境变量），打开 <code>http://127.0.0.1:8017/projects/knowledge-rag.html</code> 同样能对话式问答。详见 <code>rag_local/README.md</code>。</p>
+    <p class="hint" id="hint">先向量语义检索相关资料，再交给 DeepSeek 组织成回答</p>
   </div>
 
   <div class="info-grid">
@@ -159,7 +150,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <div class="tech-list"><span>Vanilla JS</span><span>硅基流动 SiliconFlow</span><span>bge-m3</span><span>BM25</span><span>余弦相似度</span><span>DeepSeek</span></div>
       <h3 style="margin-top:32px">检索管线</h3>
       <div class="pipe">
-        <div class="step"><div class="n">01</div><div class="t">语料</div><div class="d">40+ 段真实笔记</div></div>
+        <div class="step"><div class="n">01</div><div class="t">语料</div><div class="d">35 段真实笔记</div></div>
         <div class="arw">→</div>
         <div class="step"><div class="n">02</div><div class="t">Embedding</div><div class="d">bge-m3 向量 / BM25</div></div>
         <div class="arw">→</div>
@@ -217,10 +208,10 @@ const DOCS = [
   // —— 方向判断 ——
   ["方向","主攻具身智能大脑","长期目标：从事具身智能（Embodied AI）。定位很清晰——主攻‘大脑侧’：深度学习、强化学习、数据与仿真；‘身体侧’只做功能理解，不自己造硬件。核心信念：硬件已经相当成熟，真正拉开差距的是让机器在物理世界学习、决策、泛化的算法与数据。"],
   ["方向","为什么信大脑","判断依据：机械本体、电机、传感这些正在快速商品化，成本下降；而让机器人‘会思考、能泛化’的算法和数据是稀缺能力。所以我选择把有限的精力压在 DL/RL/数据/仿真这条大脑主线上。"],
-  ["方向","跨学科优势","相对纯计科学生的差异化资产：土木阶段学的理论力学通向机器人动力学；管理学的运筹学与最优化通向运动规划与轨迹优化（如 MPC）。物理直觉 + 优化思维是我转方向后能复用的底子。"],
+  ["方向","跨学科背景","我的底子有点特别：土木阶段学的理论力学通向机器人动力学；管理学的运筹学与最优化通向运动规划与轨迹优化（如 MPC）。物理直觉 + 优化思维，是我转方向后能复用的一点基础。"],
   // —— 学习节奏与特质 ——
   ["习惯","作息与强度","本科至今每周保持约 48 小时自学投入。作息：6:30 起，午饭后 13:00 午睡、14:00 起，24:00 睡。自学规模累计：完成 311/1281 讲课程、127 个代码文件、59 篇笔记、197 个 Markdown。"],
-  ["习惯","性格自评","很卷，闲不下来——‘996 哪怕在大学对我来说是休息’；但对自由时间有要求，反感被超长时间身不由己地绑死（卷要自己选）。性格偏内向、抗压、越挫越勇，同时也会焦虑——坚韧是行为模式，焦虑是情绪底色，两者不矛盾。"],
+  ["习惯","性格自评","能沉得下心、也比较能扛事，遇到挫折不太会轻易放弃；但我也重视自己的生活节奏，不喜欢被无意义地耗着。性格偏内向，会焦虑，不过更习惯把事情一步步往前推。"],
   ["习惯","决策原则","关键决策可反推原则：土木→大数据为求稳、且‘转专业不留级’是硬约束；不能再转专业，定了就往前冲。原则是——风险与收益权衡时，优先保住已有的筹码。考公考编对我是保底项，不是首选。"],
   ["技能","技能栈","主力语言 Python（NumPy/Pandas/Streamlit）；C 语言较好、C++ 了解基础；Sklearn、PyTorch 在系统学；AutoCAD 熟练、Revit 建模、工程制图。RAG/LangChain 跑通入门案例，MuJoCo 写了 hello world。"],
   ["技能","自学史","纸质自学史（大一及以前）：微积分、线性代数、理论物理、AutoCAD、Revit、工程制图都学过；大学物理的电磁学部分还没补。工具用 Obsidian 管理整个知识库。"],
@@ -451,8 +442,8 @@ function addMsg(role, text, opts={}){
 function setMode(mode){
   const pill=document.getElementById("modePill"), txt=document.getElementById("modeText");
   pill.classList.remove("ok","vec","warn");
-  if(mode==="vector"){ pill.classList.add("vec"); txt.textContent="检索模式：向量语义（bge-m3，经 Worker 代理）"; }
-  else if(mode==="bm25"){ pill.classList.add("warn"); txt.textContent="检索模式：BM25 中文（未配置 Worker 代理地址）"; }
+  if(mode==="vector"){ pill.classList.add("vec"); txt.textContent="检索模式：向量语义匹配"; }
+  else if(mode==="bm25"){ pill.classList.add("warn"); txt.textContent="检索模式：关键词匹配（离线）"; }
   else { txt.textContent="初始化中…"; }
   document.getElementById("docText").textContent = "语料 "+DOCS.length+" 段";
   document.getElementById("docPill").classList.add("ok");
@@ -495,8 +486,9 @@ async function ask(raw){
     addMsg("bot", answer, {srcs:srcHtml});
     history.push({role:"assistant", content:answer});
   }catch(e){
+    console.warn("RAG 调用出错：", e);
     document.getElementById("loadingMsg")?.remove();
-    addMsg("bot","调用出错："+e.message,{err:true});
+    addMsg("bot","这个问题我暂时没能答上来，稍后再试试～",{err:true});
   }
   sendBtn.disabled=false;
   qInput.focus();
