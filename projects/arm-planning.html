@@ -125,7 +125,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <button class="btn" id="btn-start">开始规划</button>
         <button class="btn ghost" id="btn-random">随机障碍</button>
         <button class="btn ghost" id="btn-reset">重置</button>
-        <span class="demo-status" id="status">就绪 · 迭代 <b id="iter">0</b> · 节点 <b id="nodes">0</b></span>
+        <span class="demo-status">迭代 <b id="iter">0</b> · 节点 <b id="nodes">1</b> · <span id="status">就绪</span></span>
       </div>
     </div>
 
@@ -248,7 +248,7 @@ reports/           <span class="c"># 规划结果图 + 指标</span>
     if(rafId) cancelAnimationFrame(rafId);
     document.getElementById('iter').textContent = '0';
     document.getElementById('nodes').textContent = '1';
-    document.getElementById('status').innerHTML = '就绪 · 点"开始规划"';
+    document.getElementById('status').textContent = '就绪';
     draw();
   }
 
@@ -299,7 +299,7 @@ reports/           <span class="c"># 规划结果图 + 指标</span>
     if(!running) return;
     if(iter >= MAX_ITER || path){
       running = false;
-      document.getElementById('status').innerHTML = path ? '找到路径 ✓ · 迭代 <b>'+iter+'</b>' : '迭代上限 · 未找到路径';
+      document.getElementById('status').textContent = path ? '找到路径 ✓' : '迭代上限 · 未找到路径';
       return;
     }
     iter++;
