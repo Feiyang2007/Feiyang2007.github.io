@@ -451,12 +451,12 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       </div>
       <div class="proj-item">
         <div class="p-left">
-          <a class="p-link" href="projects/mujoco-rl.html"><h4>强化学习从零实现（DQN → PPO）</h4></a>
+          <a class="p-link" href="projects/mujoco-rl.html"><h4>强化学习从零实现（DQN → PPO → MuJoCo）</h4></a>
           <span class="p-status">进行中</span>
         </div>
         <div>
-          <p class="p-desc">为了真正理解强化学习，我从零实现了两个算法：用 Double-DQN 解决离散控制的 CartPole，用 PPO 挑战连续控制的 Pendulum 倒立摆——环境和算法都自己写了一遍，不借助现成的 RL 库，都训练到能稳定把杆平衡起来。过程中踩的坑（Q 值震荡、共享主干导致策略学不动）也一并记录了下来。下一步想迁移到 MuJoCo。</p>
-          <span class="p-tech">PyTorch · NumPy · Double-DQN · PPO · GAE</span>
+          <p class="p-desc">为了真正理解强化学习，我从零实现了两个算法并一步步走向真实物理：用 Double-DQN 解决离散控制的 CartPole，用 PPO 挑战连续控制的 Pendulum，再把同一份 PPO 迁移到 MuJoCo 物理仿真的 InvertedPendulum（第 56 个 iteration 解决，确定性策略复测 20 局全部满分）。环境和算法都自己写，不借助现成 RL 库；踩过的坑（Q 值震荡、共享主干导致策略学不动）也一并记录。</p>
+          <span class="p-tech">PyTorch · NumPy · Double-DQN · PPO · GAE · MuJoCo</span>
           <a class="p-cta" href="projects/mujoco-rl.html">查看项目 →</a>
         </div>
       </div>
