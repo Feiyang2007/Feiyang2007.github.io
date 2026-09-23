@@ -67,13 +67,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
 <section><div class="wrap">
   <div class="proj-head">
-    <div class="proj-label">PROJECT 04 · LEARNING</div>
+    <div class="proj-label">PROJECT 04 · 进行中</div>
     <h1>LeRobot 行为克隆复现</h1>
-    <div class="proj-meta"><span>2026.09 — 学习中</span><span class="dot">●</span><span>示教数据 → 策略网络</span></div>
+    <div class="proj-meta"><span>2026.09 — BC 已跑通</span><span class="dot">●</span><span>示教数据 → 策略网络（纯监督模仿）</span></div>
     <p class="proj-lede">
-      在仿真环境中录制操作轨迹，用<strong>行为克隆（Behavior Cloning）</strong>
-      让神经网络从示教数据中学习"看到什么状态 → 做什么动作"。
-      这是从 RL 到真实机器人的桥梁——不需要奖励函数，只要人演示够多。
+      用<strong>行为克隆（Behavior Cloning）</strong>把"学策略"变成一个监督学习问题：
+      给定示教的 (状态 → 动作) 数据，让神经网络去拟合这个映射。这是从 RL 走向真实机器人的
+      入门路径，也是 LeRobot / OpenVLA 这类示教策略的底层范式。下面先用一个小画布给点直觉，
+      再放我用 PyTorch 实现的 BC 真实结果。
     </p>
   </div>
 
@@ -112,6 +113,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <button class="btn" id="bcClear" style="font-family:var(--mono);font-size:13px;padding:8px 18px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer">清空</button>
       <span style="font-family:var(--mono);font-size:12px;color:var(--muted)">示教点数：<b id="bcCount" style="color:var(--accent)">0</b></span>
     </div>
+    <div class="demo-note" style="margin-top:10px">↑ 这只是个"连点成线"的直觉小画布，帮你感受"从示教点拟合出一个映射"。真正的 BC 结果在下面。</div>
+  </div>
+
+  <div style="background:var(--paper-warm);border:1px solid var(--line);padding:28px;margin-top:20px">
+    <h3 style="margin-bottom:12px">真实 BC 结果 · PyTorch 实现（CartPole 示教克隆）</h3>
+    <p style="font-size:14.5px;color:var(--ink-soft);margin-bottom:16px;max-width:720px">用一个手写 PD 控制器当"示教者"，在 CartPole 上采了 14.7 万条 (状态 → 动作) 演示，再用一个 MLP 以交叉熵去模仿它。验证集动作预测准确率 <strong>99.6%</strong>；克隆出的策略在环境里 rollout 平均存活 <strong>485 步</strong>，和示教者基本一致。</p>
+    <img src="img/bc_curve.png" alt="BC 训练损失与验证准确率" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <div class="demo-note" style="margin-top:10px">↑ 左：模仿损失下降；右：验证集动作预测准确率升到 ~0.996。诚实说明：这次示教者是确定性规则、评估初始分布与演示一致，所以克隆几乎"照抄"了专家；BC 真正的难点是<strong>分布漂移（covariate shift）</strong>——这也是 DAgger 等方法要解决的问题。</div>
   </div>
 
   <div class="info-grid">
@@ -129,12 +138,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <div class="tech-list"><span>PyTorch</span><span>LeRobot</span><span>Behavior Cloning</span><span>MuJoCo</span><span>DAgger</span></div>
       <h3 style="margin-top:32px">代码结构</h3>
       <div class="code-block">
-<span class="c"># lerobot-bc/</span>
-collect.py       <span class="c"># 示教数据采集</span>
-dataset.py       <span class="c"># 数据加载与归一化</span>
-policy.py        <span class="c"># BC 策略网络</span>
-train.py         <span class="c"># 训练循环</span>
-eval.py          <span class="c"># rollout 评估</span>
+<span class="c"># behavior-cloning/</span>
+behavior_cloning.py  <span class="c"># 专家示教采集 + MLP 模仿训练 + rollout 评估，全流程</span>
+reports/             <span class="c"># 训练曲线 + 指标</span>
       </div>
     </div>
   </div>
