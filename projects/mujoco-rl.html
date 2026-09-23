@@ -157,71 +157,75 @@ train_mujoco.py  <span class="c"># 同一份 PPO 迁移到 MuJoCo InvertedPendul
   window.addEventListener('resize',function(){c.resize();});
 })();
 
-// CartPole 交互
+// CartPole 交互（标准物理：米制状态 + dt 积分，方向键真的能稳住）
 (function(){
   var cv = document.getElementById('cartpole');
   var ctx = cv.getContext('2d');
   var W = cv.width, H = cv.height;
-  var x = W/2, theta = 0, xVel = 0, thetaVel = 0;
-  var running = false, steps = 0, rafId = null;
-  var keys = {left:false, right:false};
+  // 物理常量（与 OpenAI CartPole 一致）
+  var GRAV=9.8, MC=1.0, MP=0.1, TOTAL=MC+MP, HALFLEN=0.5, POLELEN=2*HALFLEN,
+      FORCE=10, TAU=0.02, X_LIMIT=2.4, TH_LIMIT=12*Math.PI/180;
+  var x=0, xVel=0, theta=(Math.random()-.5)*0.08, thetaVel=0;
+  var running=false, steps=0, rafId=null;
+  var keys={left:false,right:false};
+  // 渲染比例
+  var PX_PER_M=(W-120)/(2*X_LIMIT), TRACK_Y=H-40, CART_H=16, CART_W=52;
 
   function reset(){
-    x = W/2; theta = (Math.random()-.5)*0.1; xVel = 0; thetaVel = 0;
-    steps = 0; document.getElementById('cpSteps').textContent = '0';
+    x=0; xVel=0; theta=(Math.random()-.5)*0.08; thetaVel=0;
+    steps=0; document.getElementById('cpSteps').textContent='0';
   }
-  function step(force){
-    var gravity = 9.8, cartMass = 1, poleMass = 0.1, length = 60;
-    var totalMass = cartMass + poleMass;
-    var temp = (force + poleMass*length*thetaVel*thetaVel*Math.sin(theta))/totalMass;
-    var thetaAcc = (gravity*Math.sin(theta) - Math.cos(theta)*temp) /
-                   (length*(4/3 - poleMass*Math.cos(theta)*Math.cos(theta)/totalMass));
-    var xAcc = temp - poleMass*length*thetaAcc*Math.cos(theta)/totalMass;
-    xVel += xAcc; thetaVel += thetaAcc;
-    x += xVel; theta += thetaVel;
+  function step(action){
+    var force=action*FORCE;
+    var cost=Math.cos(theta), sint=Math.sin(theta);
+    var temp=(force + MP*HALFLEN*thetaVel*thetaVel*sint)/TOTAL;
+    var thetaAcc=(GRAV*sint - cost*temp)/(HALFLEN*(4/3 - MP*cost*cost/TOTAL));
+    var xAcc=temp - MP*HALFLEN*thetaAcc*cost/TOTAL;
+    x += TAU*xVel; xVel += TAU*xAcc;
+    theta += TAU*thetaVel; thetaVel += TAU*thetaAcc;
     steps++;
-    document.getElementById('cpSteps').textContent = steps;
-    if(x<20||x>W-20||Math.abs(theta)>0.5||steps>500){running=false;return false;}
+    document.getElementById('cpSteps').textContent=steps;
+    if(Math.abs(x)>X_LIMIT || Math.abs(theta)>TH_LIMIT || steps>=500){running=false;return false;}
     return true;
   }
   function draw(){
     ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle = '#D6D1C3'; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0,H-40); ctx.lineTo(W,H-40); ctx.stroke();
-    // 小车
-    ctx.fillStyle = '#1F5F5B';
-    ctx.fillRect(x-25, H-55, 50, 15);
+    ctx.strokeStyle='#D6D1C3'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(40,TRACK_Y); ctx.lineTo(W-40,TRACK_Y); ctx.stroke();
+    var cx=W/2 + x*PX_PER_M, pivotY=TRACK_Y-CART_H/2;
     // 杆
-    ctx.strokeStyle = '#B5651D'; ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(x, H-55);
-    ctx.lineTo(x + Math.sin(theta)*60, H-55 - Math.cos(theta)*60);
-    ctx.stroke();
-    // 杆顶
-    ctx.fillStyle = '#B5651D';
-    ctx.beginPath(); ctx.arc(x + Math.sin(theta)*60, H-55 - Math.cos(theta)*60, 5, 0, Math.PI*2); ctx.fill();
+    var tipX=cx + Math.sin(theta)*POLELEN*PX_PER_M;
+    var tipY=pivotY - Math.cos(theta)*POLELEN*PX_PER_M;
+    ctx.strokeStyle='#B5651D'; ctx.lineWidth=5; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(cx,pivotY); ctx.lineTo(tipX,tipY); ctx.stroke();
+    // 小车
+    ctx.fillStyle='#1F5F5B';
+    ctx.fillRect(cx-CART_W/2, TRACK_Y-CART_H, CART_W, CART_H);
+    // 铰接点 & 杆顶
+    ctx.fillStyle='#16443F'; ctx.beginPath(); ctx.arc(cx,pivotY,4,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#B5651D'; ctx.beginPath(); ctx.arc(tipX,tipY,6,0,Math.PI*2); ctx.fill();
   }
   function loop(){
     if(!running) return;
-    var f = 0;
-    if(keys.left) f = -10;
-    if(keys.right) f = 10;
-    var ok = step(f);
+    var a=(keys.right?1:0)-(keys.left?1:0);
+    var ok=step(a);
     draw();
-    if(ok) rafId = requestAnimationFrame(loop);
+    if(ok) rafId=requestAnimationFrame(loop);
+    else { ctx.fillStyle='#C62828'; ctx.font='16px monospace';
+           ctx.fillText(steps>=500?'撑满 500 步！🎉':'杆倒了 / 出界了 · 存活 '+steps+' 步，点开始再试', 40, 30); }
   }
   document.getElementById('cpStart').addEventListener('click', function(){
-    reset(); running = true; loop();
+    reset(); running=true; loop();
   });
   window.addEventListener('keydown', function(e){
-    if(e.key==='ArrowLeft') keys.left = true;
-    if(e.key==='ArrowRight') keys.right = true;
+    if(e.key==='ArrowLeft'){keys.left=true;e.preventDefault();}
+    if(e.key==='ArrowRight'){keys.right=true;e.preventDefault();}
   });
   window.addEventListener('keyup', function(e){
-    if(e.key==='ArrowLeft') keys.left = false;
-    if(e.key==='ArrowRight') keys.right = false;
+    if(e.key==='ArrowLeft') keys.left=false;
+    if(e.key==='ArrowRight') keys.right=false;
   });
-  draw();
+  reset(); draw();
 })();
 </script>
 </body></html>
