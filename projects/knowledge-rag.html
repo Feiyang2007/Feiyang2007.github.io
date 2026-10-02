@@ -189,7 +189,7 @@ const CONFIG = {
   // 已部署的代理地址（密钥存在 Worker 的 Secret 里，源码零密钥）：
   PROXY_BASE: "https://rag-proxy.chenfeiyang20071228.workers.dev",
 
-  DEEPSEEK_MODEL: "deepseek-chat",   // 生成模型（Worker 内转发到 DeepSeek）
+  DEEPSEEK_MODEL: "deepseek-flash",   // 生成模型（Worker 内转发到 DeepSeek）
   EMBED_MODEL: "BAAI/bge-m3",        // 嵌入模型（需与 rag-vectors.js 生成时一致；Worker 内转发到硅基流动）
 
   TOP_K: 5,            // 检索返回的片段数
@@ -409,7 +409,9 @@ async function generate(query, topDocs, history){
   const resp = await fetch(CONFIG.PROXY_BASE.replace(/\/$/,"") + "/chat/completions",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({ model:CONFIG.DEEPSEEK_MODEL, messages, temperature:0.6, max_tokens:400 })
+    // deepseek-flash 默认开启思考模式：思考 token 会计入 max_tokens，
+    // 且思考模式下 temperature 不生效（传了不报错但会被忽略），故此处不再传 temperature
+    body: JSON.stringify({ model:CONFIG.DEEPSEEK_MODEL, messages, max_tokens:4000 })
   });
   if(!resp.ok){
     const t = await resp.text();
