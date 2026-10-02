@@ -49,7 +49,7 @@ curl -s -X POST <WORKER>/embeddings -H "Content-Type: application/json" \
 
 # 生成
 curl -s -X POST <WORKER>/chat/completions -H "Content-Type: application/json" \
-  -d '{"model":"deepseek-chat","messages":[{"role":"user","content":"说你好"}],"max_tokens":20}' | head -c 200
+  -d '{"model":"deepseek-flash","messages":[{"role":"user","content":"说你好"}],"max_tokens":20}' | head -c 200
 ```
 两条都返回 JSON 即代理 OK，网页的向量检索 + 生成就会全部点亮。
 

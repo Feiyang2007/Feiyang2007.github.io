@@ -10,7 +10,7 @@
 | 页面发来的请求        | 本服务器转发到            | 作用             | 用到的密钥                  |
 |-----------------------|---------------------------|------------------|-----------------------------|
 | `POST /embeddings`       | 硅基流动 `bge-m3`          | 把问题变成向量   | `SILICONFLOW_CN_API_KEY`     |
-| `POST /chat/completions` | DeepSeek `deepseek-chat`   | 生成自然回答     | `DEEPSEEK_API_KEY`           |
+| `POST /chat/completions` | DeepSeek `deepseek-flash`  | 生成自然回答     | `DEEPSEEK_API_KEY`           |
 
 同时它把整个 `site/` 目录当静态站托管，并在返回 `projects/knowledge-rag.html` 时，
 自动把页面里的占位符 `__PROXY_BASE__` 换成 `http://127.0.0.1:<端口>`。
