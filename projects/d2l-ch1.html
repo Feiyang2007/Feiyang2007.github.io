@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>动手学深度学习 · 第一章实践 — 陈斐阳</title>
+<meta name="description" content="跟着《动手学深度学习》从零实现线性回归、Softmax 回归与多层感知机，并做了一个可交互的欠拟合/过拟合（偏差-方差）可视化演示。">
+<link rel="canonical" href="https://feiyang2007.github.io/projects/d2l-ch1.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--bad:#C62828;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:720px){.nav-links{display:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+.proj-head{padding:32px 0 48px}
+.proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4vw,48px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
+.proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.proj-meta .dot{color:var(--accent)}
+.proj-lede{font-size:18px;line-height:1.6;max-width:720px;color:var(--ink-soft);font-weight:300}
+.proj-lede strong{font-weight:600;color:var(--ink)}
+h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
+.stat-row{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);margin:8px 0 40px;flex-wrap:wrap}
+.stat{background:var(--paper-warm);padding:20px 22px;flex:1;min-width:150px}
+.stat .num{font-family:var(--serif);font-size:30px;font-weight:600;color:var(--accent-deep);display:block;line-height:1;margin-bottom:8px}
+.stat .lbl{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
+.info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
+.info-block p strong{color:var(--ink);font-weight:600}
+.info-block ul{margin:0 0 14px 20px;font-size:15px;color:var(--ink-soft);line-height:1.8}
+.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border-radius:2px;margin:8px 0 28px;white-space:pre}
+.code-block .c{color:#8A8678}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px;background:#fff}
+.demo-wrap{background:var(--paper-warm);border:1px solid var(--line);padding:24px;margin:8px 0 40px}
+#fitCanvas{background:#fff;border:1px solid var(--line);display:block;width:100%;height:auto;max-width:860px}
+.demo-controls{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:18px}
+.demo-controls label{font-family:var(--mono);font-size:13px;color:var(--ink-soft)}
+input[type=range]{width:200px;accent-color:var(--accent)}
+.btn{font-family:var(--mono);font-size:13px;padding:9px 18px;border:1px solid var(--accent);background:var(--accent);color:var(--paper);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--accent)}
+.fit-readout{display:flex;gap:22px;flex-wrap:wrap;align-items:baseline;margin-top:16px;font-family:var(--mono);font-size:13px;color:var(--muted)}
+.fit-readout .big{font-family:var(--serif);font-size:20px;font-weight:600}
+#fitStatus.under{color:var(--warn)}#fitStatus.good{color:var(--accent-deep)}#fitStatus.over{color:var(--bad)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
+  <div class="nav-links">
+    <a href="../index.html#about">About</a>
+    <a href="../index.html#projects">Projects</a>
+    <a href="../index.html#now">Now</a>
+    <a href="../index.html#contact">Contact</a>
+  </div>
+</div></nav>
+
+<div class="wrap"><div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>动手学深度学习 · 第一章</div></div>
+
+<section><div class="wrap">
+  <div class="proj-head">
+    <div class="proj-label">PROJECT 07 · 学习中</div>
+    <h1>动手学深度学习 · 第一章实践</h1>
+    <div class="proj-meta"><span>2026.09</span><span class="dot">●</span><span>《动手学深度学习》跟做</span><span class="dot">●</span><span>PyTorch 从零实现</span></div>
+    <p class="proj-lede">
+      我把李沐《动手学深度学习》第一章的每个基础模型都<strong>亲手实现了一遍</strong>：
+      线性回归（含手写的 SGD 训练循环）、Softmax 回归、多层感知机（MLP），
+      并在 FashionMNIST / MNIST 上训练。下面这个可交互的小演示，是我在学「模型复杂度与泛化」时做的——
+      拖动多项式的阶数，实时看<strong>欠拟合 → 恰好拟合 → 过拟合</strong>是怎么发生的。
+    </p>
+  </div>
+
+  <div class="demo-wrap">
+    <h3 style="margin-bottom:8px">交互演示：欠拟合 / 过拟合（偏差-方差）</h3>
+    <p style="font-size:14px;color:var(--muted);margin-bottom:16px;max-width:760px">
+      真实规律是一条正弦曲线（灰色虚线），我用它生成了一小撮带噪声的采样点。
+      现在用不同阶数的多项式去拟合它：<strong>阶数太低</strong>连趋势都抓不住（欠拟合），<strong>阶数太高</strong>会连噪声一起硬记下来、在点之间乱抖（过拟合）。
+      看下面「测试误差」什么时候最小——那才是泛化最好的地方。
+    </p>
+    <canvas id="fitCanvas" width="860" height="440"></canvas>
+    <div class="legend">
+      <span><i style="background:#9a958a"></i>真实函数</span>
+      <span><i style="background:#1F5F5B"></i>模型拟合曲线</span>
+      <span><i style="background:#B5651D;width:8px;height:8px;border-radius:50%"></i>训练点</span>
+      <span><i style="background:#6E6A60;width:8px;height:8px;border-radius:50%"></i>测试点</span>
+    </div>
+    <div class="demo-controls">
+      <label>多项式阶数 <b id="degVal">1</b></label>
+      <input type="range" id="degSlider" min="1" max="12" step="1" value="1">
+      <label>训练点数 <b id="nVal">10</b></label>
+      <input type="range" id="nSlider" min="6" max="40" step="1" value="10">
+      <button class="btn ghost" id="resample">重新采样</button>
+    </div>
+    <div class="fit-readout">
+      <span>状态：<b class="big" id="fitStatus">—</b></span>
+      <span>训练误差 RMSE：<b class="big" id="trainRmse">—</b></span>
+      <span>测试误差 RMSE：<b class="big" id="testRmse">—</b></span>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><span class="num">3</span><span class="lbl">从零实现的基础模型</span></div>
+    <div class="stat"><span class="num">1000</span><span class="lbl">线性回归合成样本</span></div>
+    <div class="stat"><span class="num">256</span><span class="lbl">MLP 隐藏单元</span></div>
+    <div class="stat"><span class="num">10</span><span class="lbl">训练 epoch</span></div>
+  </div>
+
+  <h3>真实写过的代码（节选）</h3>
+  <p style="font-size:15px;color:var(--ink-soft);margin-bottom:8px">线性回归：数据、模型、损失、以及手写的随机梯度下降更新，全部自己写，不调 <code>nn.Linear</code>。</p>
+  <div class="code-block"><span class="c"># 手写模型与损失</span>
+def my_model(feature, w, b):
+    return feature @ w + b
+def my_loss(y_hat, y):
+    return ((y_hat - y.reshape(y_hat.shape)) ** 2 / len(y)).sum()
+
+<span class="c"># 手写 SGD：求梯度 → 更新参数 → 梯度清零</span>
+def sgd(feature, label, lr=0.03):
+    global w, b
+    y_hat = my_model(feature, w, b)
+    loss = my_loss(y_hat, label)
+    loss.backward()
+    with torch.no_grad():
+        w -= lr * w.grad
+        b -= lr * b.grad
+    w.grad.zero_(); b.grad.zero_()</div>
+  <p style="font-size:15px;color:var(--ink-soft);margin-bottom:8px">多层感知机：手动声明两层权重 W1/b1、W2/b2，中间接 ReLU，在 FashionMNIST（784→256→10）上训练。</p>
+  <div class="code-block">nums_inputs, nums_hiddens, nums_outputs = 784, 256, 10
+W1 = nn.Parameter(torch.tensor(np.random.normal(0, 0.01, (nums_inputs, nums_hiddens)), dtype=torch.float))
+b1 = nn.Parameter(torch.zeros(nums_hiddens, dtype=torch.float))
+W2 = nn.Parameter(torch.tensor(np.random.normal(0, 0.01, (nums_hiddens, nums_outputs)), dtype=torch.float))
+b2 = nn.Parameter(torch.zeros(nums_outputs, dtype=torch.float))
+
+def net(X):
+    X = X.reshape((-1, nums_inputs))
+    H = relu(X @ W1 + b1)   <span class="c"># 隐藏层</span>
+    return H @ W2 + b2      <span class="c"># 输出层</span></div>
+
+  <div class="info-grid">
+    <div class="info-block">
+      <h3>这一章我真正搞懂了什么</h3>
+      <ul>
+        <li>「训练」的本质就是：定义损失 → 对参数求梯度 → 沿梯度反方向挪一小步，反复做。</li>
+        <li>Softmax 把任意实数打分变成一组和为 1 的概率，交叉熵再把它变成可优化的分类损失。</li>
+        <li>模型容量、数据量、泛化三者是相互拉扯的——这也是上面那个演示想让人「一眼看到」的东西。</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>下一步</h3>
+      <p>继续往《动手学深度学习》后面的章节推进（卷积神经网络、循环神经网络），把第一章打下的「从零实现」习惯保持下去，并与已有的手写数字 CNN、强化学习项目串成一条完整的学习路径。</p>
+      <div class="tech-list"><span>Python</span><span>PyTorch</span><span>NumPy</span><span>Matplotlib</span><span>FashionMNIST</span></div>
+    </div>
+  </div>
+</div></section>
+
+<footer>© 2026 Feiyang Chen · Hunan University · Last updated September 2026</footer>
+
+<script>
+// 交互式「欠拟合/过拟合」演示：多项式最小二乘拟合带噪声的正弦数据
+(function(){
+  var cv=document.getElementById('fitCanvas'), ctx=cv.getContext('2d');
+  var W=cv.width, H=cv.height, PAD=46;
+  var XMIN=-1.15,XMAX=1.15,YMIN=-1.5,YMAX=1.5;
+  function sx(x){return PAD+(x-XMIN)/(XMAX-XMIN)*(W-2*PAD);}
+  function sy(y){return H-PAD-(y-YMIN)/(YMAX-YMIN)*(H-2*PAD);}
+  function trueF(x){return Math.sin(Math.PI*x);}
+  // 可复现随机数
+  var seed=12345;
+  function setSeed(s){seed=s>>>0;}
+  function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
+  function gauss(){var u=0,v=0;while(u===0)u=rnd();while(v===0)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+  var train=[], test=[], NOISE=0.2;
+  function genData(nTrain){
+    train=[];test=[];
+    for(var i=0;i<nTrain;i++){var x=XMIN+ (i/(nTrain-1||1))*(XMAX-XMIN)*0.92; var xx=Math.max(XMIN,Math.min(XMAX,x)); train.push({x:xx,y:trueF(xx)+NOISE*gauss()});}
+    for(var j=0;j<48;j++){var tx=-1+2*rnd(); test.push({x:tx,y:trueF(tx)+NOISE*gauss()});}
+  }
+  // 多项式最小二乘（正规方程 + 高斯消元 + 微小岭正则防数值爆炸）
+  function polyfit(pts,deg){
+    var m=deg+1, i,j,k;
+    var A=[], rhs=[];
+    for(i=0;i<m;i++){A.push(new Array(m).fill(0)); rhs.push(0);}
+    for(i=0;i<m;i++){
+      for(j=0;j<m;j++){var s=0;for(k=0;k<pts.length;k++){s+=Math.pow(pts[k].x,i+j);}A[i][j]=s;}
+      var r=0;for(k=0;k<pts.length;k++){r+=Math.pow(pts[k].x,i)*pts[k].y;}rhs[i]=r;
+    }
+    for(i=0;i<m;i++){A[i][i]+=1e-8;} // ridge
+    // 高斯消元（部分主元）
+    for(i=0;i<m;i++){
+      var piv=i;for(j=i+1;j<m;j++){if(Math.abs(A[j][i])>Math.abs(A[piv][i]))piv=j;}
+      var tmp=A[i];A[i]=A[piv];A[piv]=tmp;tmp=rhs[i];rhs[i]=rhs[piv];rhs[piv]=tmp;
+      if(Math.abs(A[i][i])<1e-12)continue;
+      for(j=i+1;j<m;j++){var f=A[j][i]/A[i][i];for(k=i;k<m;k++)A[j][k]-=f*A[i][k];rhs[j]-=f*rhs[i];}
+    }
+    var c=new Array(m).fill(0);
+    for(i=m-1;i>=0;i--){var sum=rhs[i];for(j=i+1;j<m;j++)sum-=A[i][j]*c[j];c[i]=Math.abs(A[i][i])<1e-12?0:sum/A[i][i];}
+    return c;
+  }
+  function polyval(c,x){var y=0;for(var i=0;i<c.length;i++)y+=c[i]*Math.pow(x,i);return y;}
+  function rmse(c,pts){var s=0;for(var i=0;i<pts.length;i++){var d=polyval(c,pts[i].x)-pts[i].y;s+=d*d;}return Math.sqrt(s/pts.length);}
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // 坐标轴
+    ctx.strokeStyle='#E4DFD2';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(sx(0),sy(YMIN));ctx.lineTo(sx(0),sy(YMAX));ctx.moveTo(sx(XMIN),sy(0));ctx.lineTo(sx(XMAX),sy(0));ctx.stroke();
+    // 真实函数
+    ctx.strokeStyle='#9a958a';ctx.lineWidth=1.5;ctx.setLineDash([5,4]);ctx.beginPath();
+    for(var x=XMIN;x<=XMAX;x+=0.01){var px=sx(x),py=sy(trueF(x));if(x===XMIN)ctx.moveTo(px,py);else ctx.lineTo(px,py);}ctx.stroke();ctx.setLineDash([]);
+    // 拟合曲线
+    var deg=parseInt(document.getElementById('degSlider').value,10);
+    var c=polyfit(train,deg);
+    ctx.strokeStyle='#1F5F5B';ctx.lineWidth=2.5;ctx.beginPath();var started=false;
+    for(var xx=XMIN;xx<=XMAX;xx+=0.005){var yy=polyval(c,xx);if(!isFinite(yy)||Math.abs(yy)>50){started=false;continue;}var Y=Math.max(YMIN,Math.min(YMAX,yy));var px2=sx(xx),py2=sy(Y);if(!started){ctx.moveTo(px2,py2);started=true;}else ctx.lineTo(px2,py2);}ctx.stroke();
+    // 测试点
+    ctx.fillStyle='#6E6A60';for(var t=0;t<test.length;t++){ctx.beginPath();ctx.arc(sx(test[t].x),sy(test[t].y),2.4,0,Math.PI*2);ctx.fill();}
+    // 训练点
+    ctx.fillStyle='#B5651D';for(var p=0;p<train.length;p++){ctx.beginPath();ctx.arc(sx(train[p].x),sy(train[p].y),4,0,Math.PI*2);ctx.fill();}
+    // 读数
+    var tr=rmse(c,train), te=rmse(c,test);
+    document.getElementById('trainRmse').textContent=tr.toFixed(3);
+    document.getElementById('testRmse').textContent=te.toFixed(3);
+    var st=document.getElementById('fitStatus'), cls, txt;
+    if(tr>0.45){cls='under';txt='欠拟合';}
+    else if(te-tr>0.28){cls='over';txt='过拟合';}
+    else {cls='good';txt='拟合良好';}
+    st.textContent=txt;st.className='big '+cls;
+  }
+  function refreshN(){document.getElementById('nVal').textContent=document.getElementById('nSlider').value;}
+  function refreshDeg(){document.getElementById('degVal').textContent=document.getElementById('degSlider').value;}
+
+  document.getElementById('degSlider').addEventListener('input',function(){refreshDeg();draw();});
+  document.getElementById('nSlider').addEventListener('input',function(){refreshN();genData(parseInt(this.value,10));draw();});
+  document.getElementById('resample').addEventListener('click',function(){setSeed((Math.random()*1e9)>>>0);genData(parseInt(document.getElementById('nSlider').value,10));draw();});
+
+  setSeed(12345);genData(10);refreshDeg();refreshN();draw();
+})();
+</script>
+</body></html>
