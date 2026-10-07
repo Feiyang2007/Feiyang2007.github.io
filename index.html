@@ -76,8 +76,9 @@ section{scroll-margin-top:72px}
 
 /* ===== 布局容器 ===== */
 .wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
-section{padding:96px 0;border-bottom:1px solid var(--line)}
+section{padding:120px 0;border-bottom:1px solid var(--line)}
 section:last-of-type{border-bottom:none}
+@media(max-width:720px){section{padding:80px 0}}
 
 /* ===== Hero ===== */
 .hero{padding:160px 0 88px;border-bottom:1px solid var(--line)}
@@ -139,13 +140,13 @@ h1.hero-name{
 
 /* ===== 区块通用 ===== */
 .section-label{
-  font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;
-  color:var(--accent);margin-bottom:14px;
+  font-family:var(--mono);font-size:13.5px;letter-spacing:.16em;
+  color:var(--accent);margin-bottom:18px;
 }
 h2{
   font-family:var(--serif);font-weight:600;
-  font-size:clamp(28px,3.4vw,40px);line-height:1.15;
-  letter-spacing:-.005em;margin-bottom:36px;
+  font-size:clamp(32px,4.2vw,52px);line-height:1.12;
+  letter-spacing:-.01em;margin-bottom:44px;
 }
 .prose{max-width:720px}
 .prose p{margin-bottom:18px;color:var(--ink-soft)}
@@ -154,6 +155,10 @@ h2{
 /* ===== About ===== */
 .about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:64px;align-items:start}
 @media(max-width:860px){.about-grid{grid-template-columns:1fr;gap:40px}}
+.about-band{margin:0 0 56px;border:1px solid var(--line)}
+.about-band img{width:100%;height:auto;display:block}
+.chip-cloud{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.chip-cloud .chip{padding:8px 18px}
 .fact-list{border-top:1px solid var(--line)}
 .fact-row{
   display:grid;grid-template-columns:140px 1fr;gap:20px;
@@ -375,27 +380,33 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <section id="about">
   <div class="wrap">
     <div class="section-label">01 — ABOUT</div>
-    <h2>一个从纸面走向代码的人。</h2>
+    <h2>从纸面走向代码。</h2>
+    <figure class="about-band">
+      <img src="projects/img/band_journey.webp" alt="从土木图纸到机器人：成长路径插画" loading="lazy" width="1536" height="864">
+    </figure>
     <div class="about-grid">
       <div class="prose">
-        <p>我是四川遂宁人，2007年生，2025年考入湖南大学。大一在土木工程学院系统学习了
-        <strong>理论力学、工程制图、大学物理</strong>与工程软件（AutoCAD / Revit）；
-        大二为了走向算法与数据，转入工商管理学院大数据管理与应用专业，<strong>未留级</strong>，
-        课程体系完整衔接。</p>
-        <p>我的学习方式偏"从数学物理理解、再落代码"。本科至今每周保持约48小时自学，
-        用一套自己维护的 Obsidian 知识库（同步到 GitHub）记录每一门课、每一段代码、
-        每一次决策。我习惯<strong>诚实地标注自己在每一件事上的真实位置</strong>——
-        是自己做的、跑通的，还是仅仅 clone 观摩的。</p>
-        <p>目前我的重心是两件事：把专业核心课的成绩稳步推高，
-        同时在课外系统补齐具身智能"大脑侧"所需的机器学习、深度学习与强化学习基础。</p>
+        <p style="font-size:19px;line-height:1.8">
+          大一土木（理论力学 / 工程制图），大二转入<strong>大数据管理与应用</strong>。
+          我相信智能的本体在<strong>算法与数据</strong>——所以从数学物理出发，
+          一步一步把每样东西亲手写进代码里。
+        </p>
+        <p style="font-size:15px;color:var(--muted)">
+          用一套自己维护的 Obsidian 知识库记录每一门课、每一段代码；诚实标注每件事的真实位置——自己做的、跑通的，还是仅 clone 观摩的。
+        </p>
+        <div class="chip-cloud">
+          <span class="chip">四川 · 遂宁</span>
+          <span class="chip">2007 年生</span>
+          <span class="chip">湖南大学 · 工商管理学院</span>
+          <span class="chip">2029 管理学学士（预期）</span>
+          <span class="chip">具身智能 · 大脑侧</span>
+        </div>
       </div>
       <div>
         <div class="fact-list">
-          <div class="fact-row"><span class="k">本科</span><span class="v">湖南大学 · 工商管理学院 · 大数据管理与应用（商务大数据）2502</span></div>
+          <div class="fact-row"><span class="k">本科</span><span class="v">大数据管理与应用（商务大数据）2502</span></div>
           <div class="fact-row"><span class="k">原专业</span><span class="v">土木工程（2025—2026）</span></div>
-          <div class="fact-row"><span class="k">授位</span><span class="v">管理学学士（2029预期）</span></div>
           <div class="fact-row"><span class="k">方向</span><span class="v">具身智能 / Embodied AI（学习算法侧）</span></div>
-          <div class="fact-row"><span class="k">高考</span><span class="v">四川 627 分 · 省排名 10101（2025）</span></div>
           <div class="fact-row"><span class="k">语言</span><span class="v">中文母语；英语持续提升中</span></div>
           <div class="fact-row"><span class="k">GitHub</span><span class="v"><a href="https://github.com/Feiyang2007" target="_blank" rel="noopener">github.com/Feiyang2007</a></span></div>
         </div>
@@ -410,32 +421,21 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="section-label">02 — DIRECTION</div>
     <h2>为什么是具身智能。</h2>
     <p class="dir-thesis">"硬件已经是相当成熟的商品。<br>真正还在拉开差距的，是大脑——让机器在物理世界里学习、决策、泛化的算法与数据。"</p>
-    <div class="prose">
-      <p>我把方向收敛到<strong>大脑侧</strong>：深度学习、强化学习、数据与仿真。
-      身体侧（机械结构、电路、驱动）我只做到功能理解，不打算自己造硬件——
-      这既是资源约束下的理性选择，也是我对这个领域价值分布的判断。</p>
-    </div>
     <div class="dir-pillars">
       <div class="pillar">
         <span class="tag">MY EDGE</span>
         <h4>跨学科的底子</h4>
-        <p>土木阶段的<strong>理论力学</strong>通向机器人动力学；
-        管理学的<strong>运筹学与最优化</strong>通向运动规划与轨迹优化（MPC）。
-        这些是我转方向后能复用的一点底子。</p>
+        <p>理论力学 → 机器人动力学；运筹与最优化 → 运动规划（MPC）。转方向后能直接复用的底子。</p>
       </div>
       <div class="pillar">
         <span class="tag">CURRENT GAP</span>
         <h4>身体侧仍是短板</h4>
-        <p>机器人学与控制的自评仍然很低；强化学习刚从零跑通
-        DQN / PPO，还在入门段。这是具身方向真正的门槛，
-        也是我接下来两年要重点补的——先用 MuJoCo / Isaac 在仿真里把它跑通。</p>
+        <p>机器人学与控制自评仍低，强化学习刚入门。这是接下来两年重点补的——先在 MuJoCo / Isaac 仿真里跑通。</p>
       </div>
       <div class="pillar">
         <span class="tag">PATH</span>
         <h4>先仿真，后实物</h4>
-        <p>一个带磁编码器的舵机要一百多、一套机械臂 3D 打印要两百多。
-        在没有进组、没有报销渠道之前，仿真控制是成本最低、
-        也最能暴露算法问题的路线。</p>
+        <p>一套机械臂硬件几百元起步。在进组之前，仿真控制是成本最低、也最能暴露算法问题的路线。</p>
       </div>
     </div>
   </div>
@@ -452,7 +452,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <div class="t-axis"><div class="t-dot"></div></div>
         <div class="t-body">
           <h4>进入湖南大学 · 土木工程</h4>
-          <p>系统学习高等数学、线性代数、大学物理、理论力学、工程制图；自学微积分、理论物理；熟练使用 AutoCAD 与 Revit，完成建模作业。担任土木2502班长、土木院25届年级会学习股股长。</p>
+          <p>高等数学 / 线性代数 / 理论力学 / 工程制图打底；熟练 AutoCAD 与 Revit。任土木2502班长。</p>
           <span class="chip">高数AⅠ 86</span><span class="chip">线代A 83</span>
         </div>
       </div>
@@ -461,7 +461,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <div class="t-axis"><div class="t-dot"></div></div>
         <div class="t-body">
           <h4>第一次接触编程与 AI</h4>
-          <p>开始系统学 Python（NumPy / Pandas / Matplotlib / Streamlit），跟进 C 语言课程至动态内存分配（150/165）。明确兴趣从土木转向算法与数据。</p>
+          <p>系统学 Python 与数据栈，跟进 C 语言。兴趣从土木转向算法与数据。</p>
           <span class="chip">Python 主力</span><span class="chip">C 91%</span>
         </div>
       </div>
@@ -470,7 +470,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <div class="t-axis"><div class="t-dot"></div></div>
         <div class="t-body">
           <h4>锁定方向：具身智能</h4>
-          <p>开始 T800 具身智能开发课程、MuJoCo hello world、机械臂 URDF 与 LeRobot 行为克隆课程；观摩开源 T800 项目代码（明确标注：仅 clone 观摩，非复现）。同步学习 RAG / LangChain / Agent，跑通 OpenAI 接口调用与流式输出入门案例。</p>
+          <p>T800 课程、MuJoCo 仿真、URDF 建模、LeRobot 行为克隆（开源项目仅 clone 观摩，非复现）；同步跑通 RAG / Agent 入门案例。</p>
           <span class="chip">MuJoCo</span><span class="chip">URDF</span><span class="chip">RAG</span>
         </div>
       </div>
@@ -479,7 +479,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <div class="t-axis"><div class="t-dot"></div></div>
         <div class="t-body">
           <h4>转入大数据管理与应用</h4>
-          <p>未留级转入工管院，数学与力学学分全部带入，课程体系完整衔接。本学期重点补概率论、数据库、机器学习与深度学习，同时完成六个自学小项目并上线个人网站。</p>
+          <p>未留级转入工管院，学分全部带入。本学期补概率论 / 数据库 / 机器学习，完成六个自学项目并上线个人网站。</p>
           <span class="chip">Sklearn</span><span class="chip">PyTorch</span><span class="chip">概率论</span>
         </div>
       </div>
@@ -488,7 +488,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <div class="t-axis"><div class="t-dot now"></div></div>
         <div class="t-body">
           <h4>第一次微调 VLA 基础模型</h4>
-          <p>在 AutoBio 机器人操作基准上修复上游代码并完成 π0 的 LoRA 微调：单张 RTX 5090 训练 7.5 小时，thermal_cycler_close 任务从 zero-shot 0/6 到 18/20（90%），权重与评测数据全部公开。从"调用模型"走到了"微调模型"。</p>
+          <p>AutoBio 基准上修复上游代码并 LoRA 微调 π0：单卡 7.5 小时，0/6 → 18/20（90%），权重公开。从「调用模型」走到「微调模型」。</p>
           <span class="chip">π0</span><span class="chip">LoRA</span><span class="chip">JAX</span><span class="chip">18/20</span>
         </div>
       </div>
@@ -614,6 +614,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="wrap">
     <div class="section-label">05 — SKILLS</div>
     <h2>现在站在哪里。</h2>
+    <figure class="about-band" style="margin:0 0 56px">
+      <img src="projects/img/band_climb.webp" alt="登山路径与里程碑插画：学习轨迹" loading="lazy" width="1536" height="810">
+    </figure>
     <div class="skills-grid">
       <div>
         <canvas id="radar" width="520" height="430"></canvas>
@@ -625,21 +628,20 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <div class="skill-cat">
           <h5>编程与工程</h5>
           <div class="skill-row"><span class="name">Python（NumPy / Pandas / Streamlit）</span><span class="lvl on">熟练</span></div>
-          <div class="skill-row"><span class="name">C 语言</span><span class="lvl">入门 · 150/165</span></div>
+          <div class="skill-row"><span class="name">C 语言</span><span class="lvl">入门</span></div>
           <div class="skill-row"><span class="name">C++ / Java</span><span class="lvl">了解基础</span></div>
           <div class="skill-row"><span class="name">SQL / Git / Linux</span><span class="lvl">基础</span></div>
         </div>
         <div class="skill-cat">
           <h5>机器学习 / 深度学习</h5>
-          <div class="skill-row"><span class="name">Scikit-learn 建模流程</span><span class="lvl">学习中 · 24/129</span></div>
-          <div class="skill-row"><span class="name">PyTorch 神经网络</span><span class="lvl">学习中 · 21/108</span></div>
+          <div class="skill-row"><span class="name">Scikit-learn 建模流程</span><span class="lvl">学习中</span></div>
+          <div class="skill-row"><span class="name">PyTorch 神经网络</span><span class="lvl">学习中</span></div>
           <div class="skill-row"><span class="name">RAG / LangChain / Agent</span><span class="lvl">入门案例已跑通</span></div>
           <div class="skill-row"><span class="name">强化学习</span><span class="lvl">进行中 · DQN / PPO 已跑通</span></div>
         </div>
         <div class="skill-cat">
           <h5>机器人 / 仿真</h5>
           <div class="skill-row"><span class="name">MuJoCo / URDF / LeRobot</span><span class="lvl">学习中</span></div>
-          <div class="skill-row"><span class="name">T800 开发课程</span><span class="lvl">2/21（观摩）</span></div>
         </div>
         <div class="skill-cat">
           <h5>数理与工程</h5>
@@ -674,8 +676,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </tbody>
       </table>
       <p style="font-size:13px;color:var(--muted);margin-top:14px;max-width:680px">
-        从土木到大数据，学分全部带入、未留级，所有课程均为初修、没有刷分记录。
-        我更看重这条「转专业之后还能稳步向上」的轨迹本身。
+        学分全部带入、未留级、全部初修。我更看重「转专业之后还能稳步向上」这条轨迹。
       </p>
     </div>
 
@@ -713,14 +714,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <span class="when">2026.09 — 11</span>
         <div class="what">
           <h4>创新创业人才试点班（机器人方向）</h4>
-          <p>报名材料已提交，11 月初综合面试。在不影响核心课成绩的前提下参与，作为跨进机器人方向的一次练习。</p>
+          <p>11 月初综合面试。作为跨进机器人方向的一次练习。</p>
         </div>
       </div>
       <div class="now-item">
         <span class="when">持续</span>
         <div class="what">
           <h4>打基础 & 前沿阅读</h4>
-          <p>同步在补《动手学深度学习》第一章（线性回归 / Softmax / 多层感知机从零实现）、概率论与数理统计，以及 Linux 与网络等通用工程基础；也在按论文清单跟进具身智能的 VLA（视觉-语言-动作）方向，作为长期积累。</p>
+          <p>《动手学深度学习》从零实现 · 概率统计 · Linux 工程基础；按论文清单跟进 VLA（视觉-语言-动作）方向。</p>
         </div>
       </div>
     </div>
