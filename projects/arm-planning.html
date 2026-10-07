@@ -6,7 +6,7 @@
 <title>机械臂运动规划 · RRT* 交互演示 — 陈斐阳</title>
 <meta name="description" content="机械臂运动规划：在关节（构型）空间用 RRT* 为三连杆平面臂规划无碰撞路径，含正运动学与连杆碰撞检测；附可交互 demo。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../fonts/fonts.css">
 <style>
 :root{
   --paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;
@@ -84,7 +84,7 @@ h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
 }
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
-</head>
+<style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}</style></head>
 <body>
 <nav class="nav">
   <div class="nav-inner">
@@ -104,7 +104,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
 <section style="border-bottom:1px solid var(--line)">
   <div class="wrap">
-    <div class="proj-head">
+    <figure class="hero-banner"><img src="img/hero_arm.webp" alt="机械臂路径规划主题插画" width="1536" height="864"></figure><div class="proj-head">
       <div class="proj-label">PROJECT 05 · 进行中</div>
       <h1>机械臂运动规划 — RRT* 无碰撞路径</h1>
       <div class="proj-meta">
