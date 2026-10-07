@@ -7,7 +7,7 @@
 <meta name="description" content="跟着《动手学深度学习》从零实现线性回归、Softmax 回归与多层感知机，并做了一个可交互的欠拟合/过拟合（偏差-方差）可视化演示。">
 <link rel="canonical" href="https://feiyang2007.github.io/projects/d2l-ch1.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../fonts/fonts.css">
 <style>
 :root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--bad:#C62828;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -64,7 +64,7 @@ input[type=range]{width:200px;accent-color:var(--accent)}
 .legend i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px}
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
-</head>
+<style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}</style></head>
 <body>
 <nav class="nav"><div class="nav-inner">
   <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
@@ -79,7 +79,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <div class="wrap"><div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>动手学深度学习 · 第一章</div></div>
 
 <section><div class="wrap">
-  <div class="proj-head">
+  <figure class="hero-banner"><img src="img/hero_d2l.webp" alt="从零学深度学习主题插画" width="1536" height="864"></figure><div class="proj-head">
     <div class="proj-label">PROJECT 07 · 学习中</div>
     <h1>动手学深度学习 · 第一章实践</h1>
     <div class="proj-meta"><span>2026.09</span><span class="dot">●</span><span>《动手学深度学习》跟做</span><span class="dot">●</span><span>PyTorch 从零实现</span></div>
