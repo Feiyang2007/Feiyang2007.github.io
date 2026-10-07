@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoBio × π0: LoRA Fine-tuning a VLA Foundation Model — Feiyang Chen</title>
+<meta name="description" content="Reproduction and LoRA fine-tune of the VLA foundation model pi0 on the AutoBio robotics benchmark: 7.5 h on a single RTX 5090, thermal_cycler_close lifted from zero-shot 0/6 to 18/20 (90%). Weights and eval data public.">
+<link rel="canonical" href="https://feiyang2007.github.io/projects/autobio-pi0-en.html">
+<link rel="alternate" hreflang="zh" href="https://feiyang2007.github.io/projects/autobio-pi0.html">
+<link rel="alternate" hreflang="en" href="https://feiyang2007.github.io/projects/autobio-pi0-en.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--bad:#C62828;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none;white-space:nowrap}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:880px){.nav-links{display:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+.proj-head{padding:32px 0 48px}
+.proj-label{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--accent);margin-bottom:16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,4vw,46px);line-height:1.15;letter-spacing:-.005em;margin-bottom:16px}
+.proj-meta{display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:24px}
+.proj-meta .dot{color:var(--accent)}
+.proj-lede{font-size:18px;line-height:1.6;max-width:760px;color:var(--ink-soft);font-weight:300}
+.proj-lede strong{font-weight:600;color:var(--ink)}
+h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
+.figure{margin:0 0 28px}
+.figure img{width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block}
+.figure figcaption{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+.stat-row{display:flex;gap:1px;background:var(--line);border:1px solid var(--line);margin:8px 0 40px;flex-wrap:wrap}
+.stat{background:var(--paper-warm);padding:20px 22px;flex:1;min-width:150px}
+.stat .num{font-family:var(--serif);font-size:30px;font-weight:600;color:var(--accent-deep);display:block;line-height:1;margin-bottom:8px}
+.stat .lbl{font-size:12px;color:var(--muted);font-family:var(--mono)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px}
+@media(max-width:860px){.info-grid{grid-template-columns:1fr;gap:32px}}
+.info-block p{font-size:15px;color:var(--ink-soft);margin-bottom:14px;line-height:1.75}
+.info-block p strong{color:var(--ink);font-weight:600}
+.info-block ul{margin:0 0 14px 20px;font-size:15px;color:var(--ink-soft);line-height:1.8}
+.code-block{background:#2A2B27;color:#D6D1C3;padding:20px 24px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto;border-radius:2px;margin:8px 0 28px;white-space:pre}
+.code-block .c{color:#8A8678}
+.tech-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tech-list span{font-family:var(--mono);font-size:11.5px;padding:3px 10px;border:1px solid var(--line);color:var(--accent);border-radius:3px;background:#fff}
+blockquote{border-left:3px solid var(--accent);background:var(--accent-soft);padding:16px 22px;margin:8px 0 40px;font-size:14.5px;color:var(--ink-soft);line-height:1.8}
+blockquote strong{color:var(--ink)}
+.link-row{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 40px}
+.link-row a{font-family:var(--mono);font-size:12.5px;padding:8px 16px;border:1px solid var(--accent);color:var(--accent);border-radius:3px}
+.link-row a:hover{background:var(--accent);color:var(--paper)}
+.ep-strip{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 40px}
+.ep{width:34px;height:34px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:#fff}
+.ep.ok{background:var(--accent)}
+.ep.no{background:var(--line);color:var(--muted)}
+.ep-legend{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:10px}
+.fix-list{margin:0 0 14px 20px;font-size:15px;color:var(--ink-soft);line-height:1.9}
+.fix-list code{font-family:var(--mono);font-size:13px;color:var(--accent)}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+</style>
+<style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}</style></head>
+<body>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-name" href="../index-en.html">Feiyang Chen</a>
+  <div class="nav-links">
+    <a href="../index-en.html#about">About</a>
+    <a href="../index-en.html#projects">Projects</a>
+    <a href="../index-en.html#now">Now</a>
+    <a href="../index-en.html#contact">Contact</a>
+  </div>
+</div></nav>
+
+<div class="wrap"><div class="crumb"><a href="../index-en.html">Home</a><span class="sep">/</span><a href="../index-en.html#projects">Projects</a><span class="sep">/</span><a href="autobio-pi0.html" title="中文版">中文</a><span class="sep">/</span>AutoBio × π0</div></div>
+
+<section><div class="wrap">
+  <figure class="hero-banner"><img src="img/hero_autobio.webp" alt="AutoBio robotics lab illustration" width="1536" height="864"></figure><div class="proj-head">
+    <div class="proj-label">PROJECT 08 · FLAGSHIP · DONE (single-task reproduction)</div>
+    <h1>AutoBio × π0: LoRA Fine-tuning a VLA Foundation Model</h1>
+    <div class="proj-meta"><span>2026.10</span><span class="dot">●</span><span>RTX 5090 · WSL2</span><span class="dot">●</span><span>openpi / π0 · LoRA</span><span class="dot">●</span><span>weights public</span></div>
+    <p class="proj-lede">
+      On <strong>AutoBio</strong> (a robot-manipulation benchmark for digital biology labs), I LoRA fine-tuned the VLA foundation model
+      <strong>π0</strong> (PaliGemma 2B + 300M action expert):
+      first repaired several breakages in the frozen upstream snapshot, then trained for <strong>~7.5 hours on a single consumer GPU</strong>,
+      lifting <strong>thermal_cycler_close</strong> (closing a PCR machine lid) from zero-shot 0/6 to
+      <strong>18/20 (90%)</strong>. Weights, per-episode results, training curves and rollout videos are all public and reproducible.
+    </p>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><span class="num">90%</span><span class="lbl">eval success · 18/20</span></div>
+    <div class="stat"><span class="num">7.5h</span><span class="lbl">single-GPU training · 5000 steps</span></div>
+    <div class="stat"><span class="num">22.2GB</span><span class="lbl">peak VRAM / 24GB</span></div>
+    <div class="stat"><span class="num">0.0041</span><span class="lbl">final train loss (from 0.1061)</span></div>
+  </div>
+
+  <figure class="figure">
+    <img src="img/autobio_loss.png" alt="Training loss curve">
+    <figcaption>① Training loss (recorded every 100 steps, real data): 0.1061 → 0.0041; steepest drop in the first few hundred steps, then slow convergence.</figcaption>
+  </figure>
+  <figure class="figure">
+    <img src="img/autobio_result.png" alt="Success rate comparison">
+    <figcaption>② Against baselines: zero-shot cannot do this task at all; 5k-step LoRA reaches 90%. The upstream paper reports 99.7% with a 30k-step full fine-tune on an H800 cluster (~1500 GPU-hours) — not an apples-to-apples comparison, shown for reference only.</figcaption>
+  </figure>
+
+  <h3>Per-episode evaluation (seed 0, 20 episodes)</h3>
+  <p style="font-size:15px;color:var(--ink-soft);margin-bottom:8px">Each square is one real rollout, from the raw JSON saved by the eval script — no cherry-picking.</p>
+  <div class="ep-legend">■ success　□ failure</div>
+  <div class="ep-strip" id="epStrip"></div>
+
+  <blockquote>
+    <strong>Honest scope of this result:</strong> this is the easiest of the 12 tasks (single task);
+    a single seed and 20 episodes give a wide confidence interval (Wilson 95% ≈ 68%–98%);
+    the zero-shot 0/6 was a 6-episode smoke check, not a rigorous estimate;
+    and it is not comparable to the upstream paper's full fine-tune (30k steps, H800 cluster) in compute, steps or method.
+    What it does show is that <strong>I can run the full data → training → evaluation loop on a real VLA codebase and fix the engineering problems along the way</strong> —
+    not an extrapolatable SOTA number.
+  </blockquote>
+
+  <h3>Upstream issues fixed along the way (fork changes)</h3>
+  <ul class="fix-list">
+    <li><code>autobio/task.py</code> — fixed 6 stale task import paths so all 12 tasks import again;</li>
+    <li><code>openpi/scripts/train.py</code> — added a missing <code>return</code> in <code>wrap()</code> fixing <code>KeyError: SLURM_JOB_ID</code> at the end of training on non-SLURM machines;</li>
+    <li><code>openpi/uv.lock</code> — pinned <code>nvidia-cuda-nvcc-cu12==12.9.86</code>, required for RTX 5090 (sm_120);</li>
+    <li>added <code>export_lora.py</code> / <code>load_lora.py</code> (portable LoRA export/merge) and a standalone inference demo.</li>
+  </ul>
+
+  <h3>Training configuration (all real records)</h3>
+  <div class="code-block"><span class="c"># single RTX 5090 D v2 (24GB) · WSL2 Ubuntu 24.04 · 2026-10</span>
+XLA_FLAGS="--xla_gpu_enable_triton_gemm=false" \
+uv run scripts/train.py thermal_cycler_close-lora \
+    --exp-name lora5k --batch-size 16 --save-interval 1000
+
+<span class="c"># base pi0_base; LoRA: backbone rank=16/alpha=16, action expert rank=32/alpha=32
+# data: thermal_cycler_close-mujoco (100 episodes, LeRobot v2.0)
+# 5000 steps · ~5.3 s/step · ~7.5 h · peak VRAM 22.2 GB</span></div>
+
+  <h3>Public artifacts</h3>
+  <div class="link-row">
+    <a href="https://github.com/Feiyang2007/AutoBio" target="_blank" rel="noopener">GitHub repo (reproduction fork)</a>
+    <a href="https://huggingface.co/CloudTugWind/AutoBio-pi0-thermal-cycler-close-lora5k" target="_blank" rel="noopener">HuggingFace · full weights 4.9GB</a>
+    <a href="https://github.com/Feiyang2007/AutoBio/releases/tag/thermal_cycler_close-lora5k" target="_blank" rel="noopener">LoRA delta 100MB · Release</a>
+    <a href="https://huggingface.co/datasets/CloudTugWind/AutoBio-pi0-thermal-cycler-close-lora5k-media" target="_blank" rel="noopener">rollout videos (4 success + 4 failure)</a>
+    <a href="https://arxiv.org/abs/2505.14030" target="_blank" rel="noopener">upstream paper arXiv:2505.14030</a>
+  </div>
+  <p style="font-size:14px;color:var(--muted);max-width:720px;margin:-28px 0 40px">
+    All credit for the AutoBio benchmark (simulation assets, tasks, datasets and paper) belongs to the upstream AutoBio team; this repo is only a study reproduction and repair on top of it.
+  </p>
+
+  <div class="info-grid">
+    <div class="info-block">
+      <h3>What this gave me</h3>
+      <ul>
+        <li>First complete run of the <strong>VLA fine-tuning loop</strong>: LeRobot data → norm stats → LoRA training → checkpoint serving → headless MuJoCo EGL evaluation.</li>
+        <li>Learned to debug real research code: stale imports, SLURM assumptions, CUDA/JAX compatibility on new architectures (sm_120).</li>
+        <li>Understood LoRA's trade-off: ~1/200 of the training budget for comparable visible results, at the cost of generalization and ceiling.</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <h3>Next steps</h3>
+      <p>Run harder tasks (unscrewing, pipetting) and multi-seed evaluations with the same pipeline to tighten the confidence interval; then compare against the RDT base. Longer term, make "fine-tuning a VLA foundation model" a routine tool in my toolbox, plugged into my own simulation projects.</p>
+      <div class="tech-list"><span>Python</span><span>JAX</span><span>openpi</span><span>π0</span><span>LoRA</span><span>MuJoCo EGL</span><span>LeRobot v2.0</span><span>WSL2</span></div>
+    </div>
+  </div>
+</div></section>
+
+<footer>© 2026 Feiyang Chen · Hunan University · Last updated October 2026</footer>
+
+<script>
+// Per-episode results: real array from results/eval_thermal_cycler_close_lora5k.json
+(function(){
+  var eps=[1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1];
+  var strip=document.getElementById('epStrip');
+  for(var i=0;i<eps.length;i++){
+    var d=document.createElement('div');
+    d.className='ep '+(eps[i]?'ok':'no');
+    d.textContent='ep'+String(i).padStart(2,'0');
+    d.title=eps[i]?'success':'failure';
+    strip.appendChild(d);
+  }
+})();
+</script>
+</body></html>

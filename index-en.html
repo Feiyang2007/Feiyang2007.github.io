@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feiyang Chen — Embodied AI Undergraduate</title>
+<meta name="description" content="Feiyang Chen, undergraduate in Big Data Management & Application at Hunan University, working toward Embodied AI — the brain side: learning algorithms, data, and simulation.">
+<link rel="canonical" href="https://feiyang2007.github.io/index-en.html">
+<link rel="alternate" hreflang="zh" href="https://feiyang2007.github.io/">
+<link rel="alternate" hreflang="en" href="https://feiyang2007.github.io/index-en.html">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Feiyang Chen — Embodied AI Undergraduate">
+<meta property="og:description" content="Undergraduate at Hunan University working toward Embodied AI. Projects: pi0 LoRA fine-tuning, RL from scratch (DQN/PPO/MuJoCo), CNN on MNIST, RAG assistant, RRT* arm planning.">
+<meta property="og:url" content="https://feiyang2007.github.io/">
+<meta property="og:image" content="https://feiyang2007.github.io/img_og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Feiyang Chen — Embodied AI Undergraduate">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://feiyang2007.github.io/img_og.png">
+<meta name="twitter:title" content="Feiyang Chen — Embodied AI Undergraduate">
+<meta name="twitter:description" content="Embodied AI undergraduate portfolio: ML / RL / simulation projects with verifiable results.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Feiyang Chen","alternateName":"陈斐阳","url":"https://feiyang2007.github.io/index-en.html","sameAs":["https://github.com/Feiyang2007","https://orcid.org/0009-0001-7212-9001"],"alumniOf":{"@type":"CollegeOrUniversity","name":"Hunan University"},"knowsAbout":["Embodied AI","Reinforcement Learning","Machine Learning","Deep Learning","Computer Vision","Motion Planning"]},"knowsAbout":["具身智能","强化学习","机器学习","深度学习","计算机视觉","运动规划"]}
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --paper:#EFEBE1;
+  --paper-warm:#F5F2EA;
+  --ink:#1A1B18;
+  --ink-soft:#3A3B36;
+  --muted:#6E6A60;
+  --line:#D6D1C3;
+  --accent:#1F5F5B;
+  --accent-deep:#16443F;
+  --accent-soft:rgba(31,95,91,.08);
+  --serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;
+  --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --max:1080px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16.5px;
+  line-height:1.75;
+  -webkit-font-smoothing:antialiased;
+  font-weight:400;
+}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+
+/* ===== 顶部导航 ===== */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(239,235,225,.88);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{
+  max-width:var(--max);margin:0 auto;padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none;white-space:nowrap;flex-shrink:0}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px;font-weight:400;white-space:nowrap}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono)}
+.nav-links a:hover{color:var(--accent)}
+.nav-lang{font-family:var(--mono);font-size:12px;color:var(--accent);border:1px solid var(--accent);border-radius:3px;padding:3px 9px;letter-spacing:.08em;margin-left:6px;white-space:nowrap}
+.nav-lang:hover{background:var(--accent);color:var(--paper)}
+@media(max-width:920px){.nav-lang{display:none}}
+@media(max-width:920px){.nav-links{display:none}}
+section{scroll-margin-top:72px}
+
+/* ===== 布局容器 ===== */
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:120px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+@media(max-width:720px){section{padding:80px 0}}
+
+/* ===== Hero ===== */
+.hero{padding:160px 0 88px;border-bottom:1px solid var(--line)}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:13px;letter-spacing:.08em;
+  color:var(--accent);margin-bottom:28px;
+  display:flex;align-items:center;gap:12px;
+}
+.hero-eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+.hero-flex{display:flex;gap:48px;align-items:center;justify-content:space-between}
+.hero-text{flex:1;min-width:0}
+.hero-art{width:44%;max-width:560px;height:auto;flex-shrink:0;border:1px solid var(--line);display:block}
+@media(max-width:860px){.hero-flex{flex-direction:column;align-items:flex-start;gap:28px}.hero-art{width:100%;max-width:520px}}
+.hero-actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+.hero-btn{
+  font-family:var(--mono);font-size:13px;padding:10px 22px;
+  background:var(--accent);color:var(--paper);border:1px solid var(--accent);
+  border-radius:2px;transition:background .15s;
+}
+.hero-btn:hover{background:var(--accent-deep);border-bottom-color:var(--accent-deep)}
+.hero-btn.ghost{background:transparent;color:var(--accent)}
+.hero-btn.ghost:hover{background:var(--accent-soft)}
+h1.hero-name{
+  font-family:var(--serif);
+  font-weight:600;
+  font-size:clamp(52px,8.5vw,96px);
+  line-height:1.02;
+  letter-spacing:-.01em;
+  margin-bottom:8px;
+}
+.hero-en{
+  font-family:var(--serif);font-style:italic;
+  font-size:clamp(20px,2.6vw,30px);
+  color:var(--muted);font-weight:400;margin-bottom:40px;
+}
+.hero-lede{
+  font-size:clamp(18px,2vw,22px);
+  line-height:1.6;
+  max-width:680px;
+  color:var(--ink-soft);
+  font-weight:300;
+}
+.hero-lede strong{font-weight:600;color:var(--ink)}
+.hero-meta{
+  margin-top:56px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--line);border:1px solid var(--line);
+}
+.hero-stat{background:var(--paper-warm);padding:22px 24px}
+.hero-stat .num{
+  font-family:var(--serif);font-size:34px;font-weight:600;line-height:1;
+  color:var(--accent-deep);display:block;margin-bottom:8px;
+}
+.hero-stat .lbl{font-size:12.5px;color:var(--muted);line-height:1.4;font-family:var(--mono)}
+@media(max-width:720px){
+  .hero{padding:120px 0 64px}
+  .hero-meta{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== 区块通用 ===== */
+.section-label{
+  font-family:var(--mono);font-size:13.5px;letter-spacing:.16em;
+  color:var(--accent);margin-bottom:18px;
+}
+h2{
+  font-family:var(--serif);font-weight:600;
+  font-size:clamp(32px,4.2vw,52px);line-height:1.12;
+  letter-spacing:-.01em;margin-bottom:44px;
+}
+.prose{max-width:720px}
+.prose p{margin-bottom:18px;color:var(--ink-soft)}
+.prose p strong{color:var(--ink);font-weight:600}
+
+/* ===== About ===== */
+.about-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:64px;align-items:start}
+@media(max-width:860px){.about-grid{grid-template-columns:1fr;gap:40px}}
+.about-band{margin:0 0 56px;border:1px solid var(--line)}
+.about-band img{width:100%;height:auto;display:block}
+.chip-cloud{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.chip-cloud .chip{padding:8px 18px}
+.fact-list{border-top:1px solid var(--line)}
+.fact-row{
+  display:grid;grid-template-columns:140px 1fr;gap:20px;
+  padding:14px 0;border-bottom:1px solid var(--line);font-size:14.5px;
+}
+.fact-row .k{font-family:var(--mono);font-size:12.5px;color:var(--muted);padding-top:3px}
+.fact-row .v{color:var(--ink-soft)}
+
+/* ===== Direction ===== */
+.dir-thesis{
+  font-family:var(--serif);font-size:clamp(22px,2.6vw,30px);
+  line-height:1.4;font-weight:500;color:var(--ink);
+  border-left:3px solid var(--accent);padding-left:28px;margin:8px 0 40px;
+  max-width:760px;
+}
+.dir-pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:8px}
+.pillar{background:var(--paper-warm);padding:28px}
+.pillar h4{font-family:var(--serif);font-size:18px;font-weight:600;margin-bottom:10px}
+.pillar p{font-size:14.5px;color:var(--muted);line-height:1.65}
+.pillar .tag{font-family:var(--mono);font-size:11.5px;color:var(--accent);display:block;margin-bottom:10px;letter-spacing:.05em}
+@media(max-width:760px){.dir-pillars{grid-template-columns:1fr}}
+
+/* ===== Journey 时间轴（每行三列 grid，像素对齐） ===== */
+.timeline{display:block;position:relative}
+.t-node{display:grid;grid-template-columns:110px 28px 1fr;padding:0}
+.t-time{
+  font-family:var(--mono);font-size:12.5px;color:var(--muted);
+  padding-top:5px;text-align:right;padding-right:0;
+}
+.t-axis{position:relative;display:flex;justify-content:center}
+.t-axis::before{content:"";position:absolute;top:14px;bottom:0;width:1px;background:var(--line)}
+.t-dot{
+  width:11px;height:11px;border-radius:50%;flex-shrink:0;
+  background:var(--paper);border:2px solid var(--accent);
+  position:relative;z-index:1;margin-top:7px;
+}
+.t-dot.now{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.t-body{padding:0 0 48px 28px}
+.t-node:last-child .t-body{padding-bottom:8px}
+.t-body h4{font-family:var(--serif);font-size:19px;font-weight:600;margin-bottom:6px}
+.t-body p{font-size:14.5px;color:var(--muted);line-height:1.65;max-width:620px}
+.t-body .chip{
+  display:inline-block;font-family:var(--mono);font-size:11.5px;
+  padding:2px 9px;border:1px solid var(--line);border-radius:3px;
+  color:var(--accent);margin-right:6px;margin-top:8px;
+}
+.t-node:last-child .t-axis::before{display:none}
+@media(max-width:640px){
+  .t-node{grid-template-columns:78px 22px 1fr}
+  .t-body{padding-left:18px}
+}
+
+/* ===== Projects 项目卡片 ===== */
+.proj-list{display:grid;grid-template-columns:repeat(2,1fr);gap:26px}
+@media(max-width:860px){.proj-list{grid-template-columns:1fr}}
+.proj-item{
+  display:flex;flex-direction:column;
+  border:1px solid var(--line);background:var(--paper-warm);
+  transition:border-color .15s;
+}
+.proj-item:hover{border-color:var(--accent)}
+.proj-item.flagship{grid-column:1/-1;flex-direction:row}
+@media(max-width:860px){.proj-item.flagship{flex-direction:column}}
+.p-thumb{aspect-ratio:16/9;background:#fff;border-bottom:1px solid var(--line);overflow:hidden}
+.proj-item.flagship .p-thumb{aspect-ratio:auto;width:46%;flex-shrink:0;border-bottom:none;border-right:1px solid var(--line)}
+@media(max-width:860px){
+  .proj-item.flagship .p-thumb{width:100%;aspect-ratio:16/9;border-right:none;border-bottom:1px solid var(--line)}
+}
+.p-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.p-thumb svg{width:100%;height:100%;display:block}
+.p-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
+.p-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+.proj-item .p-link h4{font-family:var(--serif);font-size:20px;font-weight:600;line-height:1.3}
+.proj-item.flagship .p-link h4{font-size:25px}
+.proj-item .p-status{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  color:var(--accent);white-space:nowrap;
+}
+.proj-item .p-status::before{content:"●";margin-right:7px;font-size:9px}
+.proj-item .p-status.plan{color:var(--muted)}
+.proj-item .p-desc{font-size:14px;color:var(--muted);line-height:1.65;flex:1;margin-bottom:14px}
+.proj-item.flagship .p-desc{font-size:15px;max-width:640px}
+.proj-item .p-tech{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+.proj-item a.p-link{color:inherit;border:none;display:block}
+.proj-item a.p-link h4{transition:color .15s}
+.proj-item a.p-link:hover h4{color:var(--accent)}
+.proj-item .p-cta{
+  display:inline-block;margin-top:12px;
+  font-family:var(--mono);font-size:11.5px;color:var(--accent);
+  border-bottom:1px solid rgba(31,95,91,.3);
+}
+.proj-item .p-cta:hover{border-bottom-color:var(--accent)}
+.flag-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.flag-links a{
+  font-family:var(--mono);font-size:11.5px;padding:5px 12px;
+  border:1px solid var(--accent);color:var(--accent);border-radius:3px;
+}
+.flag-links a:hover{background:var(--accent);color:var(--paper)}
+
+/* ===== Skills 能力雷达 + 列表 ===== */
+.skills-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:center}
+@media(max-width:860px){.skills-grid{grid-template-columns:1fr;gap:32px}}
+#radar{width:100%;height:auto;max-width:520px;display:block;margin:0 auto}
+#toTop{
+  position:fixed;right:26px;bottom:26px;width:42px;height:42px;
+  border:1px solid var(--accent);background:var(--paper-warm);color:var(--accent);
+  font-family:var(--mono);font-size:17px;line-height:1;cursor:pointer;
+  opacity:0;pointer-events:none;transition:opacity .2s;z-index:60;border-radius:3px;
+}
+#toTop.show{opacity:1;pointer-events:auto}
+#toTop:hover{background:var(--accent);color:var(--paper)}
+.skill-cat{margin-bottom:22px}
+.skill-cat h5{
+  font-family:var(--mono);font-size:12px;letter-spacing:.08em;
+  color:var(--muted);margin-bottom:8px;
+}
+.skill-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:7px 0;border-bottom:1px dotted var(--line);font-size:14.5px;
+}
+.skill-row .name{color:var(--ink-soft)}
+.skill-row .lvl{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.skill-row .lvl.on{color:var(--accent)}
+
+/* ===== Education / 成绩 ===== */
+.edu-block{margin-bottom:40px}
+.edu-block:last-child{margin-bottom:0}
+.edu-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.edu-head h4{font-family:var(--serif);font-size:20px;font-weight:600}
+.edu-head .when{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.edu-sub{font-size:14px;color:var(--muted);margin-bottom:12px}
+.grades{width:100%;border-collapse:collapse;font-size:14px}
+.grades col.c1{width:38%}
+.grades col.c2{width:22%}
+.grades col.c3{width:20%}
+.grades col.c4{width:20%}
+.grades th{
+  text-align:left;font-family:var(--mono);font-size:11.5px;font-weight:500;
+  color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--line);
+}
+.grades td{padding:9px 10px;border-bottom:1px solid var(--line);color:var(--ink-soft)}
+.grades td.num{font-family:var(--mono)}
+.grades tr.core td{color:var(--ink);font-weight:500}
+.grades tr.core td.num{color:var(--accent-deep)}
+
+/* ===== Now ===== */
+.now-list{border-top:1px solid var(--line)}
+.now-item{
+  display:grid;grid-template-columns:110px 1fr;gap:24px;
+  padding:20px 0;border-bottom:1px solid var(--line);
+}
+.now-item .when{font-family:var(--mono);font-size:12.5px;color:var(--accent);padding-top:3px}
+.now-item .what h4{font-size:16px;font-weight:600;margin-bottom:4px}
+.now-item .what p{font-size:14px;color:var(--muted)}
+@media(max-width:640px){.now-item{grid-template-columns:1fr;gap:6px}}
+
+/* ===== Contact ===== */
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.c-cell{background:var(--paper-warm);padding:28px}
+.c-cell .k{font-family:var(--mono);font-size:11.5px;color:var(--muted);letter-spacing:.08em;margin-bottom:8px}
+.c-cell .v{font-family:var(--serif);font-size:19px;font-weight:500;color:var(--ink);word-break:break-all}
+.c-cell .v a{color:var(--ink);border-bottom:1px solid rgba(0,0,0,.2)}
+.c-cell .v a:hover{color:var(--accent);border-color:var(--accent)}
+@media(max-width:640px){.contact-grid{grid-template-columns:1fr}}
+
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+
+/* ===== 入场动效与悬停（全站仅此两类动效）===== */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+.proj-item{transition:transform .25s ease,box-shadow .25s ease,border-color .15s}
+.proj-item:hover{transform:translateY(-6px);box-shadow:0 14px 34px -14px rgba(22,68,63,.28)}
+.pillar{transition:transform .25s ease}
+.pillar:hover{transform:translateY(-5px)}
+.now-item{transition:transform .25s ease}
+.now-item:hover{transform:translateY(-4px)}
+
+@media print{.nav{display:none}section{padding:40px 0}}
+</style>
+</head>
+<body>
+<!-- ===== 导航 ===== -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-name" href="#top">Feiyang Chen</a>
+    <a class="nav-lang" href="index.html" title="中文版">中文</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#direction">Direction</a>
+      <a href="#journey">Journey</a>
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#education">Education</a>
+      <a href="#now">Now</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== Hero ===== -->
+<header class="hero" id="top">
+  <div class="wrap hero-flex">
+    <div class="hero-text">
+      <div class="hero-eyebrow">HUNAN UNIVERSITY · EMBODIED AI</div>
+      <h1 class="hero-name">Feiyang Chen</h1>
+      <div class="hero-en">陈斐阳 — Undergraduate, Embodied AI</div>
+      <p class="hero-lede">
+        Undergraduate in <strong>Big Data Management &amp; Application</strong> at Hunan University.
+        Started in civil engineering, switched to data science — now working toward
+        <strong>Embodied AI</strong>. I believe the essence of intelligence lives in algorithms and data,
+        not in mechanical structure.
+      </p>
+      <div class="hero-actions">
+        <a class="hero-btn" href="cv.pdf" download>Download CV ↓</a>
+        <a class="hero-btn ghost" href="#projects">See projects ↓</a>
+      </div>
+    </div>
+    <img class="hero-art" src="projects/img/hero.webp" alt="Robotic arm and neural network illustration" width="640" height="360" fetchpriority="high">
+  </div>
+  <div class="wrap">
+    <div class="hero-meta">
+      <div class="hero-stat"><span class="num">90%</span><span class="lbl">π0 LoRA fine-tuning success rate<br>AutoBio benchmark 18/20 · <a href="projects/autobio-pi0-en.html" style="font-size:11.5px">project →</a></span></div>
+      <div class="hero-stat"><span class="num">20/20</span><span class="lbl">MuJoCo InvertedPendulum perfect re-eval<br>PPO from scratch · <a href="projects/mujoco-rl.html" style="font-size:11.5px">project →</a></span></div>
+      <div class="hero-stat"><span class="num">98.9%</span><span class="lbl">MNIST handwritten-digit CNN test accuracy<br>real training · <a href="projects/mnist-cnn.html" style="font-size:11.5px">project →</a></span></div>
+      <div class="hero-stat"><span class="num">8</span><span class="lbl">interactive, verifiable projects<br>curves &amp; data public</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== About ===== -->
+<section id="about">
+  <div class="wrap">
+    <div class="section-label">01 — ABOUT</div>
+    <h2>From blueprints to code.</h2>
+    <figure class="about-band">
+      <img src="projects/img/band_journey.webp" alt="From civil blueprints to robots: a growth path illustration" loading="lazy" width="1536" height="864">
+    </figure>
+    <div class="about-grid">
+      <div class="prose">
+        <p style="font-size:19px;line-height:1.8">
+          Year one in civil engineering (theoretical mechanics, engineering drawing),
+          then switched to <strong>Big Data Management &amp; Application</strong>.
+          I believe the essence of intelligence lives in <strong>algorithms and data</strong> —
+          so I start from math and physics, and build everything in code with my own hands.
+        </p>
+        <p style="font-size:15px;color:var(--muted)">
+          I keep an Obsidian knowledge base recording every course and every piece of code, and honestly mark where I really stand on each thing — built it, ran it, or merely cloned to study.
+        </p>
+        <div class="chip-cloud">
+          <span class="chip">Suining, Sichuan</span>
+          <span class="chip">b. 2007</span>
+          <span class="chip">Hunan University · Business School</span>
+          <span class="chip">B.Mgmt. expected 2029</span>
+          <span class="chip">Embodied AI · brain side</span>
+        </div>
+      </div>
+      <div>
+        <div class="fact-list">
+          <div class="fact-row"><span class="k">Major</span><span class="v">Big Data Management &amp; Application</span></div>
+          <div class="fact-row"><span class="k">Previous</span><span class="v">Civil Engineering (2025—2026)</span></div>
+          <div class="fact-row"><span class="k">Focus</span><span class="v">Embodied AI — learning-algorithm side</span></div>
+          <div class="fact-row"><span class="k">Languages</span><span class="v">Chinese (native); English (improving)</span></div>
+          <div class="fact-row"><span class="k">GitHub</span><span class="v"><a href="https://github.com/Feiyang2007" target="_blank" rel="noopener">github.com/Feiyang2007</a></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Direction ===== -->
+<section id="direction">
+  <div class="wrap">
+    <div class="section-label">02 — DIRECTION</div>
+    <h2>Why embodied AI.</h2>
+    <p class="dir-thesis">"Hardware has become a commodity.<br>What still separates the leaders is the brain — algorithms and data that let machines learn, decide, and generalize in the physical world."</p>
+    <div class="dir-pillars">
+      <div class="pillar">
+        <span class="tag">MY EDGE</span>
+        <h4>A cross-disciplinary base</h4>
+        <p>Theoretical mechanics → robot dynamics; operations research → motion planning (MPC). A base that carries over after the switch.</p>
+      </div>
+      <div class="pillar">
+        <span class="tag">CURRENT GAP</span>
+        <h4>The body side is my weak spot</h4>
+        <p>Robotics &amp; control remain low in my self-assessment; RL just getting started. The next two years go here — starting in MuJoCo / Isaac simulation.</p>
+      </div>
+      <div class="pillar">
+        <span class="tag">PATH</span>
+        <h4>Simulation first, hardware later</h4>
+        <p>A robot arm starts at a few hundred RMB. Before joining a lab, simulation is the cheapest route — and the one that exposes algorithm problems fastest.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Journey ===== -->
+<section id="journey">
+  <div class="wrap">
+    <div class="section-label">03 — JOURNEY</div>
+    <h2>The road so far, and ahead.</h2>
+    <div class="timeline">
+      <div class="t-node">
+        <div class="t-time">2025.09</div>
+        <div class="t-axis"><div class="t-dot"></div></div>
+        <div class="t-body">
+          <h4>Hunan University · Civil Engineering</h4>
+          <p>Grounding in calculus, linear algebra, theoretical mechanics, engineering drawing; proficient with AutoCAD &amp; Revit. Class monitor.</p>
+          <span class="chip">Calculus 86</span><span class="chip">Linear Algebra 83</span>
+        </div>
+      </div>
+      <div class="t-node">
+        <div class="t-time">2026.02</div>
+        <div class="t-axis"><div class="t-dot"></div></div>
+        <div class="t-body">
+          <h4>First exposure to programming &amp; AI</h4>
+          <p>Systematic Python and the data stack; following along with C. Interest shifted from civil to algorithms and data.</p>
+          <span class="chip">Python main</span><span class="chip">C 91%</span>
+        </div>
+      </div>
+      <div class="t-node">
+        <div class="t-time">2026.07</div>
+        <div class="t-axis"><div class="t-dot"></div></div>
+        <div class="t-body">
+          <h4>Direction locked: Embodied AI</h4>
+          <p>T800 course, MuJoCo simulation, URDF modeling, LeRobot behavior cloning (open-source project cloned to study, not reproduced); ran first RAG / Agent tutorials.</p>
+          <span class="chip">MuJoCo</span><span class="chip">URDF</span><span class="chip">RAG</span>
+        </div>
+      </div>
+      <div class="t-node">
+        <div class="t-time">2026.09</div>
+        <div class="t-axis"><div class="t-dot"></div></div>
+        <div class="t-body">
+          <h4>Switched to Big Data Management &amp; Application</h4>
+          <p>Switched without losing a year; all credits carried over. This semester: probability, databases, ML — plus six self-taught projects shipped on this site.</p>
+          <span class="chip">Sklearn</span><span class="chip">PyTorch</span><span class="chip">Probability</span>
+        </div>
+      </div>
+      <div class="t-node">
+        <div class="t-time">2026.10</div>
+        <div class="t-axis"><div class="t-dot now"></div></div>
+        <div class="t-body">
+          <h4>First VLA foundation-model fine-tune</h4>
+          <p>Fixed upstream code and LoRA fine-tuned π0 on the AutoBio benchmark: 7.5 h on one GPU, 0/6 → 18/20 (90%), weights public. From "calling a model" to "fine-tuning one".</p>
+          <span class="chip">π0</span><span class="chip">LoRA</span><span class="chip">JAX</span><span class="chip">18/20</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Projects ===== -->
+<section id="projects">
+  <div class="wrap">
+    <div class="section-label">04 — PROJECTS</div>
+    <h2>What I'm building.</h2>
+    <p class="prose" style="margin-bottom:40px">
+      Ordered from "consolidate what exists" to "attack the core of my direction". Statuses are honest — in progress means in progress, planned means planned.
+    </p>
+    <div class="proj-list">
+      <div class="proj-item flagship">
+        <a class="p-thumb" href="projects/autobio-pi0.html"><img src="projects/img/hero_autobio.webp" alt="Robotics lab illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/autobio-pi0.html"><h4>AutoBio × π0: LoRA fine-tuning a VLA foundation model</h4></a>
+            <span class="p-status">Done · single-task reproduction</span>
+          </div>
+          <p class="p-desc">Repaired upstream code on the AutoBio robotics benchmark and LoRA fine-tuned the VLA foundation model π0: 7.5 h on a single RTX 5090, lifting thermal_cycler_close from zero-shot 0/6 to <strong>18/20 (90%)</strong>. Training curves, per-episode results and rollout videos are all public and reproducible.</p>
+          <span class="p-tech">Python · JAX · openpi · π0 · LoRA · MuJoCo</span>
+          <div class="flag-links">
+            <a href="projects/autobio-pi0-en.html">View project →</a>
+            <a href="https://github.com/Feiyang2007/AutoBio" target="_blank" rel="noopener">GitHub repo</a>
+            <a href="https://huggingface.co/CloudTugWind/AutoBio-pi0-thermal-cycler-close-lora5k" target="_blank" rel="noopener">Weights · HuggingFace</a>
+          </div>
+        </div>
+      </div>
+      <div class="proj-item">
+        <a class="p-thumb" href="projects/mujoco-rl.html"><img src="projects/img/hero_rl.webp" alt="Inverted pendulum & RL illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/mujoco-rl.html"><h4>Reinforcement learning from scratch (DQN → PPO → MuJoCo)</h4></a>
+            <span class="p-status">In progress</span>
+          </div>
+          <p class="p-desc">DQN and PPO hand-written in pure PyTorch, no RL libraries; the same PPO migrated to MuJoCo physics, re-evaluated <strong>20/20 perfect</strong> on InvertedPendulum. Play CartPole yourself on the page — or watch the trained policy do it.</p>
+          <span class="p-tech">PyTorch · Double-DQN · PPO · GAE · MuJoCo</span>
+          <a class="p-cta" href="projects/mujoco-rl.html">View project →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <a class="p-thumb" href="projects/mnist-cnn.html"><img src="projects/img/hero_mnist.webp" alt="Handwritten digit recognition illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/mnist-cnn.html"><h4>Handwritten digits · CNN</h4></a>
+            <span class="p-status">Done</span>
+          </div>
+          <p class="p-desc">A small hand-written CNN trained on real MNIST to <strong>98.9%</strong>. Weights exported to the browser: draw a digit, lift the pen, it recognizes — inference runs locally on your machine.</p>
+          <span class="p-tech">Python · PyTorch · CNN · MNIST</span>
+          <a class="p-cta" href="projects/mnist-cnn.html">View project →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <a class="p-thumb" href="projects/knowledge-rag.html"><img src="projects/img/hero_rag.webp" alt="Knowledge base & QA illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/knowledge-rag.html"><h4>Personal knowledge RAG assistant</h4></a>
+            <span class="p-status">Live</span>
+          </div>
+          <p class="p-desc">Two years of self-study notes distilled into 35 passages for natural-language Q&amp;A: vector retrieval finds the most relevant notes, DeepSeek composes the answer. The corpus is what I actually learned — so the answers are real too.</p>
+          <span class="p-tech">Vanilla JS · bge-m3 · vector retrieval · DeepSeek</span>
+          <a class="p-cta" href="projects/knowledge-rag.html">View project →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <a class="p-thumb" href="projects/ml-pipeline.html"><img src="projects/img/hero_ml.webp" alt="End-to-end pipeline illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/ml-pipeline.html"><h4>End-to-end ML pipeline</h4></a>
+            <span class="p-status">Learning</span>
+          </div>
+          <p class="p-desc">The full workflow on UCI smartphone-IMU activity recognition (561-D features, 6 classes): cleaning → feature engineering → pipeline → cross-validated model selection → tuning → evaluation → Streamlit demo.</p>
+          <span class="p-tech">Python · Scikit-learn · Pandas · Streamlit</span>
+          <a class="p-cta" href="projects/ml-pipeline.html">View project →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <a class="p-thumb" href="projects/lerobot-bc.html"><img src="projects/img/hero_bc.webp" alt="Imitation learning illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/lerobot-bc.html"><h4>LeRobot behavior cloning</h4></a>
+            <span class="p-status">In progress</span>
+          </div>
+          <p class="p-desc">A PD expert demonstrates, an MLP imitates — turning "learning a policy" into supervised mimicry. <strong>99.6%</strong> action accuracy on validation, plus an honest account of covariate shift, the core pain of BC.</p>
+          <span class="p-tech">PyTorch · Behavior Cloning · Imitation Learning</span>
+          <a class="p-cta" href="projects/lerobot-bc.html">View project →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <a class="p-thumb" href="projects/arm-planning.html"><img src="projects/img/hero_arm.webp" alt="Robot-arm path planning illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/arm-planning.html"><h4>Robot-arm motion planning</h4></a>
+            <span class="p-status">In progress</span>
+          </div>
+          <p class="p-desc">Joint-space RRT* plans collision-free paths for a three-link planar arm: forward kinematics + link collision checking. An interactive workspace RRT* demo sits at the top of the page — place obstacles yourself.</p>
+          <span class="p-tech">Python · NumPy · RRT* · Forward Kinematics</span>
+          <a class="p-cta" href="projects/arm-planning.html">View project →</a>
+        </div>
+      </div>
+      <div class="proj-item">
+        <a class="p-thumb" href="projects/d2l-ch1.html"><img src="projects/img/hero_d2l.webp" alt="Learning deep learning from scratch illustration" loading="lazy"></a>
+        <div class="p-body">
+          <div class="p-head">
+            <a class="p-link" href="projects/d2l-ch1.html"><h4>Dive into Deep Learning · Ch.1 practice</h4></a>
+            <span class="p-status">Learning</span>
+          </div>
+          <p class="p-desc">Linear regression (hand-written SGD), softmax regression and an MLP, each from scratch; plus a draggable underfitting/overfitting demo showing bias–variance trade-off in real time.</p>
+          <span class="p-tech">Python · PyTorch · NumPy · from scratch</span>
+          <a class="p-cta" href="projects/d2l-ch1.html">View project →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Skills ===== -->
+<section id="skills">
+  <div class="wrap">
+    <div class="section-label">05 — SKILLS</div>
+    <h2>Where I stand.</h2>
+    <figure class="about-band" style="margin:0 0 56px">
+      <img src="projects/img/band_climb.webp" alt="Mountain path with milestone flags: a learning journey" loading="lazy" width="1536" height="810">
+    </figure>
+    <div class="skills-grid">
+      <div>
+        <canvas id="radar" width="520" height="430"></canvas>
+        <p style="font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:8px">
+          Eight-axis self-assessment for embodied AI (out of 100) · updated 2026.10
+        </p>
+      </div>
+      <div>
+        <div class="skill-cat">
+          <h5>Programming &amp; engineering</h5>
+          <div class="skill-row"><span class="name">Python (NumPy / Pandas / Streamlit)</span><span class="lvl on">proficient</span></div>
+          <div class="skill-row"><span class="name">C</span><span class="lvl">beginner</span></div>
+          <div class="skill-row"><span class="name">C++ / Java</span><span class="lvl">basics</span></div>
+          <div class="skill-row"><span class="name">SQL / Git / Linux</span><span class="lvl">basics</span></div>
+        </div>
+        <div class="skill-cat">
+          <h5>ML / DL</h5>
+          <div class="skill-row"><span class="name">Scikit-learn workflow</span><span class="lvl">learning</span></div>
+          <div class="skill-row"><span class="name">PyTorch neural nets</span><span class="lvl">learning</span></div>
+          <div class="skill-row"><span class="name">RAG / LangChain / Agents</span><span class="lvl">first cases done</span></div>
+          <div class="skill-row"><span class="name">Reinforcement learning</span><span class="lvl">DQN / PPO done</span></div>
+        </div>
+        <div class="skill-cat">
+          <h5>Robotics / simulation</h5>
+          <div class="skill-row"><span class="name">MuJoCo / URDF / LeRobot</span><span class="lvl">learning</span></div>
+        </div>
+        <div class="skill-cat">
+          <h5>Math &amp; engineering</h5>
+          <div class="skill-row"><span class="name">Calculus / linear algebra / physics</span><span class="lvl on">done</span></div>
+          <div class="skill-row"><span class="name">Probability &amp; statistics</span><span class="lvl">in progress</span></div>
+          <div class="skill-row"><span class="name">AutoCAD / Revit / drafting</span><span class="lvl on">proficient</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Education ===== -->
+<section id="education">
+  <div class="wrap">
+    <div class="section-label">06 — EDUCATION</div>
+    <h2>Education.</h2>
+
+    <div class="edu-block">
+      <div class="edu-head">
+        <h4>Hunan University · Big Data Management &amp; Application</h4>
+        <span class="when">2026.09 — present</span>
+      </div>
+      <div class="edu-sub">Business School · B.Mgmt. expected 2029</div>
+      <table class="grades">
+        <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup>
+        <thead><tr><th>Stage</th><th>Focus</th><th>Result</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td>Y1 · Civil engineering</td><td>Math &amp; mechanics base</td><td class="num">Calculus 86 / 80 · LinAlg 83</td><td>first attempts</td></tr>
+          <tr class="core"><td>Y2 · switched to Big Data</td><td>bridging courses + self-study</td><td class="num">weighted avg 82.71</td><td>first attempts · no lost year</td></tr>
+          <tr><td>Now</td><td>probability / databases / ML</td><td class="num">in progress</td><td>still climbing</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13px;color:var(--muted);margin-top:14px;max-width:680px">
+        All credits carried over, no lost year, all first attempts. What I value is the upward trajectory after switching majors.
+      </p>
+    </div>
+
+    <div class="edu-block">
+      <div class="edu-head">
+        <h4>Hunan University · Civil Engineering</h4>
+        <span class="when">2025.09 — 2026.06</span>
+      </div>
+      <div class="edu-sub">Civil Engineering School · theoretical mechanics and drafting were built here</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Now ===== -->
+<section id="now">
+  <div class="wrap">
+    <div class="section-label">07 — NOW</div>
+    <h2>This semester.</h2>
+    <div class="now-list">
+      <div class="now-item">
+        <span class="when">Ongoing</span>
+        <div class="what">
+          <h4>From "running" to "fine-tuning"</h4>
+          <p>Progressing Sklearn → PyTorch → RL → VLA fine-tuning: after hand-writing DQN / PPO from scratch, recently completed a π0 LoRA fine-tune on the AutoBio benchmark (18/20); an Obsidian knowledge base turns the process into a public trail.</p>
+        </div>
+      </div>
+      <div class="now-item">
+        <span class="when">Since 2026.09</span>
+        <div class="what">
+          <h4>RoboMaster team · algorithms group</h4>
+          <p>Preparing for autumn tryouts, then a training camp: C++ / CS fundamentals → ROS simulation → triple review. Aiming to get in on real code and simulation skill.</p>
+        </div>
+      </div>
+      <div class="now-item">
+        <span class="when">2026.09 — 11</span>
+        <div class="what">
+          <h4>Innovation &amp; entrepreneurship pilot class (robotics)</h4>
+          <p>Comprehensive interview in early November — practice for stepping into robotics.</p>
+        </div>
+      </div>
+      <div class="now-item">
+        <span class="when">Ongoing</span>
+        <div class="what">
+          <h4>Foundations &amp; frontier reading</h4>
+          <p>Dive into Deep Learning from scratch · probability &amp; statistics · Linux fundamentals; following a VLA (vision-language-action) reading list.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Contact ===== -->
+<section id="contact">
+  <div class="wrap">
+    <div class="section-label">08 — CONTACT</div>
+    <h2>Contact.</h2>
+    <p class="prose" style="margin-bottom:32px">
+      If you work on embodied AI, robot learning, or cross-disciplinary growth — teachers and fellow students alike — feel free to email me.
+      I'm currently looking for undergraduate research / internship opportunities, especially in simulation and learning algorithms.
+    </p>
+    <div class="contact-grid">
+      <div class="c-cell">
+        <div class="k">EMAIL</div>
+        <div class="v"><a href="mailto:chenfeiyang20071228@gmail.com">chenfeiyang20071228@gmail.com</a></div>
+      </div>
+      <div class="c-cell">
+        <div class="k">GITHUB</div>
+        <div class="v"><a href="https://github.com/Feiyang2007" target="_blank" rel="noopener">github.com/Feiyang2007</a></div>
+      </div>
+      <div class="c-cell">
+        <div class="k">ORCID</div>
+        <div class="v"><a href="https://orcid.org/0009-0001-7212-9001" target="_blank" rel="noopener">0009-0001-7212-9001</a></div>
+      </div>
+      <div class="c-cell">
+        <div class="k">LOCATION</div>
+        <div class="v">Changsha, Hunan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 Feiyang Chen · Hunan University · Last updated October 2026
+</footer>
+
+<button id="toTop" title="Back to top">↑</button>
+<script>
+// Eight-axis self-assessment radar: zero-dependency canvas (no CDN)
+(function(){
+  var cv=document.getElementById('radar'); if(!cv) return;
+  var ctx=cv.getContext('2d'); if(!ctx) return;
+  var labels=['Programming','Data struct. & algos','Math','ML / DL','Robotics & control','RL','Simulation','LLM / Agents'];
+  var vals=[75,15,65,38,10,30,32,55];
+  var dpr=window.devicePixelRatio||1, W=520, H=430;
+  cv.width=W*dpr; cv.height=H*dpr;
+  var cx=W/2, cy=H/2+10, R=148, N=labels.length;
+  function ang(i){return -Math.PI/2 + i*2*Math.PI/N;}
+  ctx.save(); ctx.scale(dpr,dpr);
+  // grid rings
+  for(var r=1;r<=4;r++){
+    ctx.beginPath();
+    for(var i=0;i<=N;i++){
+      var a=ang(i%N), rr=R*r/4;
+      var x=cx+Math.cos(a)*rr, y=cy+Math.sin(a)*rr;
+      if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle='#D6D1C3'; ctx.lineWidth=1; ctx.stroke();
+    if(r%2===0){ ctx.fillStyle='rgba(31,95,91,0.035)'; ctx.fill(); }
+  }
+  // axes & labels
+  ctx.font='11px "IBM Plex Mono","Noto Sans SC",monospace';
+  for(var j=0;j<N;j++){
+    var a=ang(j), sx=Math.cos(a), sy=Math.sin(a);
+    ctx.strokeStyle='#D6D1C3';
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(cx+sx*R, cy+sy*R); ctx.stroke();
+    ctx.fillStyle='#6E6A60';
+    ctx.textAlign = Math.abs(sx)<0.35 ? 'center' : (sx>0?'left':'right');
+    var dy = sy>0.4 ? 15 : (sy<-0.4 ? -10 : 4);
+    ctx.fillText(labels[j], cx+sx*(R+16), cy+sy*(R+14)+dy);
+  }
+  // value polygon
+  ctx.beginPath();
+  for(var k=0;k<=N;k++){
+    var a2=ang(k%N), rr2=R*vals[k%N]/100;
+    var x2=cx+Math.cos(a2)*rr2, y2=cy+Math.sin(a2)*rr2;
+    if(k===0)ctx.moveTo(x2,y2); else ctx.lineTo(x2,y2);
+  }
+  ctx.strokeStyle='#1F5F5B'; ctx.lineWidth=2; ctx.stroke();
+  ctx.fillStyle='rgba(31,95,91,0.22)'; ctx.fill();
+  // vertices
+  for(var m=0;m<N;m++){
+    var a3=ang(m), rr3=R*vals[m]/100;
+    ctx.beginPath();
+    ctx.arc(cx+Math.cos(a3)*rr3, cy+Math.sin(a3)*rr3, 2.6, 0, Math.PI*2);
+    ctx.fillStyle='#1F5F5B'; ctx.fill();
+  }
+  ctx.restore();
+})();
+
+// scroll reveal
+(function(){
+  var els=document.querySelectorAll('section > .wrap > *');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
+  },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(e){io.observe(e);});
+})();
+
+// back to top
+(function(){
+  var b=document.getElementById('toTop'); if(!b) return;
+  window.addEventListener('scroll', function(){
+    if(window.scrollY>600) b.classList.add('show'); else b.classList.remove('show');
+  }, {passive:true});
+  b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+</body>
+</html>
