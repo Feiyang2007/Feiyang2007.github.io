@@ -1,9 +1,11 @@
 _shots/
 *.jpg
 *.png
-# 项目页需要的真实训练图表，显式放行
+# 项目页需要的真实训练图表与插画，显式放行
 !projects/img/
 !projects/img/*.png
+# og 社交卡片（根目录）
+!img_og.png
 .DS_Store
 Thumbs.db
 # 内部交接文档，含明文 API key，绝不推送到公开仓库

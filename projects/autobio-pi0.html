@@ -7,7 +7,7 @@
 <meta name="description" content="在 AutoBio 机器人操作基准上复现并 LoRA 微调 VLA 基础模型 π0：单张 RTX 5090 训练 7.5 小时，thermal_cycler_close 任务从 zero-shot 0/6 提升到 18/20（90%）。权重与评测数据公开。">
 <link rel="canonical" href="https://feiyang2007.github.io/projects/autobio-pi0.html">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="../fonts/fonts.css">
 <style>
 :root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--bad:#C62828;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -67,7 +67,7 @@ blockquote strong{color:var(--ink)}
 .fix-list code{font-family:var(--mono);font-size:13px;color:var(--accent)}
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
-</head>
+<style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}</style></head>
 <body>
 <nav class="nav"><div class="nav-inner">
   <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
@@ -82,7 +82,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <div class="wrap"><div class="crumb"><a href="../index.html">Home</a><span class="sep">/</span><a href="../index.html#projects">Projects</a><span class="sep">/</span>AutoBio × π0</div></div>
 
 <section><div class="wrap">
-  <div class="proj-head">
+  <figure class="hero-banner"><img src="img/hero_autobio.webp" alt="AutoBio 机器人实验室主题插画" width="1536" height="864"></figure><div class="proj-head">
     <div class="proj-label">PROJECT 08 · 旗舰 · 已完成（单任务复现）</div>
     <h1>AutoBio × π0：VLA 基础模型的 LoRA 微调复现</h1>
     <div class="proj-meta"><span>2026.10</span><span class="dot">●</span><span>RTX 5090 · WSL2</span><span class="dot">●</span><span>openpi / π0 · LoRA</span><span class="dot">●</span><span>权重公开</span></div>
