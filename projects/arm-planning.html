@@ -14,7 +14,7 @@
   --accent-soft:rgba(31,95,91,.08);
   --serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;
   --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --mono:"IBM Plex Mono","Noto Sans SC",ui-monospace,SFMono-Regular,Menlo,monospace;
   --max:1080px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -83,6 +83,16 @@ h3{font-family:var(--serif);font-size:22px;font-weight:600;margin-bottom:16px}
   border:1px solid var(--line);color:var(--accent);border-radius:3px;
 }
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ===== 移动端导航面板 ===== */
+.nav-burger{display:none;font-family:var(--mono);font-size:12px;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:3px;padding:4px 11px;letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+.nav-burger:hover{background:var(--accent);color:var(--paper)}
+.nav-burger[aria-expanded="true"]{background:var(--accent);color:var(--paper)}
+.nav-panel{position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);padding:6px 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:0 22px;box-shadow:0 14px 24px -18px rgba(22,68,63,.25)}
+.nav-panel[hidden]{display:none}
+.nav-panel a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);border:none;padding:11px 2px;border-bottom:1px solid var(--line);white-space:nowrap}
+.nav-panel a:hover{color:var(--accent)}
+@media(max-width:920px){.nav-burger{display:inline-block}}
 </style>
 <style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}</style></head>
 <body>
@@ -95,7 +105,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <a href="../index.html#now">Now</a>
       <a href="../index.html#contact">Contact</a>
     </div>
+  <button class="nav-burger" id="navBurger" aria-expanded="false" aria-controls="navPanel">菜单</button>
   </div>
+  <div class="nav-panel" id="navPanel" hidden><a href="../index.html#about">About</a><a href="../index.html#projects">Projects</a><a href="../index.html#now">Now</a><a href="../index.html#contact">Contact</a><a href="../index-en.html" hreflang="en" lang="en">English</a></div>
 </nav>
 
 <div class="wrap">
@@ -104,7 +116,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
 <section style="border-bottom:1px solid var(--line)">
   <div class="wrap">
-    <figure class="hero-banner"><img src="img/hero_arm.webp" alt="机械臂路径规划主题插画" width="1536" height="864"></figure><div class="proj-head">
+    <figure class="hero-banner"><img src="img/hero_arm.webp" alt="机械臂路径规划主题插画" width="1376" height="768"></figure><div class="proj-head">
       <div class="proj-label">PROJECT 05 · 进行中</div>
       <h1>机械臂运动规划 — RRT* 无碰撞路径</h1>
       <div class="proj-meta">
@@ -359,6 +371,19 @@ reports/           <span class="c"># 规划结果图 + 指标</span>
 
   randObstacles();
   reset();
+})();
+</script>
+<script>
+(function(){
+  var b=document.getElementById('navBurger'),p=document.getElementById('navPanel');
+  if(!b||!p)return;
+  function set(open){if(open){p.removeAttribute('hidden');}else{p.setAttribute('hidden','');}b.setAttribute('aria-expanded',open?'true':'false');}
+  b.addEventListener('click',function(e){e.stopPropagation();set(p.hasAttribute('hidden'));});
+  document.addEventListener('click',function(e){
+    if(!p.hasAttribute('hidden')&&!p.contains(e.target)&&!b.contains(e.target))set(false);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+  p.addEventListener('click',function(e){if(e.target.tagName==='A')set(false);});
 })();
 </script>
 </body>

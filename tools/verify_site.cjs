@@ -110,7 +110,7 @@ for (const [file, expect] of [
   ["index.html", { skip: "跳到正文", main: "main", writing: "写作", lang: "EN", axes: 8 }],
   ["index-en.html", { skip: "Skip to content", main: "main", writing: "Writing", lang: "中文", axes: 8 }]
 ]) {
-  const { doc, errors } = load(file);
+  const { dom, doc, html, errors } = load(file);
   check(file + " · 无脚本错误", errors.length === 0, errors.slice(0, 2).join(" | "));
   const skip = doc.querySelector("a.skip");
   check(file + " · 跳转链接存在", !!skip && skip.textContent.trim() === expect.skip, skip ? "文案不符" : "无 a.skip");
@@ -135,6 +135,33 @@ for (const [file, expect] of [
   // 区块编号连续
   const nums = [...doc.querySelectorAll(".section-label")].map(e => e.textContent.trim().slice(0, 2));
   check(file + " · 区块编号 01-09 连续", nums.join(",") === ["01","02","03","04","05","06","07","08","09"].join(","), "实得 " + nums.join(","));
+  // 移动端导航
+  const burger = doc.getElementById("navBurger");
+  const panel = doc.getElementById("navPanel");
+  check(file + " · 移动端菜单按钮存在", !!burger, "无 #navBurger");
+  check(file + " · 按钮带 aria-expanded/aria-controls", !!burger && burger.getAttribute("aria-expanded") === "false" && burger.getAttribute("aria-controls") === "navPanel");
+  check(file + " · 面板默认收起", !!panel && panel.hasAttribute("hidden"));
+  const navCount = doc.querySelectorAll(".nav-links a").length;
+  check(file + " · 面板覆盖全部导航项+语言", !!panel && panel.querySelectorAll("a").length === navCount + 1,
+    panel ? `面板 ${panel.querySelectorAll("a").length} / 导航 ${navCount}+1` : "无面板");
+  if (burger && panel) {
+    burger.click();
+    const opened = !panel.hasAttribute("hidden") && burger.getAttribute("aria-expanded") === "true";
+    doc.dispatchEvent(new dom.window.KeyboardEvent("keydown", { key: "Escape" }));
+    const closedByEsc = panel.hasAttribute("hidden") && burger.getAttribute("aria-expanded") === "false";
+    check(file + " · 菜单可展开且 Esc 可收起", opened && closedByEsc, `open=${opened} esc=${closedByEsc}`);
+  }
+  // mono 字体栈含 CJK 回退（否则中文标签掉进系统字体轮盘）
+  check(file + " · mono 栈含 Noto Sans SC 回退", /--mono:[^;]*IBM Plex Mono[^;]*Noto Sans SC/.test(html));
+}
+
+/* ---------- 3b. 全站移动端菜单存在性 ---------- */
+for (const file of PAGES) {
+  const { doc } = load(file);
+  const b = doc.getElementById("navBurger"), p2 = doc.getElementById("navPanel");
+  check(file + " · 移动菜单齐备", !!b && !!p2 && p2.hasAttribute("hidden") &&
+    p2.querySelectorAll("a").length >= 3, "burger=" + !!b + " panel=" + !!p2);
+  check(file + " · 按钮文案", b && (b.textContent.trim() === "菜单" || b.textContent.trim() === "Menu"));
 }
 
 /* ---------- 4. 长文页 ---------- */
