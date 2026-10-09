@@ -69,7 +69,13 @@ blockquote strong{color:var(--ink)}
 .fix-list code{font-family:var(--mono);font-size:13px;color:var(--accent)}
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
 </style>
-<style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}</style></head>
+<style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}
+.read-note{display:flex;align-items:center;gap:18px;flex-wrap:wrap;border:1px solid var(--accent);background:var(--accent-soft);padding:16px 22px;margin:0 0 40px;border-bottom-width:1px;transition:background .2s}
+.read-note:hover{background:rgba(31,95,91,.14);border-bottom-color:var(--accent)}
+.read-note .rn-k{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--paper);background:var(--accent);padding:4px 11px;border-radius:2px;white-space:nowrap}
+.read-note .rn-t{font-family:var(--serif);font-size:16.5px;color:var(--accent-deep);font-weight:600;line-height:1.5}
+.read-note .rn-s{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:auto}
+@media(max-width:700px){.read-note .rn-s{margin-left:0;width:100%}}</style></head>
 <body>
 <nav class="nav"><div class="nav-inner">
   <a class="nav-name" href="../index-en.html">Feiyang Chen</a>
@@ -146,6 +152,12 @@ uv run scripts/train.py thermal_cycler_close-lora \
 # 5000 steps · ~5.3 s/step · ~7.5 h · peak VRAM 22.2 GB</span></div>
 
   <h3>Public artifacts</h3>
+  <a class="read-note" href="../writing/autobio-pi0-lora.html">
+    <span class="rn-k">Full reproduction notes</span>
+    <span class="rn-t">Long-form write-up: environment fixes, upstream repairs, same-seed control, 11 documented pitfalls</span>
+    <span class="rn-s">~12 min &#183; in Chinese &#8594;</span>
+  </a>
+
   <div class="link-row">
     <a href="https://github.com/Feiyang2007/AutoBio" target="_blank" rel="noopener">GitHub repo (reproduction fork)</a>
     <a href="https://huggingface.co/CloudTugWind/AutoBio-pi0-thermal-cycler-close-lora5k" target="_blank" rel="noopener">HuggingFace · full weights 4.9GB</a>
