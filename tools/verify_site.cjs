@@ -172,6 +172,17 @@ for (const [file, expect] of [
       img ? "实得 " + img.getAttribute("src") : "无缩略图");
   }
   check(file + " · contain 适配规则存在", /\.p-thumb img\.contain\{object-fit:contain\}/.test(html));
+  // 图框组件：d2l 缩略图=真实三联图；图区底色与图表画布同色；每张数据图配 mono 来源行
+  const d2lImg = doc.querySelector('a.p-thumb[href="projects/d2l-ch1.html"] img');
+  check(file + " · d2l 缩略图=真实三联图", !!d2lImg && d2lImg.getAttribute("src").endsWith("d2l_fit.png") && d2lImg.classList.contains("contain"),
+    d2lImg ? "实得 " + d2lImg.getAttribute("src") : "无缩略图");
+  check(file + " · 图框底色与图表画布同色(#FBF9F3)", /\.p-fig\{[^}]*background:#FBF9F3/.test(html) && /\.p-thumb\{[^}]*background:#FBF9F3/.test(html));
+  const capCount = doc.querySelectorAll(".p-cap").length;
+  check(file + " · 数据图来源行 ×7", capCount === 7, `实得 ${capCount}`);
+  const wcard = doc.querySelector('a.post-card[href="writing/autobio-pi0-lora.html"] .pc-img img');
+  check(file + " · 写作卡不再「卡里套卡」", !!wcard && wcard.getAttribute("src").endsWith("w_cover.webp"),
+    wcard ? "实得 " + wcard.getAttribute("src") : "无写作卡");
+  check(file + " · 页脚日期口径统一", !/Last updated (January|February|March|April|May|June|July|August|September|October|November|December)/.test(html));
 }
 
 /* ---------- 3b. 全站移动端菜单存在性 ---------- */

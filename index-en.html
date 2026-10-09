@@ -162,9 +162,9 @@ h1.hero-name{
   color:var(--accent-deep);display:block;margin-bottom:8px;
 }
 .hero-stat .lbl{font-size:12.5px;color:var(--muted);line-height:1.4;font-family:var(--mono)}
+@media(max-width:860px){.hero-meta{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:720px){
   .hero{padding:120px 0 64px}
-  .hero-meta{grid-template-columns:repeat(2,1fr)}
 }
 
 /* ===== 区块通用 ===== */
@@ -251,13 +251,19 @@ h2{
 .proj-item:hover{border-color:var(--accent)}
 .proj-item.flagship{grid-column:1/-1;flex-direction:row}
 @media(max-width:860px){.proj-item.flagship{flex-direction:column}}
-.p-thumb{aspect-ratio:16/9;background:#fff;border-bottom:1px solid var(--line);overflow:hidden}
-.proj-item.flagship .p-thumb{aspect-ratio:auto;width:46%;flex-shrink:0;border-bottom:none;border-right:1px solid var(--line)}
+/* Figure frame component: fixed 16:9 chart area + mono source line; the frame
+   background matches the chart canvas (#FBF9F3) so contain margins stay invisible */
+.p-fig{display:flex;flex-direction:column;background:#FBF9F3;border-bottom:1px solid var(--line)}
+.p-thumb{aspect-ratio:16/9;background:#FBF9F3;overflow:hidden;display:block}
+.proj-item.flagship .p-fig{width:46%;flex-shrink:0;border-bottom:none;border-right:1px solid var(--line)}
+.proj-item.flagship .p-thumb{aspect-ratio:auto;flex:1;min-height:0}
 @media(max-width:860px){
-  .proj-item.flagship .p-thumb{width:100%;aspect-ratio:16/9;border-right:none;border-bottom:1px solid var(--line)}
+  .proj-item.flagship .p-fig{width:100%;border-right:none;border-bottom:1px solid var(--line)}
+  .proj-item.flagship .p-thumb{aspect-ratio:16/9;flex:none}
 }
 .p-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .p-thumb img.contain{object-fit:contain}
+.p-cap{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:8px 22px 10px;letter-spacing:.03em;border-top:1px solid rgba(214,209,195,.55)}
 .p-thumb svg{width:100%;height:100%;display:block}
 .p-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
 .p-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
@@ -291,7 +297,7 @@ h2{
 /* ===== Skills 能力雷达 + 列表 ===== */
 .skills-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:center}
 @media(max-width:860px){.skills-grid{grid-template-columns:1fr;gap:32px}}
-#radar{width:100%;height:auto;max-width:520px;display:block;margin:0 auto}
+#radar{width:100%;height:auto;max-width:560px;display:block;margin:0 auto}
 #toTop{
   position:fixed;right:26px;bottom:26px;width:42px;height:42px;
   border:1px solid var(--accent);background:var(--paper-warm);color:var(--accent);
@@ -358,7 +364,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
 
 /* ===== 入场动效与悬停（全站仅此两类动效）===== */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 .proj-item{transition:transform .25s ease,box-shadow .25s ease,border-color .15s}
@@ -568,7 +574,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </p>
     <div class="proj-list">
       <div class="proj-item flagship">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.png" alt="Real evaluation comparison: zero-shot 0%, this LoRA reproduction 90% at 5k steps, upstream full fine-tune 99.7% at 30k steps" loading="lazy"></a>
+        <span class="p-cap">Source · AutoBio benchmark, same-seed eval · per-episode results public</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/autobio-pi0.html"><h4>AutoBio × π0: LoRA fine-tuning a VLA foundation model</h4></a>
@@ -584,7 +593,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.png" alt="Real MuJoCo inverted pendulum training curve: evaluation reward converging to the maximum" loading="lazy"></a>
+        <span class="p-cap">Source · self-implemented PPO training log · solved at iteration 56</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mujoco-rl.html"><h4>Reinforcement learning from scratch (DQN → PPO → MuJoCo)</h4></a>
@@ -596,7 +608,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.png" alt="MNIST handwritten digit sample grid (real data)" loading="lazy"></a>
+        <span class="p-cap">Source · MNIST test set · raw model predictions</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mnist-cnn.html"><h4>Handwritten digits · CNN</h4></a>
@@ -608,7 +623,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/knowledge-rag.html"><img src="projects/img/hero_rag.webp" alt="Knowledge base & QA illustration" loading="lazy"></a>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/knowledge-rag.html"><h4>Personal knowledge RAG assistant</h4></a>
@@ -620,7 +637,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.png" alt="Real UCI-HAR test confusion matrix: sitting vs standing and upstairs vs downstairs are hardest" loading="lazy"></a>
+        <span class="p-cap">Source · UCI-HAR test set · logistic regression outputs</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/ml-pipeline.html"><h4>End-to-end ML pipeline</h4></a>
@@ -632,7 +652,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.png" alt="Real behavior cloning training curve: loss falling, validation accuracy rising" loading="lazy"></a>
+        <span class="p-cap">Source · behavior-cloning training log · CartPole demos</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/lerobot-bc.html"><h4>LeRobot behavior cloning</h4></a>
@@ -644,7 +667,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.png" alt="Real RRT* result in joint space: sampling tree and feasible path" loading="lazy"></a>
+        <span class="p-cap">Source · planner output · metrics match the published tree</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/arm-planning.html"><h4>Robot-arm motion planning</h4></a>
@@ -656,7 +682,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/d2l-ch1.html"><img src="projects/img/hero_d2l.webp" alt="Learning deep learning from scratch illustration" loading="lazy"></a>
+      <div class="p-fig">
+        <a class="p-thumb" href="projects/d2l-ch1.html"><img class="contain" src="projects/img/d2l_fit.png" alt="Polynomial fit triple panel: underfitting, good fit, overfitting (real computation)" loading="lazy"></a>
+        <span class="p-cap">Source · polynomial-fit experiment · same data as the on-page demo</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/d2l-ch1.html"><h4>Dive into Deep Learning · Ch.1 practice</h4></a>
@@ -681,7 +710,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       Every piece keeps its <strong>scope caveats</strong> — what holds, and what does not.
     </p>
     <a class="post-card" href="writing/autobio-pi0-lora.html">
-      <span class="pc-img"><img src="writing/img/og_autobio-lora.webp" alt="AutoBio reproduction notes card: 0% to 90%, 1/200 of upstream training compute" loading="lazy" width="1200" height="630"></span>
+      <span class="pc-img"><img src="writing/img/w_cover.webp" alt="Same-seed comparison: zero-shot failure frame beside LoRA fine-tuned success frame" loading="lazy" width="1072" height="499"></span>
       <span class="pc-body">
         <span class="pc-tag">Reproduction notes 001 · 2026.10.07 · 中文</span>
         <span class="pc-title">AutoBio on a single RTX 5090: 5000 LoRA steps taking a lab robot from 0% to 90%</span>
@@ -704,7 +733,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </figure>
     <div class="skills-grid">
       <div>
-        <canvas id="radar" width="520" height="430" role="img" aria-label="Eight-axis self-assessment for embodied AI, out of 100: Programming 75, Data structures and algorithms 15, Math 65, Machine learning and deep learning 38, Robotics and control 10, Reinforcement learning 30, Simulation 32, LLM and agents 55. Updated October 2026."></canvas>
+        <canvas id="radar" width="560" height="500" role="img" aria-label="Eight-axis self-assessment for embodied AI, out of 100: Programming 75, Data structures and algorithms 15, Math 65, Machine learning and deep learning 38, Robotics and control 10, Reinforcement learning 30, Simulation 32, LLM and agents 55. Updated 2026.10."></canvas>
         <!-- Labels are painted onto the canvas by JS, so assistive tech and crawlers cannot see them; equivalent text is provided here. -->
         <ul class="sr-only">
           <li>Programming: 75 / 100</li>
@@ -857,7 +886,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 </main>
 
 <footer>
-  © 2026 Feiyang Chen · Hunan University · Last updated October 2026
+  © 2026 Feiyang Chen · Hunan University · Last updated 2026.10
 </footer>
 
 <button id="toTop" title="Back to top" aria-label="Back to top">↑</button>
@@ -868,9 +897,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   var ctx=cv.getContext('2d'); if(!ctx) return;
   var labels=['Programming','Data struct. & algos','Math','ML / DL','Robotics & control','RL','Simulation','LLM / Agents'];
   var vals=[75,15,65,38,10,30,32,55];
-  var dpr=window.devicePixelRatio||1, W=520, H=430;
+  var dpr=window.devicePixelRatio||1, W=560, H=500;
   cv.width=W*dpr; cv.height=H*dpr;
-  var cx=W/2, cy=H/2+10, R=148, N=labels.length;
+  var cx=W/2, cy=H/2+10, R=168, N=labels.length;
   function ang(i){return -Math.PI/2 + i*2*Math.PI/N;}
   ctx.save(); ctx.scale(dpr,dpr);
   // grid rings
