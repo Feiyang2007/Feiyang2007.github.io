@@ -37,6 +37,7 @@
   --accent:#1F5F5B;
   --accent-deep:#16443F;
   --accent-soft:rgba(31,95,91,.08);
+  --warn:#B5651D;
   --serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;
   --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -78,6 +79,29 @@ a:hover{border-bottom-color:var(--accent)}
 @media(max-width:920px){.nav-lang{display:none}}
 @media(max-width:920px){.nav-links{display:none}}
 section{scroll-margin-top:72px}
+
+/* ===== 无障碍：跳转链接 / 焦点可见 / 屏幕阅读器专用文本 ===== */
+.skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--accent);color:var(--paper);padding:10px 18px;font-family:var(--mono);font-size:13px;border:none;border-radius:0 0 3px 0}
+.skip:focus{left:0;top:0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
+
+/* ===== 写作区卡片 ===== */
+.post-card{display:block;border:1px solid var(--line);background:var(--paper-warm);border-bottom:1px solid var(--line);color:inherit;transition:transform .3s ease,box-shadow .3s ease}
+.post-card:hover{transform:translateY(-6px);box-shadow:0 14px 34px -14px rgba(22,68,63,.28);border-bottom-color:var(--line)}
+.post-card .pc-img{display:block;border-bottom:1px solid var(--line)}
+.post-card .pc-img img{width:100%;height:auto;display:block}
+.post-card .pc-body{padding:28px 30px 30px}
+.pc-tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--warn);margin-bottom:14px}
+.pc-title{font-family:var(--serif);font-size:23px;font-weight:600;line-height:1.45;color:var(--ink);margin-bottom:14px;display:block}
+.post-card:hover .pc-title{color:var(--accent)}
+.pc-desc{font-size:15px;color:var(--ink-soft);line-height:1.85;margin-bottom:18px}
+.pc-meta{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.pc-meta .dot{color:var(--accent)}
+.pc-cta{display:inline-block;margin-top:20px;font-family:var(--mono);font-size:12.5px;padding:8px 18px;border:1px solid var(--accent);color:var(--accent);border-radius:3px;border-bottom-width:1px}
+.post-card:hover .pc-cta{background:var(--accent);color:var(--paper)}
+.writing-more{margin-top:26px;font-size:14.5px;color:var(--muted);line-height:1.85}
+@media(max-width:920px){.nav-links{gap:18px;font-size:12.5px}}
 
 /* ===== 布局容器 ===== */
 .wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
@@ -347,6 +371,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 </style>
 </head>
 <body>
+<a class="skip" href="#main">跳到正文</a>
 <!-- ===== 导航 ===== -->
 <nav class="nav">
   <div class="nav-inner">
@@ -357,6 +382,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <a href="#direction">Direction</a>
       <a href="#journey">Journey</a>
       <a href="#projects">Projects</a>
+      <a href="#writing">Writing</a>
       <a href="#skills">Skills</a>
       <a href="#education">Education</a>
       <a href="#now">Now</a>
@@ -394,6 +420,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   </div>
 </header>
 
+<main id="main">
 <!-- ===== About ===== -->
 <section id="about">
   <div class="wrap">
@@ -627,17 +654,50 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   </div>
 </section>
 
+<!-- ===== Writing ===== -->
+<section id="writing">
+  <div class="wrap">
+    <div class="section-label">05 — WRITING</div>
+    <h2>跑通了，就写下来。</h2>
+    <p class="prose" style="margin-bottom:40px">
+      复现过、跑得动、并且能给出原始数据和产物链接的东西才写在这里。每篇都保留<strong>口径边界</strong>——哪些结论成立、哪些不成立。
+    </p>
+    <a class="post-card" href="writing/autobio-pi0-lora.html">
+      <span class="pc-img"><img src="writing/img/w_hero.webp" alt="AutoBio 复现笔记封面：零样本与 LoRA 微调的机器人操作画面对照" loading="lazy" width="1400" height="787"></span>
+      <span class="pc-body">
+        <span class="pc-tag">复现手记 001 · 2026.10.07</span>
+        <span class="pc-title">AutoBio 复现笔记：单张 RTX 5090 + 5000 步 LoRA，实验室机器人成功率从 0% 做到 90%</span>
+        <span class="pc-desc">修复上游冻结快照里 16 个月积累的失效代码，用 LoRA 替代全参数微调把 π0 训起来，再用同种子对照证明提升来自权重本身。含 11 条踩坑实录、与上游的成本对比，以及代码／权重／评测素材的完整公开链接。</span>
+        <span class="pc-meta">约 12 分钟<span class="dot"> · </span>正文约 2800 字<span class="dot"> · </span>VLA / LoRA / MuJoCo</span>
+        <span class="pc-cta">阅读全文 →</span>
+      </span>
+    </a>
+    <p class="writing-more">同步收录于 CSDN、知乎专栏、掘金。<a href="writing/index.html">全部写作 →</a></p>
+  </div>
+</section>
+
 <!-- ===== Skills ===== -->
 <section id="skills">
   <div class="wrap">
-    <div class="section-label">05 — SKILLS</div>
+    <div class="section-label">06 — SKILLS</div>
     <h2>现在站在哪里。</h2>
     <figure class="about-band" style="margin:0 0 56px">
       <img src="projects/img/band_climb.webp" alt="登山路径与里程碑插画：学习轨迹" loading="lazy" width="1536" height="810">
     </figure>
     <div class="skills-grid">
       <div>
-        <canvas id="radar" width="520" height="430"></canvas>
+        <canvas id="radar" width="520" height="430" role="img" aria-label="具身智能适配度八轴自评雷达图，满分 100：编程语言 75、数据结构算法 15、数学基础 65、机器学习与深度学习 38、机器人与控制 10、强化学习 30、仿真部署 32、大模型与 Agent 55。更新于 2026 年 10 月。"></canvas>
+        <!-- 画布上的文字由 JS 绘制，读屏与搜索引擎都取不到；此处回挂一份等价文本 -->
+        <ul class="sr-only">
+          <li>编程语言：75 / 100</li>
+          <li>数据结构算法：15 / 100</li>
+          <li>数学基础：65 / 100</li>
+          <li>ML / DL：38 / 100</li>
+          <li>机器人与控制：10 / 100</li>
+          <li>强化学习：30 / 100</li>
+          <li>仿真部署：32 / 100</li>
+          <li>大模型 / Agent：55 / 100</li>
+        </ul>
         <p style="font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:8px">
           具身智能适配度八轴自评（满分100）· 更新于 2026.10
         </p>
@@ -675,7 +735,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <!-- ===== Education ===== -->
 <section id="education">
   <div class="wrap">
-    <div class="section-label">06 — EDUCATION</div>
+    <div class="section-label">07 — EDUCATION</div>
     <h2>学业记录。</h2>
 
     <div class="edu-block">
@@ -711,7 +771,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <!-- ===== Now ===== -->
 <section id="now">
   <div class="wrap">
-    <div class="section-label">07 — NOW</div>
+    <div class="section-label">08 — NOW</div>
     <h2>这学期在做什么。</h2>
     <div class="now-list">
       <div class="now-item">
@@ -749,7 +809,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 <!-- ===== Contact ===== -->
 <section id="contact">
   <div class="wrap">
-    <div class="section-label">08 — CONTACT</div>
+    <div class="section-label">09 — CONTACT</div>
     <h2>联系我。</h2>
     <p class="prose" style="margin-bottom:32px">
       对具身智能、机器人学习、跨专业成长有兴趣的老师或同学，欢迎通过邮箱联系。
@@ -776,11 +836,13 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   </div>
 </section>
 
+</main>
+
 <footer>
-  © 2026 Feiyang Chen · Hunan University · Last updated September 2026
+  © 2026 Feiyang Chen · Hunan University · Last updated October 2026
 </footer>
 
-<button id="toTop" title="回到顶部">↑</button>
+<button id="toTop" title="回到顶部" aria-label="回到页面顶部">↑</button>
 <script>
 // 八轴自评雷达图：零依赖 Canvas 手绘（无 CDN，加载即渲染）
 (function(){

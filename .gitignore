@@ -6,6 +6,11 @@ _shots/
 !projects/img/*.png
 # og 社交卡片（根目录）
 !img_og.png
+# 写作区：动图已转 mp4，gif/png 只作本地源文件不入库；海报帧与 og 卡必须入库
+writing/img/*.gif
+writing/img/w_*.png
+!writing/img/*.jpg
+!writing/img/og_*.png
 .DS_Store
 Thumbs.db
 # 内部交接文档，含明文 API key，绝不推送到公开仓库
@@ -14,3 +19,6 @@ Thumbs.db
 .wrangler/
 proxy/.wrangler/
 node_modules/
+# 字体子集化的源 TTF 缓存与中间文件（约 80MB，绝不入库）
+fonts/_src_cache/
+fonts/_charset.txt
