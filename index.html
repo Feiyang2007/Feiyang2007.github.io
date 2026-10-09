@@ -162,9 +162,9 @@ h1.hero-name{
   color:var(--accent-deep);display:block;margin-bottom:8px;
 }
 .hero-stat .lbl{font-size:12.5px;color:var(--muted);line-height:1.4;font-family:var(--mono)}
+@media(max-width:860px){.hero-meta{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:720px){
   .hero{padding:120px 0 64px}
-  .hero-meta{grid-template-columns:repeat(2,1fr)}
 }
 
 /* ===== 区块通用 ===== */
@@ -251,13 +251,19 @@ h2{
 .proj-item:hover{border-color:var(--accent)}
 .proj-item.flagship{grid-column:1/-1;flex-direction:row}
 @media(max-width:860px){.proj-item.flagship{flex-direction:column}}
-.p-thumb{aspect-ratio:16/9;background:#fff;border-bottom:1px solid var(--line);overflow:hidden}
-.proj-item.flagship .p-thumb{aspect-ratio:auto;width:46%;flex-shrink:0;border-bottom:none;border-right:1px solid var(--line)}
-@media(max-width:860px){
-  .proj-item.flagship .p-thumb{width:100%;aspect-ratio:16/9;border-right:none;border-bottom:1px solid var(--line)}
-}
+/* 图框组件：固定 16:9 图区 + mono 来源行，底色与图表画布同色（#FBF9F3），
+   contain 留白因此不可见；来源行只跟数据图表走，插画卡不加 */
+.p-fig{display:flex;flex-direction:column;background:#FBF9F3;border-bottom:1px solid var(--line)}
+.p-thumb{aspect-ratio:16/9;background:#FBF9F3;overflow:hidden;display:block}
 .p-thumb img{width:100%;height:100%;object-fit:cover;display:block}
 .p-thumb img.contain{object-fit:contain}
+.p-cap{font-family:var(--mono);font-size:10.5px;color:var(--muted);padding:8px 22px 10px;letter-spacing:.03em;border-top:1px solid rgba(214,209,195,.55)}
+.proj-item.flagship .p-fig{width:46%;flex-shrink:0;border-bottom:none;border-right:1px solid var(--line)}
+.proj-item.flagship .p-thumb{aspect-ratio:auto;flex:1;min-height:0}
+@media(max-width:860px){
+  .proj-item.flagship .p-fig{width:100%;border-right:none;border-bottom:1px solid var(--line)}
+  .proj-item.flagship .p-thumb{aspect-ratio:16/9;flex:none}
+}
 .p-thumb svg{width:100%;height:100%;display:block}
 .p-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
 .p-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
@@ -291,7 +297,7 @@ h2{
 /* ===== Skills 能力雷达 + 列表 ===== */
 .skills-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:center}
 @media(max-width:860px){.skills-grid{grid-template-columns:1fr;gap:32px}}
-#radar{width:100%;height:auto;max-width:520px;display:block;margin:0 auto}
+#radar{width:100%;height:auto;max-width:560px;display:block;margin:0 auto}
 #toTop{
   position:fixed;right:26px;bottom:26px;width:42px;height:42px;
   border:1px solid var(--accent);background:var(--paper-warm);color:var(--accent);
@@ -358,7 +364,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
 
 /* ===== 入场动效与悬停（全站仅此两类动效）===== */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
 .proj-item{transition:transform .25s ease,box-shadow .25s ease,border-color .15s}
@@ -566,7 +572,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </p>
     <div class="proj-list">
       <div class="proj-item flagship">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.png" alt="真实评测对比：zero-shot 0%、本复现 LoRA 5000 步 90%、上游全量微调 30k 步 99.7%" loading="lazy"></a>
+        <span class="p-cap">来源 · AutoBio 基准同种子评测 · 逐回合结果公开</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/autobio-pi0.html"><h4>AutoBio × π0：VLA 基础模型 LoRA 微调</h4></a>
@@ -582,7 +591,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.png" alt="MuJoCo 倒立摆真实训练曲线：评估奖励收敛到满分" loading="lazy"></a>
+        <span class="p-cap">来源 · 自实现 PPO 训练日志 · 第 56 次迭代达标</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mujoco-rl.html"><h4>强化学习从零实现（DQN → PPO → MuJoCo）</h4></a>
@@ -594,7 +606,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.png" alt="MNIST 手写数字样本网格（真实数据）" loading="lazy"></a>
+        <span class="p-cap">来源 · MNIST 测试集 · 模型真实预测输出</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mnist-cnn.html"><h4>手写数字识别 · CNN</h4></a>
@@ -606,7 +621,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/knowledge-rag.html"><img src="projects/img/hero_rag.webp" alt="知识库与问答插画" loading="lazy"></a>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/knowledge-rag.html"><h4>个人知识 RAG 助手</h4></a>
@@ -618,7 +635,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.png" alt="UCI-HAR 真实测试集混淆矩阵：坐与站、上楼与下楼最难区分" loading="lazy"></a>
+        <span class="p-cap">来源 · UCI-HAR 测试集 · 逻辑回归真实输出</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/ml-pipeline.html"><h4>端到端机器学习 Pipeline</h4></a>
@@ -630,7 +650,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.png" alt="行为克隆真实训练曲线：损失下降与验证准确率上升" loading="lazy"></a>
+        <span class="p-cap">来源 · 行为克隆训练日志 · CartPole 示教数据</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/lerobot-bc.html"><h4>LeRobot 行为克隆复现</h4></a>
@@ -642,7 +665,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
+      <div class="p-fig">
         <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.png" alt="机械臂关节空间 RRT* 真实规划结果：采样树与可行路径" loading="lazy"></a>
+        <span class="p-cap">来源 · 自研规划器输出 · 指标与规划树一致</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/arm-planning.html"><h4>机械臂运动规划</h4></a>
@@ -654,7 +680,10 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/d2l-ch1.html"><img src="projects/img/hero_d2l.webp" alt="从零学深度学习插画" loading="lazy"></a>
+      <div class="p-fig">
+        <a class="p-thumb" href="projects/d2l-ch1.html"><img class="contain" src="projects/img/d2l_fit.png" alt="多项式拟合三联图：欠拟合、恰好拟合、过拟合（真实计算）" loading="lazy"></a>
+        <span class="p-cap">来源 · 多项式拟合实验 · 与站内交互演示同一数据</span>
+      </div>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/d2l-ch1.html"><h4>动手学深度学习 · 第一章实践</h4></a>
@@ -678,7 +707,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       复现过、跑得动、并且能给出原始数据和产物链接的东西才写在这里。每篇都保留<strong>口径边界</strong>——哪些结论成立、哪些不成立。
     </p>
     <a class="post-card" href="writing/autobio-pi0-lora.html">
-      <span class="pc-img"><img src="writing/img/og_autobio-lora.webp" alt="AutoBio 复现笔记：文章卡片，含 0%→90%、约 1/200 训练算力等关键数字" loading="lazy" width="1200" height="630"></span>
+      <span class="pc-img"><img src="writing/img/w_cover.webp" alt="同种子对照评测：零样本失败帧与 LoRA 微调成功帧并排对比" loading="lazy" width="1072" height="499"></span>
       <span class="pc-body">
         <span class="pc-tag">复现手记 001 · 2026.10.07</span>
         <span class="pc-title">AutoBio 复现笔记：单张 RTX 5090 + 5000 步 LoRA，实验室机器人成功率从 0% 做到 90%</span>
@@ -701,7 +730,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </figure>
     <div class="skills-grid">
       <div>
-        <canvas id="radar" width="520" height="430" role="img" aria-label="具身智能适配度八轴自评雷达图，满分 100：编程语言 75、数据结构算法 15、数学基础 65、机器学习与深度学习 38、机器人与控制 10、强化学习 30、仿真部署 32、大模型与 Agent 55。更新于 2026 年 10 月。"></canvas>
+        <canvas id="radar" width="560" height="500" role="img" aria-label="具身智能适配度八轴自评雷达图，满分 100：编程语言 75、数据结构算法 15、数学基础 65、机器学习与深度学习 38、机器人与控制 10、强化学习 30、仿真部署 32、大模型与 Agent 55。更新于 2026 年 10 月。"></canvas>
         <!-- 画布上的文字由 JS 绘制，读屏与搜索引擎都取不到；此处回挂一份等价文本 -->
         <ul class="sr-only">
           <li>编程语言：75 / 100</li>
@@ -854,7 +883,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 </main>
 
 <footer>
-  © 2026 Feiyang Chen · Hunan University · Last updated October 2026
+  © 2026 Feiyang Chen · Hunan University · Last updated 2026.10
 </footer>
 
 <button id="toTop" title="回到顶部" aria-label="回到页面顶部">↑</button>
@@ -865,9 +894,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   var ctx=cv.getContext('2d'); if(!ctx) return;
   var labels=['编程语言','数据结构算法','数学基础','ML / DL','机器人与控制','强化学习','仿真部署','大模型 / Agent'];
   var vals=[75,15,65,38,10,30,32,55];
-  var dpr=window.devicePixelRatio||1, W=520, H=430;
+  var dpr=window.devicePixelRatio||1, W=560, H=500;
   cv.width=W*dpr; cv.height=H*dpr;
-  var cx=W/2, cy=H/2+10, R=148, N=labels.length;
+  var cx=W/2, cy=H/2+10, R=168, N=labels.length;
   function ang(i){return -Math.PI/2 + i*2*Math.PI/N;}
   ctx.save(); ctx.scale(dpr,dpr);
   // 网格环
