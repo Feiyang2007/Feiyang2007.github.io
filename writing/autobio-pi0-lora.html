@@ -124,6 +124,13 @@ footer{padding:44px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 .nav-panel a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);border:none;padding:11px 2px;border-bottom:1px solid var(--line);white-space:nowrap}
 .nav-panel a:hover{color:var(--accent)}
 @media(max-width:920px){.nav-burger{display:inline-block}}
+
+/* ===== 打印 ===== */
+@media print{.nav,#progress,.skip,.toc,.prevnext,.sync,footer,#toTop{display:none!important}
+body{background:#fff}.wrap{max-width:none;padding:0}.layout{display:block;gap:0;padding:0}
+.prose{max-width:none}.prose h2,.prose h3{page-break-after:avoid;break-after:avoid}
+pre,.code-block,table,figure,.stat-row,.ep-strip,.rollout-grid{page-break-inside:avoid;break-inside:avoid}
+a{color:inherit;border:none}.prose :not(pre)>code{background:#eee;color:#000}.crumb{margin-top:0}}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BlogPosting","headline":"AutoBio 复现笔记：单张 RTX 5090 + 5000 步 LoRA，实验室机器人成功率从 0% 做到 90%","description":"在 AutoBio 基准上对 VLA 基础模型 π0 做 LoRA 微调的完整复现手记，含环境改造、上游修复、同种子对照评测与踩坑实录。","author":{"@type":"Person","name":"陈斐阳","alternateName":"Feiyang Chen","url":"https://feiyang2007.github.io/","sameAs":["https://github.com/Feiyang2007","https://orcid.org/0009-0001-7212-9001"]},"publisher":{"@type":"Person","name":"陈斐阳","url":"https://feiyang2007.github.io/"},"datePublished":"2026-10-07","dateModified":"2026-10-09","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://feiyang2007.github.io/writing/autobio-pi0-lora.html"},"image":"https://feiyang2007.github.io/writing/img/og_autobio-lora.png","keywords":"VLA,LoRA,π0,AutoBio,RTX 5090,MuJoCo,具身智能","articleSection":"复现手记","wordCount":2800,"isPartOf":{"@type":"WebSite","name":"陈斐阳 · Feiyang Chen","url":"https://feiyang2007.github.io/"}}
