@@ -1,0 +1,15 @@
+{
+  "name": "feiyang2007.github.io",
+  "version": "1.0.0",
+  "private": true,
+  "description": "陈斐阳个人作品集（GitHub Pages）。零运行时依赖：不引任何前端框架或 CDN 库。",
+  "scripts": {
+    "verify": "node tools/verify_site.cjs",
+    "font:check": "python tools/check_font_coverage.py",
+    "font:build": "python tools/subset_fonts.py",
+    "check": "node tools/verify_site.cjs && python tools/check_font_coverage.py"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.1"
+  }
+}

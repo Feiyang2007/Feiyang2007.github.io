@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>写作 — 陈斐阳</title>
+<meta name="description" content="陈斐阳的技术写作：具身智能与 VLA 模型的复现手记、论文精读和学习笔记，含可复核的实验数据与开源产物链接。">
+<link rel="canonical" href="https://feiyang2007.github.io/writing/index.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:title" content="写作 — 陈斐阳">
+<meta property="og:description" content="具身智能与 VLA 模型的复现手记、论文精读与学习笔记。">
+<meta property="og:url" content="https://feiyang2007.github.io/writing/index.html">
+<meta property="og:image" content="https://feiyang2007.github.io/img_og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(31,95,91,.25);transition:border-color .15s,color .15s}
+a:hover{border-bottom-color:var(--accent)}
+::selection{background:rgba(31,95,91,.18)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+.skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--accent);color:var(--paper);padding:10px 18px;font-family:var(--mono);font-size:13px;border:none}
+.skip:focus{left:12px;top:12px}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(239,235,225,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{max-width:var(--max);margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between}
+.nav-name{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:.2px;color:var(--ink);border:none;white-space:nowrap}
+.nav-name:hover{color:var(--accent)}
+.nav-links{display:flex;gap:26px;font-size:13.5px}
+.nav-links a{color:var(--ink-soft);border:none;font-family:var(--mono);white-space:nowrap}
+.nav-links a:hover{color:var(--accent)}
+@media(max-width:920px){.nav-links{display:none}}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+section{padding:80px 0;border-bottom:1px solid var(--line)}
+section:last-of-type{border-bottom:none}
+.crumb{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:100px;letter-spacing:.05em}
+.crumb a{color:var(--muted);border:none}.crumb a:hover{color:var(--accent)}
+.crumb .sep{margin:0 8px;color:var(--line)}
+.kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;color:var(--warn);margin:22px 0 16px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(32px,4.4vw,50px);line-height:1.18;letter-spacing:-.005em;margin-bottom:18px}
+.lede{font-size:18px;line-height:1.75;max-width:700px;color:var(--ink-soft);font-weight:300}
+.lede strong{font-weight:600;color:var(--ink)}
+.head-band{padding:36px 0 0}
+.band-img{margin:48px 0 0;border:1px solid var(--line)}
+.band-img img{width:100%;height:auto;display:block}
+h2{font-family:var(--serif);font-size:26px;font-weight:600;margin-bottom:8px}
+.sub{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-bottom:36px}
+.post{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:38px;align-items:start;border:1px solid var(--line);background:var(--paper-warm);padding:0;overflow:hidden;transition:transform .3s ease,box-shadow .3s ease}
+.post:hover{transform:translateY(-6px);box-shadow:0 14px 34px -14px rgba(22,68,63,.28)}
+.post .ph{border:none;border-bottom:1px solid var(--line);display:block}
+.post .ph img{width:100%;height:auto;display:block}
+.post .body{padding:34px 36px 34px 0}
+@media(max-width:820px){.post{grid-template-columns:1fr}.post .body{padding:28px 30px 32px}.post .ph{border-bottom:1px solid var(--line)}}
+.p-tag{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--warn);margin-bottom:14px}
+.p-title{display:block;font-family:var(--serif);font-size:23px;font-weight:600;line-height:1.4;color:var(--ink);border:none;margin-bottom:14px}
+.p-title:hover{color:var(--accent)}
+.p-desc{font-size:15px;color:var(--ink-soft);line-height:1.8;margin-bottom:20px}
+.p-meta{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:20px}
+.p-meta .dot{color:var(--accent)}
+.p-cta{display:inline-block;font-family:var(--mono);font-size:12.5px;padding:8px 18px;border:1px solid var(--accent);color:var(--accent);border-radius:3px}
+.p-cta:hover{background:var(--accent);color:var(--paper)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.pills span{font-family:var(--mono);font-size:11.5px;padding:3px 11px;border:1px solid var(--line);color:var(--accent);border-radius:3px;background:var(--paper-warm)}
+.about{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:48px;align-items:start}
+@media(max-width:820px){.about{grid-template-columns:1fr;gap:28px}}
+.about p{font-size:15.5px;color:var(--ink-soft);margin-bottom:16px;line-height:1.85}
+.about p strong{color:var(--ink)}
+.about ul{list-style:none;margin:0}
+.about li{font-size:15px;color:var(--ink-soft);padding:16px 0;border-bottom:1px solid var(--line);line-height:1.7}
+.about li:first-child{padding-top:0}
+.about li b{font-family:var(--serif);font-size:16.5px;font-weight:600;color:var(--ink);display:block;margin-bottom:4px}
+footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.post:hover{transform:none;box-shadow:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<nav class="nav"><div class="nav-inner">
+  <a class="nav-name" href="../index.html">陈斐阳 · Feiyang Chen</a>
+  <div class="nav-links">
+    <a href="../index.html#about">关于</a>
+    <a href="index.html">写作</a>
+    <a href="../index.html#projects">项目</a>
+    <a href="../index.html#contact">联系</a>
+  </div>
+</div></nav>
+
+<main id="main">
+<div class="wrap"><div class="crumb"><a href="../index.html">首页</a><span class="sep">/</span>写作</div></div>
+
+<section><div class="wrap"><div class="head-band">
+  <div class="kicker">WRITING · 技术写作</div>
+  <h1>写作</h1>
+  <p class="lede">复现过、跑通、并且能给出数据和产物链接的东西，才写在这里。每篇都保留 <strong>口径边界</strong>——哪些结论成立、哪些不成立，比结论本身更重要。</p>
+  <figure class="band-img"><img src="img/w_hero.webp" alt="数字生物实验室机器人操作主题插画" width="1400" height="787" loading="lazy"></figure>
+</div></div></section>
+
+<section id="posts"><div class="wrap">
+  <h2>全部文章</h2>
+  <div class="sub">01 篇 · 2026</div>
+
+  <article class="post reveal">
+    <a class="ph" href="autobio-pi0-lora.html"><img src="img/w_pipeline.webp" alt="AutoBio π0 LoRA 复现流程图" width="1400" height="470" loading="lazy"></a>
+    <div class="body">
+      <div class="p-tag">复现手记 · 001</div>
+      <a class="p-title" href="autobio-pi0-lora.html">AutoBio 复现笔记：单张 RTX 5090 + 5000 步 LoRA，成功率从 0% 做到 90%</a>
+      <p class="p-desc">修复上游冻结快照里 16 个月积累的失效代码，用 LoRA 替代全参数微调把 π0 训起来，再用同种子对照证明提升来自微调本身。含 11 条踩坑实录、成本对比与全部开源产物。</p>
+      <div class="p-meta"><span>2026.10.07</span><span class="dot">●</span><span>约 12 分钟</span><span class="dot">●</span><span>正文约 2800 字</span></div>
+      <div class="pills"><span>VLA</span><span>π0 / openpi</span><span>LoRA</span><span>RTX 5090</span><span>MuJoCo</span><span>LeRobot</span></div>
+      <p style="margin:22px 0 0"><a class="p-cta" href="autobio-pi0-lora.html">阅读全文 →</a></p>
+    </div>
+  </article>
+</div></section>
+
+<section id="scope"><div class="wrap">
+  <h2>这里收录什么</h2>
+  <div class="sub">写作约定</div>
+  <div class="about reveal">
+    <div>
+      <p><strong>复现手记</strong>：跟随公开论文与官方仓库做的一次完整复现。写清环境、命令、失败过程与最终数字，并给出可下载的产物。这类文章的价值在于"另一个人能不能照着跑通"。</p>
+      <p><strong>论文精读</strong>：读一篇具身智能／VLA 方向的论文，用自己的话把方法和它真正的新意讲明白，标注我不同意的地方。</p>
+      <p><strong>学习笔记</strong>：把学到的东西做成能交互验证的说明——比如欠拟合与过拟合的滑动条演示，那类不适合长文的内容会放在项目区。</p>
+    </div>
+    <ul>
+      <li><b>数字必须可复核</b>所有结果都来自真实实验记录，附原始 JSON、日志或仓库提交号。</li>
+      <li><b>写清不成立的部分</b>样本量、置信区间、未做的对照，都写在正文而不是评论区。</li>
+      <li><b>踩坑优先于结论</b>结论往往在别处能看到，卡住我的那些细节才是文章里最值钱的部分。</li>
+    </ul>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">© 2026 陈斐阳 · Feiyang Chen · <a href="../index.html">首页</a></div></footer>
+
+<script>
+(function(){
+  if(!('IntersectionObserver' in window)){return;}
+  var els=document.querySelectorAll('.reveal');
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+  Array.prototype.forEach.call(els,function(e){io.observe(e);});
+})();
+</script>
+</body>
+</html>
