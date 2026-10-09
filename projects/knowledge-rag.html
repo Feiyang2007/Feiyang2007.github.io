@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>个人知识 RAG 助手 — 陈斐阳</title>
-<meta name="description" content="把两年自学笔记做成了一个能问答的机器人：真实语料 + 向量检索 + DeepSeek 生成。">
+<meta name="description" content="把入学以来攒下的笔记做成了一个能问答的机器人：真实语料 + 向量检索 + DeepSeek 生成。">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../fonts/fonts.css">
 <style>
@@ -121,7 +121,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <h1>个人知识 RAG 助手</h1>
     <div class="proj-meta"><span>2026.09</span><span class="dot">●</span><span>真实在线对话</span><span class="dot">●</span><span>语料 = 我的自学笔记</span></div>
     <p class="proj-lede">
-      我把两年自学攒下的笔记（<strong>197 篇 Markdown、127 个代码文件</strong>）整理成一份语料库，
+      我把入学以来攒下的笔记（<strong>220 多篇 Markdown</strong>）整理成一份语料库，
       做了一个能用自然语言问答的小工具。它先做<strong>向量语义检索</strong>（bge-m3 Embedding + 余弦相似度）
       找出最相关的几段笔记，再交给 <strong>DeepSeek</strong> 组织成回答。下面是可以直接对话的 demo。
     </p>
@@ -152,7 +152,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="info-grid">
     <div class="info-block">
       <h3>为什么做这个</h3>
-      <p>我两年积累了 <strong>59 篇学习笔记、127 个代码文件、197 个 Markdown</strong>，散在 Obsidian 里。
+      <p>入学以来我攒下 <strong>220 多篇笔记</strong>，散在 Obsidian 里。
       普通 Ctrl+F 只能匹配关键词——问“我之前怎么理解 RAG 的”，匹配“之前”“理解”毫无意义。</p>
       <p>RAG 做的是：<strong>先语义检索出最相关的几段笔记，再让大模型基于它们作答</strong>。
       用自己的数据，比拿公开数据集练手有意义得多，也是我想搞懂 <strong>Embedding / 向量库 / 检索</strong> 的最快路径。</p>
@@ -245,7 +245,7 @@ const DOCS = [
   ["技术笔记","机械臂课程体系","我在学的机械臂课程共 115 集、12 个模块、约 31 小时：导论、电机与位置传感、URDF 建模、同构遥操作、运动学、PID 同步控制、OpenCV 视觉、ML 与视觉模型训练、语音识别与大模型 Agent/MCP 联动、LeRobot 行为克隆与数据采集。"],
   ["技术笔记","行为克隆本质","行为克隆（BC）本质是监督学习：采集人示教的（状态→动作）配对数据，让网络拟合这个映射，从而模仿示教者的策略。它是模仿学习里最简单的形式，是理解更高级 RL 的起点。"],
   // —— 近期计划 ——
-  ["计划","竞赛与团队","目标加入校跃鹿战队（RoboMaster）算法组——秋季报名 + 面试入营，之后走 task 训练营（C++ / 计算机基础 → ROS 仿真项目 → 12 月底三重验收）。这是我自己想啃的硬骨头，靠实打实的代码和仿真能力进去。"],
+  ["计划","竞赛与团队","原本准备投校跃鹿战队（RoboMaster）算法组，权衡之后已经移出计划——长期集训会挤掉初修课程和主线方向的时间。现在把力气放在本学期的概率论 / 数据库课程，以及 VLA 方向的论文精读与复现上；另外 11 月初有创新创业人才试点班（机器人方向）的综合面试。"],
   ["计划","当前优先级","当前最高优先级：①大二上每门核心课冲 90+（初修一锤定音）；②按 Sklearn → PyTorch → 强化学习 → 仿真的顺序系统学习，把能自己掌控的能力练扎实。"],
   ["学习史","个人网站","这个 GitHub Pages 个人站是我自己做的项目作品集，用来把学过的东西做成能跑、能看的 demo。视觉用暖纸 + 深青、衬线字体，全站纯 HTML/CSS/JS，无框架。"],
   ["规划","方向调研","为长期方向做过具身智能的高校与产业调研：梳理了大陆具身智能的高校梯队、相关方向毕业生薪资、以及城市选择的综合对比——这是我为长期方向做的功课。"],
@@ -405,7 +405,7 @@ function rateLimitOk(){
 async function generate(query, topDocs, history){
   const ctx = topDocs.map(d => "【"+d.doc[0]+"·"+d.doc[1]+"】"+d.doc[2]).join("\n\n");
   const system =
-    "你叫小斐，是陈斐阳的’自学笔记问答助手’。陈斐阳把两年自学笔记做成了这个机器人。\n"+
+    "你叫小斐，是陈斐阳的’自学笔记问答助手’。陈斐阳把入学以来攒下的笔记做成了这个机器人。\n"+
     "规则：\n"+
     "1) 优先根据下面提供的资料来回答；资料里有的信息，用自然、口语化的中文讲出来，像一个熟人在介绍斐阳这个人，不要照抄、不要说’根据资料/资料里没有’这种机械话。\n"+
     "2) 如果资料里没有明确答案，但属于对陈斐阳这个人的一般性问题（打招呼、你是谁、感谢等），就正常自然地回应。\n"+
@@ -514,7 +514,7 @@ document.querySelectorAll("#examples span").forEach(el=>{
 });
 
 // 首屏问候
-addMsg("bot","你好，我是小斐——陈斐阳把他两年自学笔记做成了我。关于他的经历、方向、项目，或他笔记里的技术点（RAG、KNN、MuJoCo、强化学习……），随便问。");
+addMsg("bot","你好，我是小斐——陈斐阳把入学以来攒下的笔记做成了我。关于他的经历、方向、项目，或他笔记里的技术点（RAG、KNN、MuJoCo、强化学习……），随便问。");
 // 初始化向量检索（有 key 才联网；无 key 直接 BM25）
 initEmbedding();
 </script>
