@@ -257,6 +257,7 @@ h2{
   .proj-item.flagship .p-thumb{width:100%;aspect-ratio:16/9;border-right:none;border-bottom:1px solid var(--line)}
 }
 .p-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.p-thumb img.contain{object-fit:contain}
 .p-thumb svg{width:100%;height:100%;display:block}
 .p-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
 .p-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
@@ -420,7 +421,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <a class="hero-btn ghost" href="#projects">看项目 ↓</a>
       </div>
     </div>
-    <img class="hero-art" src="projects/img/hero.webp" alt="机械臂与神经网络主题插画" width="1376" height="768" fetchpriority="high">
+    <video class="hero-art" id="heroRoll" muted loop playsinline preload="metadata" poster="writing/img/w_hero_roll_poster.jpg" width="480" height="360" aria-label="真实评测录像循环播放：LoRA 微调后的机械臂开合 PCR 热循环仪盖（AutoBio 基准同种子对照实验节选）">
+      <source src="writing/img/w_seedstrip.mp4" type="video/mp4">
+    </video>
   </div>
   <div class="wrap">
     <div class="hero-meta">
@@ -563,7 +566,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </p>
     <div class="proj-list">
       <div class="proj-item flagship">
-        <a class="p-thumb" href="projects/autobio-pi0.html"><img src="projects/img/hero_autobio.webp" alt="机器人实验室插画" loading="lazy"></a>
+        <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.png" alt="真实评测对比：zero-shot 0%、本复现 LoRA 5000 步 90%、上游全量微调 30k 步 99.7%" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/autobio-pi0.html"><h4>AutoBio × π0：VLA 基础模型 LoRA 微调</h4></a>
@@ -579,7 +582,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/mujoco-rl.html"><img src="projects/img/hero_rl.webp" alt="倒立摆与强化学习插画" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.png" alt="MuJoCo 倒立摆真实训练曲线：评估奖励收敛到满分" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mujoco-rl.html"><h4>强化学习从零实现（DQN → PPO → MuJoCo）</h4></a>
@@ -591,7 +594,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/mnist-cnn.html"><img src="projects/img/hero_mnist.webp" alt="手写数字识别插画" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.png" alt="MNIST 手写数字样本网格（真实数据）" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mnist-cnn.html"><h4>手写数字识别 · CNN</h4></a>
@@ -615,7 +618,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/ml-pipeline.html"><img src="projects/img/hero_ml.webp" alt="端到端流水线插画" loading="lazy"></a>
+        <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.png" alt="UCI-HAR 真实测试集混淆矩阵：坐与站、上楼与下楼最难区分" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/ml-pipeline.html"><h4>端到端机器学习 Pipeline</h4></a>
@@ -627,7 +630,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/lerobot-bc.html"><img src="projects/img/hero_bc.webp" alt="模仿学习插画" loading="lazy"></a>
+        <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.png" alt="行为克隆真实训练曲线：损失下降与验证准确率上升" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/lerobot-bc.html"><h4>LeRobot 行为克隆复现</h4></a>
@@ -639,7 +642,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/arm-planning.html"><img src="projects/img/hero_arm.webp" alt="机械臂路径规划插画" loading="lazy"></a>
+        <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.png" alt="机械臂关节空间 RRT* 真实规划结果：采样树与可行路径" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/arm-planning.html"><h4>机械臂运动规划</h4></a>
@@ -925,6 +928,22 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     if(window.scrollY>600) b.classList.add('show'); else b.classList.remove('show');
   }, {passive:true});
   b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+<script>
+// hero 真实评测录像：进视口自动播放、出视口暂停；prefers-reduced-motion 时
+// 不自动播放，改为显示控制条由用户手动播放
+(function(){
+  var v=document.getElementById('heroRoll');if(!v)return;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    v.removeAttribute('loop');v.controls=true;return;
+  }
+  if(!('IntersectionObserver' in window))return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(en.isIntersecting){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+    else{v.pause();}
+  });},{threshold:.3});
+  io.observe(v);
 })();
 </script>
 <script>

@@ -153,6 +153,25 @@ for (const [file, expect] of [
   }
   // mono 字体栈含 CJK 回退（否则中文标签掉进系统字体轮盘）
   check(file + " · mono 栈含 Noto Sans SC 回退", /--mono:[^;]*IBM Plex Mono[^;]*Noto Sans SC/.test(html));
+  // hero 真实评测录像
+  const roll = doc.getElementById("heroRoll");
+  check(file + " · hero 是真实评测录像", !!roll && roll.tagName === "VIDEO");
+  check(file + " · 录像 muted+loop+playsinline", !!roll && roll.hasAttribute("muted") && roll.hasAttribute("loop") && roll.hasAttribute("playsinline"));
+  check(file + " · 录像有无障碍描述", !!roll && (roll.getAttribute("aria-label") || "").length > 20);
+  check(file + " · 录像有 poster 兜底", !!roll && !!roll.getAttribute("poster"));
+  check(file + " · reduced-motion 降级逻辑", /prefers-reduced-motion[^;]*\.matches/.test(html) && /heroRoll/.test(html));
+  // 卡片缩略图证据化：6 个项目用真实图表，rag/d2l 保留插画
+  const want = {
+    "autobio-pi0": "autobio_result.png", "mujoco-rl": "mujoco_curve.png",
+    "mnist-cnn": "mnist_samples.png", "ml-pipeline": "confusion_matrix.png",
+    "lerobot-bc": "bc_curve.png", "arm-planning": "arm_rrt_result.png"
+  };
+  for (const [slug, fig] of Object.entries(want)) {
+    const img = doc.querySelector(`a.p-thumb[href="projects/${slug}.html"] img`);
+    check(file + ` · ${slug} 缩略图=真实图表`, !!img && img.getAttribute("src").endsWith(fig) && img.classList.contains("contain"),
+      img ? "实得 " + img.getAttribute("src") : "无缩略图");
+  }
+  check(file + " · contain 适配规则存在", /\.p-thumb img\.contain\{object-fit:contain\}/.test(html));
 }
 
 /* ---------- 3b. 全站移动端菜单存在性 ---------- */
@@ -167,7 +186,7 @@ for (const file of PAGES) {
 /* ---------- 4. 长文页 ---------- */
 {
   const file = "writing/autobio-pi0-lora.html";
-  const { doc, errors } = load(file);
+  const { doc, html, errors } = load(file);
   check(file + " · 无脚本错误", errors.length === 0, errors.slice(0, 2).join(" | "));
   const strip = doc.getElementById("epstrip");
   check(file + " · 逐回合条渲染 20 格", strip && strip.children.length === 20, strip ? "实得 " + strip.children.length : "无 #epstrip");
@@ -194,6 +213,8 @@ for (const file of PAGES) {
   check(file + " · 有跳转链接", !!doc.querySelector("a.skip"));
   // 表格未被 markdown 残留污染
   check(file + " · 无 markdown 残留", !/\*\*|!\[|^\|\s*---/m.test(doc.body.textContent.replace(/[\s\S]*$/, x => x)));
+  // 打印样式（长文是会被打印/存 PDF 的内容）
+  check(file + " · 有打印样式", /@media print/.test(html));
 }
 
 /* ---------- 5. 写作索引 + 旗舰页互链 ---------- */

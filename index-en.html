@@ -257,6 +257,7 @@ h2{
   .proj-item.flagship .p-thumb{width:100%;aspect-ratio:16/9;border-right:none;border-bottom:1px solid var(--line)}
 }
 .p-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.p-thumb img.contain{object-fit:contain}
 .p-thumb svg{width:100%;height:100%;display:block}
 .p-body{padding:20px 22px 22px;display:flex;flex-direction:column;flex:1}
 .p-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;flex-wrap:wrap}
@@ -421,7 +422,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <a class="hero-btn ghost" href="#projects">See projects ↓</a>
       </div>
     </div>
-    <img class="hero-art" src="projects/img/hero.webp" alt="Robotic arm and neural network illustration" width="1376" height="768" fetchpriority="high">
+    <video class="hero-art" id="heroRoll" muted loop playsinline preload="metadata" poster="writing/img/w_hero_roll_poster.jpg" width="480" height="360" aria-label="Real evaluation rollout, looping: the LoRA fine-tuned robot arm operates a PCR thermal cycler lid (AutoBio benchmark, same-seed control experiment)">
+      <source src="writing/img/w_seedstrip.mp4" type="video/mp4">
+    </video>
   </div>
   <div class="wrap">
     <div class="hero-meta">
@@ -565,7 +568,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </p>
     <div class="proj-list">
       <div class="proj-item flagship">
-        <a class="p-thumb" href="projects/autobio-pi0.html"><img src="projects/img/hero_autobio.webp" alt="Robotics lab illustration" loading="lazy"></a>
+        <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.png" alt="Real evaluation comparison: zero-shot 0%, this LoRA reproduction 90% at 5k steps, upstream full fine-tune 99.7% at 30k steps" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/autobio-pi0.html"><h4>AutoBio × π0: LoRA fine-tuning a VLA foundation model</h4></a>
@@ -581,7 +584,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/mujoco-rl.html"><img src="projects/img/hero_rl.webp" alt="Inverted pendulum & RL illustration" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.png" alt="Real MuJoCo inverted pendulum training curve: evaluation reward converging to the maximum" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mujoco-rl.html"><h4>Reinforcement learning from scratch (DQN → PPO → MuJoCo)</h4></a>
@@ -593,7 +596,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/mnist-cnn.html"><img src="projects/img/hero_mnist.webp" alt="Handwritten digit recognition illustration" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.png" alt="MNIST handwritten digit sample grid (real data)" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/mnist-cnn.html"><h4>Handwritten digits · CNN</h4></a>
@@ -617,7 +620,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/ml-pipeline.html"><img src="projects/img/hero_ml.webp" alt="End-to-end pipeline illustration" loading="lazy"></a>
+        <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.png" alt="Real UCI-HAR test confusion matrix: sitting vs standing and upstairs vs downstairs are hardest" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/ml-pipeline.html"><h4>End-to-end ML pipeline</h4></a>
@@ -629,7 +632,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/lerobot-bc.html"><img src="projects/img/hero_bc.webp" alt="Imitation learning illustration" loading="lazy"></a>
+        <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.png" alt="Real behavior cloning training curve: loss falling, validation accuracy rising" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/lerobot-bc.html"><h4>LeRobot behavior cloning</h4></a>
@@ -641,7 +644,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         </div>
       </div>
       <div class="proj-item">
-        <a class="p-thumb" href="projects/arm-planning.html"><img src="projects/img/hero_arm.webp" alt="Robot-arm path planning illustration" loading="lazy"></a>
+        <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.png" alt="Real RRT* result in joint space: sampling tree and feasible path" loading="lazy"></a>
         <div class="p-body">
           <div class="p-head">
             <a class="p-link" href="projects/arm-planning.html"><h4>Robot-arm motion planning</h4></a>
@@ -928,6 +931,22 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     if(window.scrollY>600) b.classList.add('show'); else b.classList.remove('show');
   }, {passive:true});
   b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+<script>
+// hero 真实评测录像：进视口自动播放、出视口暂停；prefers-reduced-motion 时
+// 不自动播放，改为显示控制条由用户手动播放
+(function(){
+  var v=document.getElementById('heroRoll');if(!v)return;
+  if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    v.removeAttribute('loop');v.controls=true;return;
+  }
+  if(!('IntersectionObserver' in window))return;
+  var io=new IntersectionObserver(function(es){es.forEach(function(en){
+    if(en.isIntersecting){var p=v.play();if(p&&p.catch)p.catch(function(){});}
+    else{v.pause();}
+  });},{threshold:.3});
+  io.observe(v);
 })();
 </script>
 <script>
