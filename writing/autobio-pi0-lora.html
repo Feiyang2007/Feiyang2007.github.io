@@ -29,7 +29,7 @@
 <link rel="alternate" hreflang="x-default" href="https://feiyang2007.github.io/writing/autobio-pi0-lora.html">
 <link rel="stylesheet" href="../fonts/fonts.css">
 <style>
-:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono","Noto Sans SC",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.85;-webkit-font-smoothing:antialiased}
@@ -114,6 +114,16 @@ blockquote strong{color:var(--ink)}
 footer{padding:44px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
 @media(max-width:640px){.wrap,.nav-inner{padding-left:20px;padding-right:20px}.prose h2{font-size:23px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}#progress{transition:none}}
+
+/* ===== 移动端导航面板 ===== */
+.nav-burger{display:none;font-family:var(--mono);font-size:12px;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:3px;padding:4px 11px;letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+.nav-burger:hover{background:var(--accent);color:var(--paper)}
+.nav-burger[aria-expanded="true"]{background:var(--accent);color:var(--paper)}
+.nav-panel{position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);padding:6px 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:0 22px;box-shadow:0 14px 24px -18px rgba(22,68,63,.25)}
+.nav-panel[hidden]{display:none}
+.nav-panel a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);border:none;padding:11px 2px;border-bottom:1px solid var(--line);white-space:nowrap}
+.nav-panel a:hover{color:var(--accent)}
+@media(max-width:920px){.nav-burger{display:inline-block}}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"BlogPosting","headline":"AutoBio 复现笔记：单张 RTX 5090 + 5000 步 LoRA，实验室机器人成功率从 0% 做到 90%","description":"在 AutoBio 基准上对 VLA 基础模型 π0 做 LoRA 微调的完整复现手记，含环境改造、上游修复、同种子对照评测与踩坑实录。","author":{"@type":"Person","name":"陈斐阳","alternateName":"Feiyang Chen","url":"https://feiyang2007.github.io/","sameAs":["https://github.com/Feiyang2007","https://orcid.org/0009-0001-7212-9001"]},"publisher":{"@type":"Person","name":"陈斐阳","url":"https://feiyang2007.github.io/"},"datePublished":"2026-10-07","dateModified":"2026-10-09","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https://feiyang2007.github.io/writing/autobio-pi0-lora.html"},"image":"https://feiyang2007.github.io/writing/img/og_autobio-lora.png","keywords":"VLA,LoRA,π0,AutoBio,RTX 5090,MuJoCo,具身智能","articleSection":"复现手记","wordCount":2800,"isPartOf":{"@type":"WebSite","name":"陈斐阳 · Feiyang Chen","url":"https://feiyang2007.github.io/"}}
@@ -130,7 +140,9 @@ footer{padding:44px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <a href="../index.html#projects">项目</a>
     <a href="../index.html#contact">联系</a>
   </div>
-</div></nav>
+<button class="nav-burger" id="navBurger" aria-expanded="false" aria-controls="navPanel">菜单</button>
+  </div>
+  <div class="nav-panel" id="navPanel" hidden><a href="../index.html#about">关于</a><a href="../writing/index.html">写作</a><a href="../index.html#projects">项目</a><a href="../index.html#contact">联系</a><a href="../index-en.html" hreflang="en" lang="en">English</a></div></nav>
 
 <main id="article">
 <div class="wrap"><div class="crumb"><a href="../index.html">首页</a><span class="sep">/</span><a href="index.html">写作</a><span class="sep">/</span>AutoBio × π0 复现手记</div></div>
@@ -140,7 +152,7 @@ footer{padding:44px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <h1>AutoBio 复现笔记：单张 RTX 5090 + 5000 步 LoRA，实验室机器人成功率从 0% 做到 90%</h1>
   <div class="art-meta"><span>2026.10.07</span><span class="dot">●</span><span>约 12 分钟</span><span class="dot">●</span><span>VLA / LoRA / MuJoCo</span></div>
   <p class="lede">这是一篇 <strong>AutoBio 基准的复现与学习记录</strong>，不是原创工作。AutoBio 基准（仿真环境、任务、数据集、代码与论文）归属原作者团队，π0 模型归属 Physical Intelligence。这份 fork 只做了三件事：修好上游冻结快照里的几处失效代码、用消费级显卡跑通一个单任务的 LoRA 微调、把代码／权重／评测素材全部开源。文中所有数字与产物链接均可复核。</p>
-  <figure class="banner"><img src="img/w_hero.webp" alt="AutoBio 复现笔记封面：数字生物实验室中的机器人操作场景" width="1400" height="787" fetchpriority="high"></figure>
+  <figure class="banner"><img src="img/w_cover.webp" alt="同种子 ep00 对照画面：零样本 π0_base 合盖失败与 LoRA 微调后合盖成功" width="1072" height="499" fetchpriority="high"></figure>
 </div></div>
 
 <div class="wrap"><div class="layout">
@@ -454,6 +466,19 @@ XLA_FLAGS="--xla_gpu_enable_triton_gemm=false" uv run scripts/serve_policy.py --
     });},{threshold:.25});
     Array.prototype.forEach.call(document.querySelectorAll('video[data-roll]'),function(v){vio.observe(v);});
   }
+})();
+</script>
+<script>
+(function(){
+  var b=document.getElementById('navBurger'),p=document.getElementById('navPanel');
+  if(!b||!p)return;
+  function set(open){if(open){p.removeAttribute('hidden');}else{p.setAttribute('hidden','');}b.setAttribute('aria-expanded',open?'true':'false');}
+  b.addEventListener('click',function(e){e.stopPropagation();set(p.hasAttribute('hidden'));});
+  document.addEventListener('click',function(e){
+    if(!p.hasAttribute('hidden')&&!p.contains(e.target)&&!b.contains(e.target))set(false);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+  p.addEventListener('click',function(e){if(e.target.tagName==='A')set(false);});
 })();
 </script>
 </body>
