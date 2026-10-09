@@ -15,7 +15,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="../fonts/fonts.css">
 <style>
-:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono","Noto Sans SC",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.8;-webkit-font-smoothing:antialiased}
@@ -76,6 +76,16 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
 .reveal.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.post:hover{transform:none;box-shadow:none}html{scroll-behavior:auto}}
+
+/* ===== 移动端导航面板 ===== */
+.nav-burger{display:none;font-family:var(--mono);font-size:12px;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:3px;padding:4px 11px;letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+.nav-burger:hover{background:var(--accent);color:var(--paper)}
+.nav-burger[aria-expanded="true"]{background:var(--accent);color:var(--paper)}
+.nav-panel{position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);padding:6px 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:0 22px;box-shadow:0 14px 24px -18px rgba(22,68,63,.25)}
+.nav-panel[hidden]{display:none}
+.nav-panel a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);border:none;padding:11px 2px;border-bottom:1px solid var(--line);white-space:nowrap}
+.nav-panel a:hover{color:var(--accent)}
+@media(max-width:920px){.nav-burger{display:inline-block}}
 </style>
 </head>
 <body>
@@ -88,7 +98,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <a href="../index.html#projects">项目</a>
     <a href="../index.html#contact">联系</a>
   </div>
-</div></nav>
+<button class="nav-burger" id="navBurger" aria-expanded="false" aria-controls="navPanel">菜单</button>
+  </div>
+  <div class="nav-panel" id="navPanel" hidden><a href="../index.html#about">关于</a><a href="index.html">写作</a><a href="../index.html#projects">项目</a><a href="../index.html#contact">联系</a><a href="../index-en.html" hreflang="en" lang="en">English</a></div></nav>
 
 <main id="main">
 <div class="wrap"><div class="crumb"><a href="../index.html">首页</a><span class="sep">/</span>写作</div></div>
@@ -97,7 +109,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div class="kicker">WRITING · 技术写作</div>
   <h1>写作</h1>
   <p class="lede">复现过、跑通、并且能给出数据和产物链接的东西，才写在这里。每篇都保留 <strong>口径边界</strong>——哪些结论成立、哪些不成立，比结论本身更重要。</p>
-  <figure class="band-img"><img src="img/w_hero.webp" alt="数字生物实验室机器人操作主题插画" width="1400" height="787" loading="lazy"></figure>
+  <figure class="band-img"><img src="img/og_autobio-lora.webp" alt="AutoBio 复现笔记：文章卡片" width="1200" height="630" loading="lazy"></figure>
 </div></div></section>
 
 <section id="posts"><div class="wrap">
@@ -143,6 +155,19 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   var els=document.querySelectorAll('.reveal');
   var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
   Array.prototype.forEach.call(els,function(e){io.observe(e);});
+})();
+</script>
+<script>
+(function(){
+  var b=document.getElementById('navBurger'),p=document.getElementById('navPanel');
+  if(!b||!p)return;
+  function set(open){if(open){p.removeAttribute('hidden');}else{p.setAttribute('hidden','');}b.setAttribute('aria-expanded',open?'true':'false');}
+  b.addEventListener('click',function(e){e.stopPropagation();set(p.hasAttribute('hidden'));});
+  document.addEventListener('click',function(e){
+    if(!p.hasAttribute('hidden')&&!p.contains(e.target)&&!b.contains(e.target))set(false);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+  p.addEventListener('click',function(e){if(e.target.tagName==='A')set(false);});
 })();
 </script>
 </body>

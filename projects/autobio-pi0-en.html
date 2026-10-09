@@ -11,7 +11,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231F5F5B'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='18' fill='%23EFEBE1' text-anchor='middle' font-weight='600'%3EC%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="../fonts/fonts.css">
 <style>
-:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--bad:#C62828;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
+:root{--paper:#EFEBE1;--paper-warm:#F5F2EA;--ink:#1A1B18;--ink-soft:#3A3B36;--muted:#6E6A60;--line:#D6D1C3;--accent:#1F5F5B;--accent-deep:#16443F;--accent-soft:rgba(31,95,91,.08);--warn:#B5651D;--bad:#C62828;--serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;--sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--mono:"IBM Plex Mono","Noto Sans SC",ui-monospace,SFMono-Regular,Menlo,monospace;--max:1080px}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16.5px;line-height:1.75;-webkit-font-smoothing:antialiased;font-weight:400}
@@ -68,6 +68,16 @@ blockquote strong{color:var(--ink)}
 .fix-list{margin:0 0 14px 20px;font-size:15px;color:var(--ink-soft);line-height:1.9}
 .fix-list code{font-family:var(--mono);font-size:13px;color:var(--accent)}
 footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* ===== 移动端导航面板 ===== */
+.nav-burger{display:none;font-family:var(--mono);font-size:12px;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:3px;padding:4px 11px;letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+.nav-burger:hover{background:var(--accent);color:var(--paper)}
+.nav-burger[aria-expanded="true"]{background:var(--accent);color:var(--paper)}
+.nav-panel{position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);padding:6px 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:0 22px;box-shadow:0 14px 24px -18px rgba(22,68,63,.25)}
+.nav-panel[hidden]{display:none}
+.nav-panel a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);border:none;padding:11px 2px;border-bottom:1px solid var(--line);white-space:nowrap}
+.nav-panel a:hover{color:var(--accent)}
+@media(max-width:920px){.nav-burger{display:inline-block}}
 </style>
 <style>.hero-banner{margin:8px 0 4px;border:1px solid var(--line)}.hero-banner img{width:100%;height:auto;display:block}
 .read-note{display:flex;align-items:center;gap:18px;flex-wrap:wrap;border:1px solid var(--accent);background:var(--accent-soft);padding:16px 22px;margin:0 0 40px;border-bottom-width:1px;transition:background .2s}
@@ -85,12 +95,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <a href="../index-en.html#now">Now</a>
     <a href="../index-en.html#contact">Contact</a>
   </div>
-</div></nav>
+<button class="nav-burger" id="navBurger" aria-expanded="false" aria-controls="navPanel">Menu</button>
+  </div>
+  <div class="nav-panel" id="navPanel" hidden><a href="../index-en.html#about">About</a><a href="../index-en.html#projects">Projects</a><a href="../index-en.html#now">Now</a><a href="../index-en.html#contact">Contact</a><a href="../index.html" hreflang="zh-CN">中文版</a></div></nav>
 
 <div class="wrap"><div class="crumb"><a href="../index-en.html">Home</a><span class="sep">/</span><a href="../index-en.html#projects">Projects</a><span class="sep">/</span><a href="autobio-pi0.html" title="中文版">中文</a><span class="sep">/</span>AutoBio × π0</div></div>
 
 <section><div class="wrap">
-  <figure class="hero-banner"><img src="img/hero_autobio.webp" alt="AutoBio robotics lab illustration" width="1536" height="864"></figure><div class="proj-head">
+  <figure class="hero-banner"><img src="img/hero_autobio.webp" alt="AutoBio robotics lab illustration" width="1376" height="768"></figure><div class="proj-head">
     <div class="proj-label">PROJECT 08 · FLAGSHIP · DONE (single-task reproduction)</div>
     <h1>AutoBio × π0: LoRA Fine-tuning a VLA Foundation Model</h1>
     <div class="proj-meta"><span>2026.10</span><span class="dot">●</span><span>RTX 5090 · WSL2</span><span class="dot">●</span><span>openpi / π0 · LoRA</span><span class="dot">●</span><span>weights public</span></div>
@@ -200,6 +212,19 @@ uv run scripts/train.py thermal_cycler_close-lora \
     d.title=eps[i]?'success':'failure';
     strip.appendChild(d);
   }
+})();
+</script>
+<script>
+(function(){
+  var b=document.getElementById('navBurger'),p=document.getElementById('navPanel');
+  if(!b||!p)return;
+  function set(open){if(open){p.removeAttribute('hidden');}else{p.setAttribute('hidden','');}b.setAttribute('aria-expanded',open?'true':'false');}
+  b.addEventListener('click',function(e){e.stopPropagation();set(p.hasAttribute('hidden'));});
+  document.addEventListener('click',function(e){
+    if(!p.hasAttribute('hidden')&&!p.contains(e.target)&&!b.contains(e.target))set(false);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+  p.addEventListener('click',function(e){if(e.target.tagName==='A')set(false);});
 })();
 </script>
 </body></html>

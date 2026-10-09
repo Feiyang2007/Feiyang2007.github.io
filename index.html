@@ -40,7 +40,7 @@
   --warn:#B5651D;
   --serif:"Source Serif 4","Noto Serif SC",Georgia,"Songti SC",serif;
   --sans:"Noto Sans SC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --mono:"IBM Plex Mono","Noto Sans SC",ui-monospace,SFMono-Regular,Menlo,monospace;
   --max:1080px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
@@ -368,6 +368,16 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 .now-item:hover{transform:translateY(-4px)}
 
 @media print{.nav{display:none}section{padding:40px 0}}
+
+/* ===== 移动端导航面板 ===== */
+.nav-burger{display:none;font-family:var(--mono);font-size:12px;color:var(--accent);background:transparent;border:1px solid var(--accent);border-radius:3px;padding:4px 11px;letter-spacing:.08em;cursor:pointer;white-space:nowrap}
+.nav-burger:hover{background:var(--accent);color:var(--paper)}
+.nav-burger[aria-expanded="true"]{background:var(--accent);color:var(--paper)}
+.nav-panel{position:absolute;top:100%;left:0;right:0;background:var(--paper);border-bottom:1px solid var(--line);padding:6px 24px 16px;display:grid;grid-template-columns:1fr 1fr;gap:0 22px;box-shadow:0 14px 24px -18px rgba(22,68,63,.25)}
+.nav-panel[hidden]{display:none}
+.nav-panel a{font-family:var(--mono);font-size:13px;color:var(--ink-soft);border:none;padding:11px 2px;border-bottom:1px solid var(--line);white-space:nowrap}
+.nav-panel a:hover{color:var(--accent)}
+@media(max-width:920px){.nav-burger{display:inline-block}}
 </style>
 </head>
 <body>
@@ -388,7 +398,9 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       <a href="#now">Now</a>
       <a href="#contact">Contact</a>
     </div>
+  <button class="nav-burger" id="navBurger" aria-expanded="false" aria-controls="navPanel">菜单</button>
   </div>
+  <div class="nav-panel" id="navPanel" hidden><a href="#about">About</a><a href="#direction">Direction</a><a href="#journey">Journey</a><a href="#projects">Projects</a><a href="#writing">Writing</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#now">Now</a><a href="#contact">Contact</a><a href="index.html" hreflang="zh-CN">中文版</a></div>
 </nav>
 
 <!-- ===== Hero ===== -->
@@ -408,7 +420,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
         <a class="hero-btn ghost" href="#projects">看项目 ↓</a>
       </div>
     </div>
-    <img class="hero-art" src="projects/img/hero.webp" alt="机械臂与神经网络主题插画" width="640" height="360" fetchpriority="high">
+    <img class="hero-art" src="projects/img/hero.webp" alt="机械臂与神经网络主题插画" width="1376" height="768" fetchpriority="high">
   </div>
   <div class="wrap">
     <div class="hero-meta">
@@ -427,7 +439,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="section-label">01 — ABOUT</div>
     <h2>从纸面走向代码。</h2>
     <figure class="about-band">
-      <img src="projects/img/band_journey.webp" alt="从土木图纸到机器人：成长路径插画" loading="lazy" width="1536" height="864">
+      <img src="projects/img/band_journey.webp" alt="从土木图纸到机器人：成长路径插画" loading="lazy" width="1914" height="772">
     </figure>
     <div class="about-grid">
       <div class="prose">
@@ -663,7 +675,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       复现过、跑得动、并且能给出原始数据和产物链接的东西才写在这里。每篇都保留<strong>口径边界</strong>——哪些结论成立、哪些不成立。
     </p>
     <a class="post-card" href="writing/autobio-pi0-lora.html">
-      <span class="pc-img"><img src="writing/img/w_hero.webp" alt="AutoBio 复现笔记封面：零样本与 LoRA 微调的机器人操作画面对照" loading="lazy" width="1400" height="787"></span>
+      <span class="pc-img"><img src="writing/img/og_autobio-lora.webp" alt="AutoBio 复现笔记：文章卡片，含 0%→90%、约 1/200 训练算力等关键数字" loading="lazy" width="1200" height="630"></span>
       <span class="pc-body">
         <span class="pc-tag">复现手记 001 · 2026.10.07</span>
         <span class="pc-title">AutoBio 复现笔记：单张 RTX 5090 + 5000 步 LoRA，实验室机器人成功率从 0% 做到 90%</span>
@@ -682,7 +694,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="section-label">06 — SKILLS</div>
     <h2>现在站在哪里。</h2>
     <figure class="about-band" style="margin:0 0 56px">
-      <img src="projects/img/band_climb.webp" alt="登山路径与里程碑插画：学习轨迹" loading="lazy" width="1536" height="810">
+      <img src="projects/img/band_climb.webp" alt="登山路径与里程碑插画：学习轨迹" loading="lazy" width="1774" height="809">
     </figure>
     <div class="skills-grid">
       <div>
@@ -913,6 +925,19 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     if(window.scrollY>600) b.classList.add('show'); else b.classList.remove('show');
   }, {passive:true});
   b.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+})();
+</script>
+<script>
+(function(){
+  var b=document.getElementById('navBurger'),p=document.getElementById('navPanel');
+  if(!b||!p)return;
+  function set(open){if(open){p.removeAttribute('hidden');}else{p.setAttribute('hidden','');}b.setAttribute('aria-expanded',open?'true':'false');}
+  b.addEventListener('click',function(e){e.stopPropagation();set(p.hasAttribute('hidden'));});
+  document.addEventListener('click',function(e){
+    if(!p.hasAttribute('hidden')&&!p.contains(e.target)&&!b.contains(e.target))set(false);
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')set(false);});
+  p.addEventListener('click',function(e){if(e.target.tagName==='A')set(false);});
 })();
 </script>
 </body>

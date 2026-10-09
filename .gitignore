@@ -22,3 +22,4 @@ node_modules/
 # 字体子集化的源 TTF 缓存与中间文件（约 80MB，绝不入库）
 fonts/_src_cache/
 fonts/_charset.txt
+__pycache__/
