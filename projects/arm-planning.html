@@ -144,7 +144,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
     <div class="demo-wrap" style="margin-top:20px">
       <h3 style="margin-bottom:12px">真·机械臂规划 · 关节空间 RRT*（Python 实现）</h3>
-      <img src="img/arm_rrt_result.png" alt="机械臂关节空间 RRT* 规划结果" style="width:100%;max-width:640px;height:auto;border:1px solid var(--line);background:#fff;display:block;margin:0 auto">
+      <img src="img/arm_rrt_result.webp" alt="机械臂关节空间 RRT* 规划结果" style="width:100%;max-width:640px;height:auto;border:1px solid var(--line);background:#fff;display:block;margin:0 auto">
       <div class="demo-note" style="margin-top:12px">↑ 三连杆平面臂、两个圆形障碍。绿色=起始构型，红色=目标构型，淡色=沿途位姿，橙色虚线=末端轨迹。难点在于：障碍在<strong>工作空间</strong>里，而规划在<strong>关节（构型）空间</strong>里做——靠正运动学(FK)把两者连起来，边校验时沿关节插值、逐个做连杆碰撞检测。约 532 个树节点规划出一条无碰撞的关节轨迹。</div>
     </div>
 

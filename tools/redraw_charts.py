@@ -6,7 +6,8 @@
 
 产出（覆盖同名文件）：
   projects/img/  mujoco_curve / bc_curve / confusion_matrix /
-                 mnist_samples / arm_rrt_result / autobio_result / d2l_fit  (.png)
+                 mnist_samples / arm_rrt_result / autobio_result / d2l_fit
+                 （.png 重绘源 + 无损 .webp，页面引用后者）
   writing/img/   w_seedcmp.png + w_seedcmp.webp（原文有列名重叠 + 高饱和红绿，重制）
 
 运行：python tools/redraw_charts.py
@@ -382,7 +383,7 @@ def fig_seedcmp() -> None:
             ha="center", fontsize=11, color=cs.MUTED)
     ax.set_title("同种子逐局对照（ep00–03 使用完全相同的随机种子）", pad=10)
     cs.save(fig, W_IMG / "w_seedcmp.png")
-    cs.to_webp(W_IMG / "w_seedcmp.png")
+    cs.to_webp(W_IMG / "w_seedcmp.png", lossless=True)
 
 
 # ================================================================ 8. d2l 多项式拟合
@@ -444,4 +445,8 @@ if __name__ == "__main__":
     fig_autobio()
     fig_seedcmp()
     fig_d2l()
+    print("生成无损 WebP（页面引用的是 WebP，PNG 作重绘源）：")
+    for name in ("mujoco_curve", "bc_curve", "confusion_matrix", "mnist_samples",
+                 "arm_rrt_result", "autobio_result", "d2l_fit"):
+        cs.to_webp(P_IMG / (name + ".png"), lossless=True)
     print("完成。")

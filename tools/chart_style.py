@@ -113,12 +113,17 @@ def save(fig, path: str | Path) -> Path:
     return path
 
 
-def to_webp(png_path: str | Path, quality: int = 85) -> Path:
-    """PNG → WebP（文章页使用的格式）。"""
+def to_webp(png_path: str | Path, quality: int = 85, lossless: bool = False) -> Path:
+    """PNG → WebP（页面统一引用 WebP，PNG 只作重绘源）。
+    图表与截图用 lossless=True：文字保持锐利，体积仍能减到 PNG 的一半以下。"""
     from PIL import Image
 
     png_path = Path(png_path)
     webp = png_path.with_suffix(".webp")
-    Image.open(png_path).save(webp, "WEBP", quality=quality, method=6)
+    im = Image.open(png_path)
+    if lossless:
+        im.convert("RGB").save(webp, "WEBP", lossless=True, method=6)
+    else:
+        im.save(webp, "WEBP", quality=quality, method=6)
     print(f"  ✓ {webp.name}  {webp.stat().st_size//1024} KB")
     return webp

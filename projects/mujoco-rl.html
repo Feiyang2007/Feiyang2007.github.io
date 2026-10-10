@@ -103,19 +103,19 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
 
   <div class="demo-wrap" style="margin-top:20px">
     <h3 style="margin-bottom:12px">真实训练曲线 · Double-DQN 从零解决 CartPole</h3>
-    <img src="img/dqn_curve.png" alt="DQN 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <img src="img/dqn_curve.webp" alt="DQN 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
     <div class="demo-note">↑ 真实产出（非示意）：贪心策略存活步数 + 50 回合滑动平均，第 573 回合越过 solved 线 475。曲线里的震荡正是 DQN 的真实脾气——靠 Double-DQN + 软更新目标网络才压稳。</div>
   </div>
 
   <div class="demo-wrap" style="margin-top:20px">
     <h3 style="margin-bottom:12px">真实训练曲线 · PPO 从零训练 Pendulum（连续控制）</h3>
-    <img src="img/ppo_curve.png" alt="PPO 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <img src="img/ppo_curve.webp" alt="PPO 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
     <div class="demo-note">↑ 真实产出：近 100 回合平均奖励从 ~-1300 一路提升，在第 465 个 iteration 越过 solved 线（-150），最佳单回合接近满分（稳定摆到顶点并平衡）。PPO 是 on-policy、面向连续动作的算法，和 DQN 是两条路子。</div>
   </div>
 
   <div class="demo-wrap" style="margin-top:20px">
     <h3 style="margin-bottom:12px">真实训练曲线 · 同一份 PPO 迁移到 MuJoCo 物理（InvertedPendulum）</h3>
-    <img src="img/mujoco_curve.png" alt="MuJoCo PPO 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <img src="img/mujoco_curve.webp" alt="MuJoCo PPO 训练曲线" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
     <div class="demo-note">↑ 没改一行 PPO 算法代码，只把环境从 classic-control 换成 MuJoCo 刚体动力学，第 56 个 iteration 就把近 100 回合平均回报练到 903（满分 1000）；用确定性策略复测 20 局全部 1000。这一步是从"玩具环境"跨到"真实物理仿真"，也是把策略迁移到真机前的必经环节。</div>
   </div>
 

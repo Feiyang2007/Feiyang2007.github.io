@@ -278,6 +278,7 @@ h2{
 .proj-item .p-desc{font-size:14px;color:var(--muted);line-height:1.65;flex:1;margin-bottom:14px}
 .proj-item.flagship .p-desc{font-size:15px;max-width:640px}
 .proj-item .p-tech{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+.demo-tag{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid rgba(31,95,91,.45);border-radius:3px;padding:2px 8px;margin:0 10px 4px 0}
 .proj-item a.p-link{color:inherit;border:none;display:block}
 .proj-item a.p-link h4{transition:color .15s}
 .proj-item a.p-link:hover h4{color:var(--accent)}
@@ -407,7 +408,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </div>
   <button class="nav-burger" id="navBurger" aria-expanded="false" aria-controls="navPanel">Menu</button>
   </div>
-  <div class="nav-panel" id="navPanel" hidden><a href="#about">About</a><a href="#direction">Direction</a><a href="#journey">Journey</a><a href="#projects">Projects</a><a href="#writing">Writing</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#now">Now</a><a href="#contact">Contact</a><a href="index-en.html" hreflang="en" lang="en">English</a></div>
+  <div class="nav-panel" id="navPanel" hidden><a href="#about">About</a><a href="#direction">Direction</a><a href="#journey">Journey</a><a href="#projects">Projects</a><a href="#writing">Writing</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#now">Now</a><a href="#contact">Contact</a><a href="index.html" hreflang="zh-CN">中文版</a></div>
 </nav>
 
 <!-- ===== Hero ===== -->
@@ -575,7 +576,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="proj-list">
       <div class="proj-item flagship">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.png" alt="Real evaluation comparison: zero-shot 0%, this LoRA reproduction 90% at 5k steps, upstream full fine-tune 99.7% at 30k steps" loading="lazy"></a>
+        <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.webp" alt="Real evaluation comparison: zero-shot 0%, this LoRA reproduction 90% at 5k steps, upstream full fine-tune 99.7% at 30k steps" loading="lazy"></a>
         <span class="p-cap">Source · AutoBio benchmark, same-seed eval · per-episode results public</span>
       </div>
         <div class="p-body">
@@ -594,7 +595,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.png" alt="Real MuJoCo inverted pendulum training curve: evaluation reward converging to the maximum" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.webp" alt="Real MuJoCo inverted pendulum training curve: evaluation reward converging to the maximum" loading="lazy"></a>
         <span class="p-cap">Source · self-implemented PPO training log · solved at iteration 56</span>
       </div>
         <div class="p-body">
@@ -603,13 +604,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">In progress</span>
           </div>
           <p class="p-desc">DQN and PPO hand-written in pure PyTorch, no RL libraries; the same PPO migrated to MuJoCo physics, re-evaluated <strong>20/20 perfect</strong> on InvertedPendulum. Play CartPole yourself on the page — or watch the trained policy do it.</p>
+          <span class="demo-tag">▶ Live demo</span>
           <span class="p-tech">PyTorch · Double-DQN · PPO · GAE · MuJoCo</span>
           <a class="p-cta" href="projects/mujoco-rl.html">View project →</a>
         </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.png" alt="MNIST handwritten digit sample grid (real data)" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.webp" alt="MNIST handwritten digit sample grid (real data)" loading="lazy"></a>
         <span class="p-cap">Source · MNIST test set · raw model predictions</span>
       </div>
         <div class="p-body">
@@ -618,6 +620,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">Done</span>
           </div>
           <p class="p-desc">A small hand-written CNN trained on real MNIST to <strong>98.9%</strong>. Weights exported to the browser: draw a digit, lift the pen, it recognizes — inference runs locally on your machine.</p>
+          <span class="demo-tag">▶ Live demo</span>
           <span class="p-tech">Python · PyTorch · CNN · MNIST</span>
           <a class="p-cta" href="projects/mnist-cnn.html">View project →</a>
         </div>
@@ -632,13 +635,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">Live</span>
           </div>
           <p class="p-desc">Notes I have kept since enrolling, distilled into 35 passages for natural-language Q&amp;A: vector retrieval finds the most relevant notes, DeepSeek composes the answer. The corpus is what I actually learned — so the answers are real too.</p>
+          <span class="demo-tag">▶ Live demo</span>
           <span class="p-tech">Vanilla JS · bge-m3 · vector retrieval · DeepSeek</span>
           <a class="p-cta" href="projects/knowledge-rag.html">View project →</a>
         </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.png" alt="Real UCI-HAR test confusion matrix: sitting vs standing and upstairs vs downstairs are hardest" loading="lazy"></a>
+        <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.webp" alt="Real UCI-HAR test confusion matrix: sitting vs standing and upstairs vs downstairs are hardest" loading="lazy"></a>
         <span class="p-cap">Source · UCI-HAR test set · logistic regression outputs</span>
       </div>
         <div class="p-body">
@@ -647,13 +651,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">Completed</span>
           </div>
           <p class="p-desc">The full workflow on UCI smartphone-IMU activity recognition (561-D features, 6 classes): cleaning → feature engineering → pipeline → cross-validated model selection → tuning → evaluation → Streamlit demo.</p>
+          <span class="demo-tag">▶ Live demo</span>
           <span class="p-tech">Python · Scikit-learn · Pandas · Streamlit</span>
           <a class="p-cta" href="projects/ml-pipeline.html">View project →</a>
         </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.png" alt="Real behavior cloning training curve: loss falling, validation accuracy rising" loading="lazy"></a>
+        <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.webp" alt="Real behavior cloning training curve: loss falling, validation accuracy rising" loading="lazy"></a>
         <span class="p-cap">Source · behavior-cloning training log · CartPole demos</span>
       </div>
         <div class="p-body">
@@ -668,7 +673,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.png" alt="Real RRT* result in joint space: sampling tree and feasible path" loading="lazy"></a>
+        <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.webp" alt="Real RRT* result in joint space: sampling tree and feasible path" loading="lazy"></a>
         <span class="p-cap">Source · planner output · metrics match the published tree</span>
       </div>
         <div class="p-body">
@@ -677,13 +682,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">In progress</span>
           </div>
           <p class="p-desc">Joint-space RRT* plans collision-free paths for a three-link planar arm: forward kinematics + link collision checking. An interactive workspace RRT* demo sits at the top of the page — place obstacles yourself.</p>
+          <span class="demo-tag">▶ Live demo</span>
           <span class="p-tech">Python · NumPy · RRT* · Forward Kinematics</span>
           <a class="p-cta" href="projects/arm-planning.html">View project →</a>
         </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/d2l-ch1.html"><img class="contain" src="projects/img/d2l_fit.png" alt="Polynomial fit triple panel: underfitting, good fit, overfitting (real computation)" loading="lazy"></a>
+        <a class="p-thumb" href="projects/d2l-ch1.html"><img class="contain" src="projects/img/d2l_fit.webp" alt="Polynomial fit triple panel: underfitting, good fit, overfitting (real computation)" loading="lazy"></a>
         <span class="p-cap">Source · polynomial-fit experiment · same data as the on-page demo</span>
       </div>
         <div class="p-body">
@@ -692,6 +698,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">Learning</span>
           </div>
           <p class="p-desc">Linear regression (hand-written SGD), softmax regression and an MLP, each from scratch; plus a draggable underfitting/overfitting demo showing bias–variance trade-off in real time.</p>
+          <span class="demo-tag">▶ Live demo</span>
           <span class="p-tech">Python · PyTorch · NumPy · from scratch</span>
           <a class="p-cta" href="projects/d2l-ch1.html">View project →</a>
         </div>
@@ -936,14 +943,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   ctx.restore();
 })();
 
-// scroll reveal
+// scroll reveal (.reveal is attached here; stays static without IntersectionObserver)
 (function(){
   var els=document.querySelectorAll('section > .wrap > *');
-  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+  if(!('IntersectionObserver' in window))return;
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
   },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
-  els.forEach(function(e){io.observe(e);});
+  els.forEach(function(e){e.classList.add('reveal');io.observe(e);});
 })();
 
 // back to top
