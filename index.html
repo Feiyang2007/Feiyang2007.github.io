@@ -278,6 +278,7 @@ h2{
 .proj-item .p-desc{font-size:14px;color:var(--muted);line-height:1.65;flex:1;margin-bottom:14px}
 .proj-item.flagship .p-desc{font-size:15px;max-width:640px}
 .proj-item .p-tech{font-family:var(--mono);font-size:11.5px;color:var(--accent)}
+.demo-tag{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--accent);border:1px solid rgba(31,95,91,.45);border-radius:3px;padding:2px 8px;margin:0 10px 4px 0}
 .proj-item a.p-link{color:inherit;border:none;display:block}
 .proj-item a.p-link h4{transition:color .15s}
 .proj-item a.p-link:hover h4{color:var(--accent)}
@@ -407,7 +408,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     </div>
   <button class="nav-burger" id="navBurger" aria-expanded="false" aria-controls="navPanel">菜单</button>
   </div>
-  <div class="nav-panel" id="navPanel" hidden><a href="#about">About</a><a href="#direction">Direction</a><a href="#journey">Journey</a><a href="#projects">Projects</a><a href="#writing">Writing</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#now">Now</a><a href="#contact">Contact</a><a href="index.html" hreflang="zh-CN">中文版</a></div>
+  <div class="nav-panel" id="navPanel" hidden><a href="#about">About</a><a href="#direction">Direction</a><a href="#journey">Journey</a><a href="#projects">Projects</a><a href="#writing">Writing</a><a href="#skills">Skills</a><a href="#education">Education</a><a href="#now">Now</a><a href="#contact">Contact</a><a href="index-en.html" hreflang="en" lang="en">English</a></div>
 </nav>
 
 <!-- ===== Hero ===== -->
@@ -573,7 +574,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
     <div class="proj-list">
       <div class="proj-item flagship">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.png" alt="真实评测对比：zero-shot 0%、本复现 LoRA 5000 步 90%、上游全量微调 30k 步 99.7%" loading="lazy"></a>
+        <a class="p-thumb" href="projects/autobio-pi0.html"><img class="contain" src="projects/img/autobio_result.webp" alt="真实评测对比：zero-shot 0%、本复现 LoRA 5000 步 90%、上游全量微调 30k 步 99.7%" loading="lazy"></a>
         <span class="p-cap">来源 · AutoBio 基准同种子评测 · 逐回合结果公开</span>
       </div>
         <div class="p-body">
@@ -592,7 +593,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.png" alt="MuJoCo 倒立摆真实训练曲线：评估奖励收敛到满分" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mujoco-rl.html"><img class="contain" src="projects/img/mujoco_curve.webp" alt="MuJoCo 倒立摆真实训练曲线：评估奖励收敛到满分" loading="lazy"></a>
         <span class="p-cap">来源 · 自实现 PPO 训练日志 · 第 56 次迭代达标</span>
       </div>
         <div class="p-body">
@@ -601,13 +602,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">进行中</span>
           </div>
           <p class="p-desc">纯 PyTorch 手写 DQN 与 PPO，不借助现成 RL 库；同一份 PPO 迁移到 MuJoCo 物理仿真，InvertedPendulum 复测 <strong>20/20 满分</strong>。页面里可以亲手玩 CartPole，或看训练好的策略来玩。</p>
+          <span class="demo-tag">▶ 可交互演示</span>
           <span class="p-tech">PyTorch · Double-DQN · PPO · GAE · MuJoCo</span>
           <a class="p-cta" href="projects/mujoco-rl.html">查看项目 →</a>
         </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.png" alt="MNIST 手写数字样本网格（真实数据）" loading="lazy"></a>
+        <a class="p-thumb" href="projects/mnist-cnn.html"><img class="contain" src="projects/img/mnist_samples.webp" alt="MNIST 手写数字样本网格（真实数据）" loading="lazy"></a>
         <span class="p-cap">来源 · MNIST 测试集 · 模型真实预测输出</span>
       </div>
         <div class="p-body">
@@ -616,6 +618,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">已完成</span>
           </div>
           <p class="p-desc">PyTorch 手写小 CNN，真实 MNIST 训练到 <strong>98.9%</strong>。权重导出到浏览器：画一个数字，抬笔即识别——推理就在你本地跑。</p>
+          <span class="demo-tag">▶ 可交互演示</span>
           <span class="p-tech">Python · PyTorch · CNN · MNIST</span>
           <a class="p-cta" href="projects/mnist-cnn.html">查看项目 →</a>
         </div>
@@ -630,13 +633,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">在线可答</span>
           </div>
           <p class="p-desc">把入学以来攒下的笔记整理成 35 段语料，做自然语言问答：向量语义检索找到最相关的几段笔记，再由 DeepSeek 组织成回答。语料都是我真实学过的，问出来的也是真的。</p>
+          <span class="demo-tag">▶ 可交互演示</span>
           <span class="p-tech">Vanilla JS · bge-m3 · 向量检索 · DeepSeek</span>
           <a class="p-cta" href="projects/knowledge-rag.html">查看项目 →</a>
         </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.png" alt="UCI-HAR 真实测试集混淆矩阵：坐与站、上楼与下楼最难区分" loading="lazy"></a>
+        <a class="p-thumb" href="projects/ml-pipeline.html"><img class="contain" src="projects/img/confusion_matrix.webp" alt="UCI-HAR 真实测试集混淆矩阵：坐与站、上楼与下楼最难区分" loading="lazy"></a>
         <span class="p-cap">来源 · UCI-HAR 测试集 · 逻辑回归真实输出</span>
       </div>
         <div class="p-body">
@@ -645,12 +649,13 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">已完成</span>
           </div>
           <p class="p-desc">UCI 手机 IMU 人体活动识别（561 维特征、6 类姿态）完整流程：数据清洗 → 特征工程 → Pipeline → 交叉验证选模 → 调参 → 评估可视化 → Streamlit demo。</p>
+          <span class="demo-tag">▶ 可交互演示</span>
           <span class="p-tech">Python · Scikit-learn · Pandas · Streamlit</span>
           <a class="p-cta" href="projects/ml-pipeline.html">查看项目 →</a>        </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.png" alt="行为克隆真实训练曲线：损失下降与验证准确率上升" loading="lazy"></a>
+        <a class="p-thumb" href="projects/lerobot-bc.html"><img class="contain" src="projects/img/bc_curve.webp" alt="行为克隆真实训练曲线：损失下降与验证准确率上升" loading="lazy"></a>
         <span class="p-cap">来源 · 行为克隆训练日志 · CartPole 示教数据</span>
       </div>
         <div class="p-body">
@@ -665,7 +670,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.png" alt="机械臂关节空间 RRT* 真实规划结果：采样树与可行路径" loading="lazy"></a>
+        <a class="p-thumb" href="projects/arm-planning.html"><img class="contain" src="projects/img/arm_rrt_result.webp" alt="机械臂关节空间 RRT* 真实规划结果：采样树与可行路径" loading="lazy"></a>
         <span class="p-cap">来源 · 自研规划器输出 · 指标与规划树一致</span>
       </div>
         <div class="p-body">
@@ -674,13 +679,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">进行中</span>
           </div>
           <p class="p-desc">关节空间 RRT* 为三连杆平面臂规划无碰撞路径：正运动学 + 连杆碰撞检测。页面顶部有可交互的工作空间 RRT* demo，可以自己摆障碍物。</p>
+          <span class="demo-tag">▶ 可交互演示</span>
           <span class="p-tech">Python · NumPy · RRT* · Forward Kinematics</span>
           <a class="p-cta" href="projects/arm-planning.html">查看项目 →</a>
         </div>
       </div>
       <div class="proj-item">
       <div class="p-fig">
-        <a class="p-thumb" href="projects/d2l-ch1.html"><img class="contain" src="projects/img/d2l_fit.png" alt="多项式拟合三联图：欠拟合、恰好拟合、过拟合（真实计算）" loading="lazy"></a>
+        <a class="p-thumb" href="projects/d2l-ch1.html"><img class="contain" src="projects/img/d2l_fit.webp" alt="多项式拟合三联图：欠拟合、恰好拟合、过拟合（真实计算）" loading="lazy"></a>
         <span class="p-cap">来源 · 多项式拟合实验 · 与站内交互演示同一数据</span>
       </div>
         <div class="p-body">
@@ -689,6 +695,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
             <span class="p-status">学习中</span>
           </div>
           <p class="p-desc">线性回归（手写 SGD）、Softmax 回归、多层感知机各从零实现一遍；配一个可拖动的「欠拟合 / 过拟合」演示，实时看偏差-方差怎么此消彼长。</p>
+          <span class="demo-tag">▶ 可交互演示</span>
           <span class="p-tech">Python · PyTorch · NumPy · 从零实现</span>
           <a class="p-cta" href="projects/d2l-ch1.html">查看项目 →</a>
         </div>
@@ -932,14 +939,14 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   ctx.restore();
 })();
 
-// 滚动入场
+// 滚动入场（.reveal 在这里挂上；无 IntersectionObserver 时保持静态可见）
 (function(){
   var els=document.querySelectorAll('section > .wrap > *');
-  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+  if(!('IntersectionObserver' in window))return;
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target);} });
   },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
-  els.forEach(function(e){io.observe(e);});
+  els.forEach(function(e){e.classList.add('reveal');io.observe(e);});
 })();
 
 // 回到顶部

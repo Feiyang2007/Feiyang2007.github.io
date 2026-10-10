@@ -132,7 +132,7 @@ footer{padding:48px 0;text-align:center;font-family:var(--mono);font-size:12px;c
   <div style="background:var(--paper-warm);border:1px solid var(--line);padding:28px;margin-top:20px">
     <h3 style="margin-bottom:12px">真实 BC 结果 · PyTorch 实现（CartPole 示教克隆）</h3>
     <p style="font-size:14.5px;color:var(--ink-soft);margin-bottom:16px;max-width:720px">用一个手写 PD 控制器当"示教者"，在 CartPole 上采了 14.7 万条 (状态 → 动作) 演示，再用一个 MLP 以交叉熵去模仿它。验证集动作预测准确率 <strong>99.6%</strong>；克隆出的策略在环境里 rollout 平均存活 <strong>485 步</strong>，和示教者基本一致。</p>
-    <img src="img/bc_curve.png" alt="BC 训练损失与验证准确率" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
+    <img src="img/bc_curve.webp" alt="BC 训练损失与验证准确率" style="width:100%;height:auto;border:1px solid var(--line);background:#fff;display:block">
     <div class="demo-note" style="margin-top:10px">↑ 左：模仿损失下降；右：验证集动作预测准确率升到 ~0.996。诚实说明：这次示教者是确定性规则、评估初始分布与演示一致，所以克隆几乎"照抄"了专家；BC 真正的难点是<strong>分布漂移（covariate shift）</strong>——这也是 DAgger 等方法要解决的问题。</div>
   </div>
 

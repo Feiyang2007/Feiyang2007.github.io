@@ -129,9 +129,11 @@ for (const [file, expect] of [
   check(file + " · canvas 有 aria-label", !!cv && (cv.getAttribute("aria-label") || "").length > 40);
   const sr = doc.querySelectorAll("canvas#radar + ul.sr-only li, ul.sr-only li");
   check(file + " · 雷达图隐藏文字 " + expect.axes + " 条", sr.length === expect.axes, "实得 " + sr.length);
-  // 动效仍然工作
-  const revealed = doc.querySelectorAll("section > .wrap > *.in").length;
-  check(file + " · reveal 动效仍生效", revealed > 5, "仅 " + revealed + " 个元素获得 .in");
+  // 动效仍然工作：.reveal 由脚本挂上，.reveal.in 成对才算真的生效
+  //（曾出现只加 .in 不挂 .reveal 的死代码，视觉上毫无动效）
+  const revealed = doc.querySelectorAll("section > .wrap > *.reveal.in").length;
+  check(file + " · reveal 动效成对生效", revealed > 5, "仅 " + revealed + " 个元素获得 .reveal.in");
+  check(file + " · 脚本运行时挂 .reveal 类", /classList\.add\('reveal'\)/.test(html), "未找到挂类逻辑");
   // 区块编号连续
   const nums = [...doc.querySelectorAll(".section-label")].map(e => e.textContent.trim().slice(0, 2));
   check(file + " · 区块编号 01-09 连续", nums.join(",") === ["01","02","03","04","05","06","07","08","09"].join(","), "实得 " + nums.join(","));
@@ -151,6 +153,11 @@ for (const [file, expect] of [
     const closedByEsc = panel.hasAttribute("hidden") && burger.getAttribute("aria-expanded") === "false";
     check(file + " · 菜单可展开且 Esc 可收起", opened && closedByEsc, `open=${opened} esc=${closedByEsc}`);
   }
+  // 移动端语言切换：面板里的语言链接必须指向另一个版本（曾自指成死链接）
+  const panelLang = panel ? panel.querySelector("a[hreflang]") : null;
+  const wantLangHref = file === "index.html" ? "index-en.html" : "index.html";
+  check(file + " · 移动面板可切换语言", !!panelLang && panelLang.getAttribute("href") === wantLangHref,
+    panelLang ? "实得 " + panelLang.getAttribute("href") : "无语言链接");
   // mono 字体栈含 CJK 回退（否则中文标签掉进系统字体轮盘）
   check(file + " · mono 栈含 Noto Sans SC 回退", /--mono:[^;]*IBM Plex Mono[^;]*Noto Sans SC/.test(html));
   // hero 真实评测录像
@@ -162,9 +169,9 @@ for (const [file, expect] of [
   check(file + " · reduced-motion 降级逻辑", /prefers-reduced-motion[^;]*\.matches/.test(html) && /heroRoll/.test(html));
   // 卡片缩略图证据化：6 个项目用真实图表，rag/d2l 保留插画
   const want = {
-    "autobio-pi0": "autobio_result.png", "mujoco-rl": "mujoco_curve.png",
-    "mnist-cnn": "mnist_samples.png", "ml-pipeline": "confusion_matrix.png",
-    "lerobot-bc": "bc_curve.png", "arm-planning": "arm_rrt_result.png"
+    "autobio-pi0": "autobio_result.webp", "mujoco-rl": "mujoco_curve.webp",
+    "mnist-cnn": "mnist_samples.webp", "ml-pipeline": "confusion_matrix.webp",
+    "lerobot-bc": "bc_curve.webp", "arm-planning": "arm_rrt_result.webp"
   };
   for (const [slug, fig] of Object.entries(want)) {
     const img = doc.querySelector(`a.p-thumb[href="projects/${slug}.html"] img`);
@@ -174,11 +181,17 @@ for (const [file, expect] of [
   check(file + " · contain 适配规则存在", /\.p-thumb img\.contain\{object-fit:contain\}/.test(html));
   // 图框组件：d2l 缩略图=真实三联图；图区底色与图表画布同色；每张数据图配 mono 来源行
   const d2lImg = doc.querySelector('a.p-thumb[href="projects/d2l-ch1.html"] img');
-  check(file + " · d2l 缩略图=真实三联图", !!d2lImg && d2lImg.getAttribute("src").endsWith("d2l_fit.png") && d2lImg.classList.contains("contain"),
+  check(file + " · d2l 缩略图=真实三联图", !!d2lImg && d2lImg.getAttribute("src").endsWith("d2l_fit.webp") && d2lImg.classList.contains("contain"),
     d2lImg ? "实得 " + d2lImg.getAttribute("src") : "无缩略图");
   check(file + " · 图框底色与图表画布同色(#FBF9F3)", /\.p-fig\{[^}]*background:#FBF9F3/.test(html) && /\.p-thumb\{[^}]*background:#FBF9F3/.test(html));
   const capCount = doc.querySelectorAll(".p-cap").length;
   check(file + " · 数据图来源行 ×7", capCount === 7, `实得 ${capCount}`);
+  // 可交互徽标：带内嵌演示的项目卡标 ▶（6 张卡，与页面里的真实演示一一对应）
+  const demoSlugs = ["mujoco-rl", "mnist-cnn", "knowledge-rag", "ml-pipeline", "arm-planning", "d2l-ch1"];
+  const tagged = [...doc.querySelectorAll(".proj-item")].filter(it => it.querySelector(".demo-tag"))
+    .map(it => it.querySelector("a.p-thumb").getAttribute("href"));
+  check(file + " · 可交互徽标 ×6 落位", demoSlugs.every(s => tagged.includes("projects/" + s + ".html")), "实得 " + tagged.join(","));
+  check(file + " · 可交互徽标文案", [...doc.querySelectorAll(".demo-tag")].every(e => /可交互|Live demo/.test(e.textContent)));
   const wcard = doc.querySelector('a.post-card[href="writing/autobio-pi0-lora.html"] .pc-img img');
   check(file + " · 写作卡不再「卡里套卡」", !!wcard && wcard.getAttribute("src").endsWith("w_cover.webp"),
     wcard ? "实得 " + wcard.getAttribute("src") : "无写作卡");
@@ -192,6 +205,21 @@ for (const file of PAGES) {
   check(file + " · 移动菜单齐备", !!b && !!p2 && p2.hasAttribute("hidden") &&
     p2.querySelectorAll("a").length >= 3, "burger=" + !!b + " panel=" + !!p2);
   check(file + " · 按钮文案", b && (b.textContent.trim() === "菜单" || b.textContent.trim() === "Menu"));
+}
+
+/* ---------- 3c. 全站字体与图片格式守卫 ---------- */
+{
+  const css = fs.readFileSync("fonts/fonts.css", "utf8");
+  // hero-en 用真斜体：@font-face 必须带 italic 面，否则浏览器合成伪斜体
+  check("fonts.css · Source Serif 4 真斜体面", /font-family:'Source Serif 4';font-style:italic/.test(css), "缺斜体 face");
+  check("fonts.css · 每个 face 都声明 font-style",
+    (css.match(/@font-face/g) || []).length === (css.match(/font-style:(normal|italic)/g) || []).length);
+  const leftovers = [];
+  for (const file of PAGES) {
+    const html = fs.readFileSync(file, "utf8");
+    for (const m of html.match(/img\/[a-z_]+\.png"/g) || []) leftovers.push(file + ":" + m);
+  }
+  check("全站图表引用已换 WebP", leftovers.length === 0, leftovers.join(","));
 }
 
 /* ---------- 4. 长文页 ---------- */

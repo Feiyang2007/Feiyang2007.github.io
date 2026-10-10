@@ -39,6 +39,12 @@ FAMILIES = [
      {w: "Source+Serif+4:opsz,wght@8..60,%d" % w for w in (400, 500, 600, 700)}),
 ]
 
+# 额外生成的真斜体（hero-en 用）：不做子集的话浏览器会给衬线英文合成伪斜体，观感毛糙
+ITALIC_FAMILIES = [
+    ("Source Serif 4", "SourceSerif4-Italic", "italic",
+     {400: "Source+Serif+4:ital,opsz,wght@1,8..60,400"}),
+]
+
 # 无论页面里有没有用到，这些字符都必须留着
 BASELINE = (
     "".join(chr(c) for c in range(0x20, 0x7F))          # ASCII 可见
@@ -47,6 +53,7 @@ BASELINE = (
     + "\u3001\u3002\u300c\u300d\u300e\u300f\u3010\u3011\u3014\u3015"
     + "\uff01\uff08\uff09\uff0c\uff1a\uff1b\uff1f\uff5e\u25cf\u2500\u2022"
     + "\u00e9\u00e8\u00ea\u00e0\u00fc\u00f6\u00e4\u00df"                  # 西欧字母
+    + "\u25b6"                                          # ▶ 项目卡「可交互」标记
 )
 
 
@@ -116,7 +123,8 @@ def main():
         os.makedirs(CACHE)
 
     made = []
-    for family, prefix, weights in FAMILIES:
+    jobs = [(f, p, "normal", w) for f, p, w in FAMILIES] + ITALIC_FAMILIES
+    for family, prefix, style, weights in jobs:
         for w, spec in sorted(weights.items()):
             out = os.path.join(FONT_DIR, "%s-%d.woff2" % (prefix, w))
             cached = os.path.join(CACHE, "%s-%d.ttf" % (prefix, w))
@@ -131,7 +139,7 @@ def main():
                 print("  ↓ %-26s %6.1f MB 源 TTF" % ("%s-%d" % (prefix, w), n / 1048576.0))
                 src = cached
             subset(src, out, text_file)
-            made.append((family, w, out))
+            made.append((family, w, style, out))
             print("  ✓ %-26s %6.0f KB" % (os.path.basename(out), os.path.getsize(out) / 1024.0))
 
     if not made:
@@ -140,14 +148,14 @@ def main():
 
     lines = ["/* 自动生成：全站用字子集化字体（来源 Google Fonts, OFL license）。"
              "改页面文案后重跑 tools/subset_fonts.py */"]
-    for family, w, out in made:
-        lines.append("@font-face{font-family:'%s';font-style:normal;font-weight:%d;"
+    for family, w, style, out in made:
+        lines.append("@font-face{font-family:'%s';font-style:%s;font-weight:%d;"
                      "font-display:swap;src:url('%s') format('woff2')}"
-                     % (family, w, os.path.basename(out)))
+                     % (family, style, w, os.path.basename(out)))
     io.open(os.path.join(FONT_DIR, "fonts.css"), "w", encoding="utf-8",
             newline="\n").write("\n".join(lines) + "\n")
 
-    total = sum(os.path.getsize(o) for _, _, o in made)
+    total = sum(os.path.getsize(o) for _, _, _, o in made)
     print("\n完成：%d 个 woff2，合计 %.2f MB；fonts.css 已重写" % (len(made), total / 1048576.0))
     print("下一步：python tools/check_font_coverage.py 复核")
     return 0
