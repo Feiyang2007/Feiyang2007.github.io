@@ -153,25 +153,7 @@ train_mujoco.py  <span class="c"># 同一份 PPO 迁移到 MuJoCo InvertedPendul
 
 <footer>© 2026 Feiyang Chen · <a href="../index.html" style="color:var(--muted)">返回首页</a></footer>
 
-<script src="../vendor/echarts.min.js"></script>
 <script>
-(function(){
-  var el = document.getElementById('chart');
-  if(!el){return;}
-  if(typeof echarts==='undefined'){el.style.display='none';return;}
-  var c = echarts.init(el);
-  var xs = [], ys = [];
-  for(var i=0;i<100;i++){xs.push(i); ys.push(Math.min(500, i*4 + Math.random()*30));}
-  c.setOption({
-    grid:{left:50,right:20,top:30,bottom:40},
-    xAxis:{type:'category',data:xs,name:'Episode',axisLabel:{fontSize:10}},
-    yAxis:{type:'value',name:'Reward',axisLabel:{fontSize:10}},
-    series:[{type:'line',data:ys,showSymbol:false,lineStyle:{color:'#1F5F5B',width:2},areaStyle:{color:'rgba(31,95,91,.1)'}}],
-    tooltip:{trigger:'axis',renderMode:'richText',confine:true}
-  });
-  window.addEventListener('resize',function(){c.resize();});
-})();
-
 // CartPole 交互：人玩(放宽 ±30°) vs AI 玩(严格 ±12°，跑训练好的 DQN)
 (function(){
   var cv = document.getElementById('cartpole');
