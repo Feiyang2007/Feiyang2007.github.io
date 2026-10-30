@@ -1,7 +1,7 @@
 # RAG 代理 Worker 部署步骤
 
 个人知识 RAG 助手的后端转发层。密钥只存在 Cloudflare Worker 的 Secret 里，
-GitHub 仓库和前端页面都不含任何密钥（因此能通过 GitHub 的密钥扫描）。
+GitHub 仓库和前端页面都不含任何密钥。
 
 部署完你会得到一个 `https://rag-proxy.<你的子域>.workers.dev` 地址，
 把它填进 `projects/knowledge-rag.html` 顶部的 `CONFIG.PROXY_BASE` 即可上线。
@@ -16,8 +16,8 @@ GitHub 仓库和前端页面都不含任何密钥（因此能通过 GitHub 的�
 1. 登录 Cloudflare Dashboard → 左侧 **Workers & Pages** → **Create application** → **Create Worker**。
 2. 名字填 `rag-proxy`，把本目录 `worker.js` 的全部代码粘进编辑器，**Save and Deploy**。
 3. 进入这个 Worker → **Settings** → **Variables and Secrets** → **Secrets** → **Add**：
-   - `DEEPSEEK_KEY` = 你的 DeepSeek key（`sk-17b9...`）
-   - `SILICONFLOW_KEY` = 你的硅基流动 key（`sk-...`）
+   - `DEEPSEEK_KEY` = 你的 DeepSeek key（`sk-xxxx`）
+   - `SILICONFLOW_KEY` = 你的硅基流动 key（`sk-xxxx`）
    - （可选）`ALLOW_ORIGIN` = `https://feiyang2007.github.io`
    保存。
 4. 顶部地址栏就是你的 Worker URL（形如 `https://rag-proxy.xxxx.workers.dev`），复制它。
@@ -55,5 +55,9 @@ curl -s -X POST <WORKER>/chat/completions -H "Content-Type: application/json" \
 
 ## 安全提示
 - 千万别把 `sk-...` 写进 `worker.js` / `wrangler.toml` / 页面里 —— 那等于没做代理。
-- 想更严可加：Cloudflare 控制台该 Worker → **Rate Limiting** 规则按 IP 限流；
-  或用 Workers KV 记录 IP 计数做配额。
+- 本端点无鉴权、全公网可达（CORS 只能挡浏览器，挡不住 curl/脚本），`worker.js`
+  已内置防线：按 IP 小时级限流（依赖 `COUNTERS` KV 绑定，**部署后务必确认
+  Settings → Bindings 里存在该绑定，否则限流会静默失效**）、Origin/Referer 校验、
+  请求体白名单重建（模型固定、max_tokens 与 messages 规模钳制）。
+- 想再严一档：Cloudflare 控制台给该 Worker 加 **Rate Limiting** 规则，或上
+  Turnstile 人机验证。

@@ -19,12 +19,25 @@
  *   POST /embeddings        -> 硅基流动 /v1/embeddings
  *   POST /chat/completions  -> DeepSeek   /v1/chat/completions
  *   OPTIONS *               -> CORS 预检
+ *
+ * 服务端钳制（该端点无鉴权、全公网可达，CORS 只能挡浏览器挡不住脚本，
+ * 故转发前必须白名单重建请求体）：
+ *   - 请求体 > 20 KB → 413
+ *   - 带 Origin/Referer 且与 ALLOW_ORIGIN 不符 → 403
+ *   - 请求体白名单重建：模型固定 deepseek-flash / BAAI/bge-m3（防调用贵价模型）、
+ *     max_tokens ≤ 4000、messages ≤ 12 条且 role 受限、input ≤ 16 条
  */
 
 const UPSTREAM = {
   embeddings: "https://api.siliconflow.cn/v1/embeddings",
   chat: "https://api.deepseek.com/v1/chat/completions",
 };
+
+const MAX_BODY_BYTES = 20000;
+const MAX_TOKENS = 4000;
+const MAX_MESSAGES = 12;
+const MAX_EMBED_INPUTS = 16; // 前端 embedBatched 每批 12 条，留出余量
+const ALLOWED_ROLES = new Set(["system", "user", "assistant"]);
 
 function clientIP(request) {
   // Cloudflare 提供 cf-connecting-ip；兜底再取 X-Forwarded-For 第一段
@@ -67,6 +80,46 @@ async function enforceRateLimit(env, request) {
   return null;
 }
 
+/**
+ * 来源校验：带 Origin/Referer 却不是配置的前端源 → 拒绝（防浏览器侧跨站滥用，
+ * 脚本可伪造此头）。无这两个头的调用（如 curl 自检）放行，由请求体重建钳制兜底。
+ */
+function originOk(request, env) {
+  const allowed = env.ALLOW_ORIGIN && env.ALLOW_ORIGIN !== "*" ? env.ALLOW_ORIGIN : null;
+  if (!allowed) return true;
+  const origin = request.headers.get("origin");
+  if (origin) return origin === allowed;
+  const referer = request.headers.get("referer");
+  if (referer) return referer.startsWith(allowed + "/");
+  return true;
+}
+
+/** 白名单重建请求体：只保留允许的字段并钳制规模；不合法返回 null */
+function sanitizeChat(payload) {
+  const messages = Array.isArray(payload.messages) ? payload.messages : [];
+  const trimmed = messages
+    .filter(m => m && ALLOWED_ROLES.has(m.role) && typeof m.content === "string")
+    .slice(0, MAX_MESSAGES)
+    .map(m => ({ role: m.role, content: m.content }));
+  if (!trimmed.length) return null;
+  return {
+    model: "deepseek-flash",
+    messages: trimmed,
+    max_tokens: Math.max(1, Math.min(parseInt(payload.max_tokens, 10) || 400, MAX_TOKENS)),
+  };
+}
+
+function sanitizeEmbeddings(payload) {
+  let input = payload.input;
+  if (typeof input === "string") input = [input];
+  if (!Array.isArray(input) || !input.length) return null;
+  return {
+    model: "BAAI/bge-m3",
+    input: input.slice(0, MAX_EMBED_INPUTS).map(x => String(x)),
+    encoding_format: "float",
+  };
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -82,12 +135,12 @@ export default {
     if (request.method !== "POST")
       return new Response("method not allowed", { status: 405, headers: cors });
 
-    // 路径 -> (上游地址, 对应密钥)
-    let target, key;
+    // 路径 -> (上游地址, 对应密钥, 请求体重建器)
+    let target, key, sanitizer;
     if (url.pathname === "/embeddings") {
-      target = UPSTREAM.embeddings; key = env.SILICONFLOW_KEY;
+      target = UPSTREAM.embeddings; key = env.SILICONFLOW_KEY; sanitizer = sanitizeEmbeddings;
     } else if (url.pathname === "/chat/completions") {
-      target = UPSTREAM.chat; key = env.DEEPSEEK_KEY;
+      target = UPSTREAM.chat; key = env.DEEPSEEK_KEY; sanitizer = sanitizeChat;
     } else {
       return new Response("not found", { status: 404, headers: cors });
     }
@@ -103,13 +156,31 @@ export default {
         { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
     }
 
-    const body = await request.text();
+    if (!originOk(request, env)) {
+      return new Response("forbidden origin", { status: 403, headers: cors });
+    }
+
+    const raw = await request.text();
+    if (raw.length > MAX_BODY_BYTES) {
+      return new Response("payload too large", { status: 413, headers: cors });
+    }
+
+    let sanitized;
+    try {
+      sanitized = sanitizer(JSON.parse(raw));
+    } catch (e) {
+      sanitized = null;
+    }
+    if (!sanitized) {
+      return new Response("bad request", { status: 400, headers: cors });
+    }
+
     let upstream;
     try {
       upstream = await fetch(target, {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key },
-        body,
+        body: JSON.stringify(sanitized),
       });
     } catch (e) {
       return new Response(JSON.stringify({ error: "upstream fetch failed: " + e.message }),

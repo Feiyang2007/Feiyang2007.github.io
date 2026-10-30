@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://rag-proxy.chenfeiyang20071228.workers.dev; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>个人知识 RAG 助手 — 陈斐阳</title>
 <meta name="description" content="把入学以来攒下的笔记做成了一个能问答的机器人：真实语料 + 向量检索 + DeepSeek 生成。">
@@ -191,13 +192,13 @@ answer = deepseek(prompt(top, query))     <span class="c">// 4. 生成回答</sp
 /* =========================================================================
    个人知识 RAG 助手
    语料来自我真实的自学笔记（已整理成结构化片段，剔除隐私）
-   检索：向量语义（硅基流动 bge-m3，文档向量预生成）；无 key 时降级 BM25 中文检索
+   检索：向量语义（bge-m3，文档向量预生成）；代理不可用时降级 BM25 中文检索
    生成：DeepSeek
    ========================================================================= */
 
 /* ---------- CONFIG ---------- */
 const CONFIG = {
-  // —— 在线问答通过远端代理转发，本文件不含任何密钥 ——
+  // —— 在线问答通过远端代理转发 ——
   PROXY_BASE: "https://rag-proxy.chenfeiyang20071228.workers.dev",
 
   DEEPSEEK_MODEL: "deepseek-flash",   // 生成模型
@@ -227,7 +228,7 @@ const DOCS = [
   ["技能","技能栈","主力语言 Python（NumPy/Pandas/Streamlit）；C 语言较好、C++ 了解基础；Sklearn、PyTorch 在系统学；AutoCAD 熟练、Revit 建模、工程制图。RAG/LangChain 跑通入门案例，MuJoCo 写了 hello world。"],
   ["技能","自学史","纸质自学史（大一及以前）：微积分、线性代数、理论物理、AutoCAD、Revit、工程制图都学过；大学物理的电磁学部分还没补。工具用 Obsidian 管理整个知识库。"],
   // —— 项目 ——
-  ["项目","个人知识 RAG 助手","项目本身：把自学笔记做成问答机器人。语料是真实笔记整理出的结构化片段；检索用向量语义匹配（硅基流动 bge-m3 Embedding + 余弦相似度，未配置 key 时 BM25 兜底），生成用 DeepSeek。纯前端，部署在 GitHub Pages。这是我最想做好的一件，因为它把我学的东西直接落地了。"],
+  ["项目","个人知识 RAG 助手","项目本身：把自学笔记做成问答机器人。语料是真实笔记整理出的结构化片段；检索用向量语义匹配（bge-m3 Embedding + 余弦相似度，代理不可用时 BM25 兜底），生成用 DeepSeek。纯前端，部署在 GitHub Pages。这是我最想做好的一件，因为它把我学的东西直接落地了。"],
   ["项目","端到端 ML Pipeline","第二个项目：k-NN 决策边界可视化。可交互调 k 值（1–15）、点击画布加样本点、实时重算决策边界，直观展示过拟合/欠拟合。纯 JavaScript，不依赖库。"],
   ["项目","MuJoCo 强化学习","第三个项目：CartPole 物理仿真（牛顿力学正确），方向键控制、显示存活步数，并提供一个规则/PID 自动平衡策略演示。延伸方向是用纯 PyTorch 手写 DQN/PPO。"],
   ["项目","LeRobot 行为克隆","第四个项目：行为克隆（Behavior Cloning）示教画布。用户在画布上点击示教点，点‘开始模仿’后拟合曲线，直观解释 BC 的本质——从（状态→动作）样本对中学习映射，模仿人示教的策略。"],
@@ -306,9 +307,9 @@ function buildBM25(docs){
 const bm25 = buildBM25(DOCS);
 
 /* =========================================================================
-   2) 向量检索（硅基流动 bge-m3）
+   2) 向量检索（bge-m3，经远端代理）
    文档向量已预生成在 rag-vectors.js（window.RAG_VECS）；运行时只嵌"问题"。
-   若无预置向量但有 key，则首访现算全部文档向量并缓存到 localStorage。
+   若无预置向量，则查 localStorage 缓存，再没有就经代理现算并缓存。
    ========================================================================= */
 let EMBED = null; // {vectors:number[][]} 就绪即表示可用向量模式
 const CORPUS_VERSION = "v1-" + DOCS.length;   // 语料变化时失效缓存
@@ -470,7 +471,7 @@ async function ask(raw){
     return;
   }
   if(!proxyReady()){
-    // 未配置在线生成：直接用中文检索命中的笔记原文作答（零密钥、零部署，仍能给真实内容）
+    // 代理未就绪：直接用中文检索命中的笔记原文作答（零部署，仍能给真实内容）
     addMsg("user", q);
     const ranked = bm25(q).filter(r=>r.score>0).slice(0,2);
     if(ranked.length){
@@ -515,7 +516,7 @@ document.querySelectorAll("#examples span").forEach(el=>{
 
 // 首屏问候
 addMsg("bot","你好，我是小斐——陈斐阳把入学以来攒下的笔记做成了我。关于他的经历、方向、项目，或他笔记里的技术点（RAG、KNN、MuJoCo、强化学习……），随便问。");
-// 初始化向量检索（有 key 才联网；无 key 直接 BM25）
+// 初始化向量检索（代理可用才联网；否则直接 BM25）
 initEmbedding();
 </script>
 <script>
