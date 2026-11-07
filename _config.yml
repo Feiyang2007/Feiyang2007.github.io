@@ -1,0 +1,36 @@
+# Jekyll configuration for GitHub Pages
+# 排除内部构建脚本和敏感文件，防止发布到 GitHub Pages
+
+exclude:
+  - tools/
+  - package.json
+  - package-lock.json
+  - node_modules/
+  - _shots/
+  - proxy/
+  - rag_local/
+  - torchinductor_17690/
+  - build-rag-vectors.mjs
+  - "*.py"
+  - "*.cjs"
+  - "*.mjs"
+  - 交接包.md
+  - .wrangler/
+  - __pycache__/
+  - fonts/_src_cache/
+  - fonts/_charset.txt
+
+# 安全相关配置
+# GitHub Pages 不支持自定义 HTTP 头，通过 meta 标签在 HTML 中下发
+
+# 站点基本信息
+title: "陈斐阳 Feiyang Chen"
+description: "具身智能方向本科生作品集"
+url: "https://feiyang2007.github.io"
+baseurl: ""
+
+# 不使用任何 Jekyll 主题
+theme: null
+
+# 编码
+encoding: utf-8
